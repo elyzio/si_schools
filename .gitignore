@@ -63,3 +63,4 @@ pip-delete-this-directory.txt
 build/
 dist/
 *.egg-info/
+.claude/
