@@ -1,0 +1,65 @@
+# Byte-compiled / cache files
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+
+# C extensions
+*.so
+
+# Django specific
+*.log
+# local_settings.py
+db.sqlite3
+media/
+staticfiles/
+
+# Environment variables
+.env
+*.env
+
+# Virtual environment
+venv/
+env/
+ENV/
+.venv/
+.idea/
+.vscode/
+
+# Node modules (if you're using JS frontend)
+node_modules/
+
+# macOS
+.DS_Store
+
+# VS Code settings
+.vscode/
+
+# Test or coverage files
+coverage/
+htmlcov/
+*.cover
+*.py,cover
+.cache
+nosetests.xml
+coverage.xml
+*.coveragerc
+
+# Pip
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Pytest
+.pytest_cache/
+
+# Migrations (optional: sometimes people exclude these early in dev)
+# **ONLY if you're auto-generating on each machine**
+# If you want to keep them, remove this line
+**/migrations/*.py
+!**/migrations/__init__.py
+
+# Build files
+build/
+dist/
+*.egg-info/
