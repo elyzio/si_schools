@@ -60,7 +60,7 @@ pip-delete-this-directory.txt
 !**/migrations/__init__.py
 
 # Build files
-build/
-dist/
+# build/
+# dist/
 *.egg-info/
 .claude/
