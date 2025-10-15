@@ -1,0 +1,85 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block contents %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">{{ page_title }}</h3>
+        <div class="card-tools">
+            <a href="{% url 'professor_create' %}" class="btn btn-primary btn-sm">
+                <i class="fas fa-plus"></i> Aumenta Profesor
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <table id="professor-table" class="table table-bordered table-striped datatable">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Naran</th>
+                    <th>Numeru Funsionariu</th>
+                    <th>Email</th>
+                    <th>Estadu</th>
+                    <th>Nivel Akademiku</th>
+                    <th>Status</th>
+                    <th>Asaun</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for professor in professors %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>
+                        <a href="{% url 'professor_detail' professor.pk %}" class="text-primary">
+                            {{ professor.nome }}
+                        </a>
+                    </td>
+                    <td>{{ professor.numero_funcionario|default:"-" }}</td>
+                    <td>{{ professor.email|default:"-" }}</td>
+                    <td>
+                        <span class="badge badge-info">{{ professor.get_estadu_display }}</span>
+                    </td>
+                    <td>{{ professor.get_nivel_akademiku_display }}</td>
+                    <td>
+                        {% if professor.is_active %}
+                            <span class="badge badge-success">Ativu</span>
+                        {% else %}
+                            <span class="badge badge-secondary">La Ativu</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="btn-group btn-group-sm" role="group">
+                            <a href="{% url 'professor_detail' professor.pk %}" class="btn btn-info">
+                                <i class="fas fa-eye"></i> Haree
+                            </a>
+                            <a href="{% url 'professor_update' professor.pk %}" class="btn btn-warning">
+                                <i class="fas fa-edit"></i> Hadia
+                            </a>
+                            <a href="{% url 'professor_delete' professor.pk %}" class="btn btn-danger">
+                                <i class="fas fa-trash"></i> Hamos
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" class="text-center">Seidauk iha profesor</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock contents %}
+
+{% block scripts %}
+<script>
+$(document).ready(function() {
+    $('.datatable').DataTable({
+        "responsive": true,
+        "lengthChange": true,
+        "autoWidth": false,
+    });
+});
+</script>
+{% endblock scripts %}

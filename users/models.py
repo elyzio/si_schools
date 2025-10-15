@@ -29,7 +29,7 @@ class PersonInfo(models.Model):
     # Contact
     kontatu = models.CharField(max_length=20, blank=True)
     # email = models.EmailField(blank=True)
-    hela_fatin = models.TextField(help_text="Full address")
+    hela_fatin = models.TextField(help_text="Full address", blank=True, null=True)
     
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

@@ -1,35 +1,31 @@
 {% extends 'main/base.html' %}
 {% load static %}
+{% load user_tags %}
+
 
 {% block head_link %}{% endblock head_link %}
-  
-{% block contents %}
-<!-- Default box -->
-<div class="card">
-    <div class="card-header">
-        <h3 class="card-title">Title</h3>
 
-        <div class="card-tools">
-            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-                <i class="fas fa-minus"></i>
-            </button>
-            <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-    </div>
-    <div class="card-body">
-        Start creating your amazing application!
-    </div>
-    <!-- /.card-body -->
-    <div class="card-footer">
-        Footer
-    </div>
-    <!-- /.card-footer-->
-</div>
+
+{% block breadcrumb_item %}
+<li class="breadcrumb-item active">Blank Page</li>
+{% endblock breadcrumb_item %}
+
+{% block contents %}
+
+{% user_group request.user as role %}
+{% if role == 'admin' %}
+    {% include 'home/homeAdmin.html' %}
+{% elif role == 'director' %}
+    {% include 'home/homeDirector.html' %}
+{% elif role == 'professor' %}
+    {% include 'home/homeProfessor.html' %}
+{% elif role == 'estudante' %}
+    {% include 'home/homeEstudante.html' %}
+{% elif role == 'secretaria' %}
+    {% include 'home/homeSecretaria.html' %}
+{% endif %}
 <!-- /.card -->
 {% endblock contents %}
 
 
 {% block scripts %}{% endblock scripts %}
-  

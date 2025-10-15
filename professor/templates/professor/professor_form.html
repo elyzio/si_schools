@@ -1,0 +1,122 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block contents %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">{{ page_title }}</h3>
+        <div class="card-tools">
+            <a href="{% url 'professor_list' %}" class="btn btn-secondary btn-sm">
+                <i class="fas fa-arrow-left"></i> Voltar à Lista
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+
+        {% crispy form %}
+    </div>
+</div>
+{% endblock contents %}
+
+{% block scripts %}
+<!-- <style>
+.status-icon.completed::before {
+    content: "✓";
+    color: #28a745;
+    font-weight: bold;
+}
+.status-icon.pending::before {
+    content: "○";
+    color: #dc3545;
+}
+.tab-indicator {
+    position: relative;
+}
+.tab-indicator::after {
+    content: "";
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #dc3545;
+}
+.tab-indicator.completed::after {
+    background-color: #28a745;
+}
+</style> -->
+
+<script>
+$(document).ready(function() {
+    // Only initialize empty state if the fields are actually empty
+    // This preserves selections when form is redisplayed with validation errors
+    if ($('#id_subdistrito option').length <= 1) {
+        $('#id_subdistrito').empty().append('<option value="">Primeiro selecione distrito...</option>');
+    }
+    if ($('#id_suco option').length <= 1) {
+        $('#id_suco').empty().append('<option value="">Primeiro selecione subdistrito...</option>');
+    }
+    if ($('#id_aldeia option').length <= 1) {
+        $('#id_aldeia').empty().append('<option value="">Primeiro selecione suco...</option>');
+    }
+
+    // Dependent dropdowns for address fields
+    $('#id_distrito').change(function() {
+        var distritoId = $(this).val();
+
+        // Clear and reset dependent fields
+        $('#id_subdistrito').empty().append('<option value="">---------</option>');
+        $('#id_suco').empty().append('<option value="">Primeiro selecione subdistrito...</option>');
+        $('#id_aldeia').empty().append('<option value="">Primeiro selecione suco...</option>');
+
+        if (distritoId) {
+            $.get('{% url "ajax_subdistrito" %}', {distrito_id: distritoId}, function(data) {
+                $.each(data, function(index, item) {
+                    $('#id_subdistrito').append('<option value="' + item.id + '">' + item.name + '</option>');
+                });
+            });
+        } else {
+            $('#id_subdistrito').empty().append('<option value="">Primeiro selecione distrito...</option>');
+        }
+    });
+
+    $('#id_subdistrito').change(function() {
+        var subdistritoId = $(this).val();
+
+        // Clear and reset dependent fields
+        $('#id_suco').empty().append('<option value="">---------</option>');
+        $('#id_aldeia').empty().append('<option value="">Primeiro selecione suco...</option>');
+
+        if (subdistritoId) {
+            $.get('{% url "ajax_suco" %}', {subdistrito_id: subdistritoId}, function(data) {
+                $.each(data, function(index, item) {
+                    $('#id_suco').append('<option value="' + item.id + '">' + item.name + '</option>');
+                });
+            });
+        } else {
+            $('#id_suco').empty().append('<option value="">Primeiro selecione subdistrito...</option>');
+        }
+    });
+
+    $('#id_suco').change(function() {
+        var sucoId = $(this).val();
+
+        // Clear dependent field
+        $('#id_aldeia').empty().append('<option value="">---------</option>');
+
+        if (sucoId) {
+            $.get('{% url "ajax_aldeia" %}', {suco_id: sucoId}, function(data) {
+                $.each(data, function(index, item) {
+                    $('#id_aldeia').append('<option value="' + item.id + '">' + item.name + '</option>');
+                });
+            });
+        } else {
+            $('#id_aldeia').empty().append('<option value="">Primeiro selecione suco...</option>');
+        }
+    });
+});
+</script>
+
+{% endblock scripts %}

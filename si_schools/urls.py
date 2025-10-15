@@ -24,6 +24,11 @@ from django.conf.urls.static import static
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("main.urls")),
+    path("custom/", include("custom.urls")),
+    path("professor/", include("professor.urls")),
+    path("horariu/", include("horariu.urls")),
+    path("estudante/", include("estudante.urls")),
+    path("valor/", include("valor.urls")),
 ]
 
 if settings.DEBUG:

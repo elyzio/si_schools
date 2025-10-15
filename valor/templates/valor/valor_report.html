@@ -1,0 +1,308 @@
+{% extends 'main/base.html' %}
+{% load valor_filters %}
+
+{% block contents %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">{{ page_title }}</h3>
+        <div class="card-tools">
+            <a href="{% url 'valor_list' %}" class="btn btn-secondary btn-sm">
+                <i class="fas fa-plus"></i> Aumenta Valór
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        {% if selected_ano %}
+        <!-- Info Alert -->
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <div class="alert alert-info mb-2">
+                    <i class="fas fa-info-circle"></i>
+                    Haree Valór ba Tinan: <strong>{{ selected_ano.ano }}</strong>
+                    {% if selected_ano.is_active %}
+                    <span class="badge badge-success ml-2">ATIVU</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <div class="small-box bg-info">
+                    <div class="inner">
+                        <h3>{{ total_students }}</h3>
+                        <p>Estudante Hotu</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="small-box bg-success">
+                    <div class="inner">
+                        <h3>{{ total_grades }}</h3>
+                        <p>Valór Hotu</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="small-box bg-warning">
+                    <div class="inner">
+                        <h3>{{ average_grade }}</h3>
+                        <p>Média Jerál</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="row mb-3">
+            <!-- Year Filter -->
+            <div class="col-md-12 mb-3">
+                <div class="row">
+                    <h6 class="mx-2 my-1">Tinan Akadémiku:</h6>
+                    <div class="btn-group btn-group-sm" role="group">
+                        {% for ano in all_anos %}
+                        <a href="?ano={{ ano.id }}"
+                           class="btn btn-outline-secondary {% if ano_filter == ano.id|stringformat:'s' %}active{% endif %}">
+                            {{ ano.ano }}
+                            {% if ano.is_active %}
+                            <span class="badge badge-success">Ativu</span>
+                            {% endif %}
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Class Filter -->
+            <div class="col-md-12 mb-3">
+                <div class="row">
+                    <h6 class="mx-2 my-1">Klase:</h6>
+                    <div class="btn-group btn-group-sm" role="group">
+                        {% for classe in classes %}
+                        <a href="?ano={{ ano_filter }}&classe={{ classe.classe__id }}{% if periodo_filter %}&periodo={{ periodo_filter }}{% endif %}{% if dept_filter %}&dept={{ dept_filter }}{% endif %}{% if turma_filter %}&turma={{ turma_filter }}{% endif %}"
+                           class="btn btn-outline-primary {% if classe_filter == classe.classe__id|stringformat:'s' %}active{% endif %}">
+                            {{ classe.classe__classe }}
+                            <span class="badge badge-light">{{ classe.student_count }}</span>
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Period Filter -->
+            <div class="col-md-12 mb-3">
+                <div class="row">
+                    <h6 class="mx-2 my-1">Períodu:</h6>
+                    <div class="btn-group btn-group-sm" role="group">
+                        {% for periodo in periodos %}
+                        <a href="?ano={{ ano_filter }}&{% if classe_filter %}classe={{ classe_filter }}&{% endif %}periodo={{ periodo.id }}{% if dept_filter %}&dept={{ dept_filter }}{% endif %}{% if turma_filter %}&turma={{ turma_filter }}{% endif %}"
+                           class="btn btn-outline-info {% if periodo_filter == periodo.id|stringformat:'s' %}active{% endif %}">
+                            {{ periodo }}
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Department Filter -->
+            {% if departments %}
+            <div class="col-md-12 mb-3">
+                <div class="row">
+                    <h6 class="mx-2 my-1">Departamentu:</h6>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <a href="?ano={{ ano_filter }}&{% if classe_filter %}classe={{ classe_filter }}&{% endif %}{% if periodo_filter %}periodo={{ periodo_filter }}{% endif %}"
+                           class="btn btn-outline-secondary {% if not dept_filter %}active{% endif %}">
+                            <i class="fas fa-th-large"></i> Hotu
+                        </a>
+                        {% for dept in departments %}
+                        <a href="?ano={{ ano_filter }}&{% if classe_filter %}classe={{ classe_filter }}&{% endif %}{% if periodo_filter %}periodo={{ periodo_filter }}&{% endif %}dept={{ dept.departamentu__id }}"
+                           class="btn btn-outline-success {% if dept_filter == dept.departamentu__id|stringformat:'s' %}active{% endif %}">
+                            {{ dept.departamentu__departamento }}
+                            {% if dept.departamentu__sigla %}({{ dept.departamentu__sigla }}){% endif %}
+                            <span class="badge badge-light">{{ dept.count }}</span>
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Turma Filter -->
+            {% if turmas %}
+            <div class="col-md-12 mb-3">
+                <div class="row">
+                    <h6 class="mx-2 my-1">Turma:</h6>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <a href="?ano={{ ano_filter }}&{% if classe_filter %}classe={{ classe_filter }}&{% endif %}{% if periodo_filter %}periodo={{ periodo_filter }}&{% endif %}{% if dept_filter %}dept={{ dept_filter }}{% endif %}"
+                           class="btn btn-outline-secondary {% if not turma_filter %}active{% endif %}">
+                            <i class="fas fa-th-large"></i> Hotu
+                        </a>
+                        {% for turma in turmas %}
+                        <a href="?ano={{ ano_filter }}&{% if classe_filter %}classe={{ classe_filter }}&{% endif %}{% if periodo_filter %}periodo={{ periodo_filter }}&{% endif %}{% if dept_filter %}dept={{ dept_filter }}&{% endif %}turma={{ turma.turma__id }}"
+                           class="btn btn-outline-warning {% if turma_filter == turma.turma__id|stringformat:'s' %}active{% endif %}">
+                            {{ turma.turma__turma }}
+                            <span class="badge badge-light">{{ turma.count }}</span>
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Grades Table -->
+        <div class="table-responsive mt-3">
+            {% if grades_by_student %}
+            <table class="table table-striped table-bordered table-hover table-sm">
+                <thead class="thead-dark">
+                    <tr>
+                        <th rowspan="3" class="align-middle">No.</th>
+                        <th rowspan="3" class="align-middle">EMIS</th>
+                        <th rowspan="3" class="align-middle">Naran Estudante</th>
+                        <th rowspan="3" class="align-middle">Klase</th>
+                        {% if materias_common %}
+                        <th colspan="{{ materias_common|length }}" class="text-center bg-secondary">Matéria Komún</th>
+                        {% endif %}
+                        {% if materias_specific %}
+                        <th colspan="{{ materias_specific|length }}" class="text-center bg-info">Matéria Espesífiku</th>
+                        {% endif %}
+                        <th rowspan="2" colspan="3" class="text-center bg-warning">Média</th>
+                    </tr>
+                    <tr>
+                        {% if materias_common %}
+                        {% for materia in materias_common %}
+                        <th class="text-center bg-light" style="min-width: 70px;" title="{{ materia.materia }}">
+                            {{ materia.codigo }}
+                        </th>
+                        {% endfor %}
+                        {% endif %}
+                        {% if materias_specific %}
+                        {% for materia in materias_specific %}
+                        <th class="text-center bg-light" style="min-width: 70px;" title="{{ materia.materia }}">
+                            {{ materia.codigo }}
+                        </th>
+                        {% endfor %}
+                        {% endif %}
+                    </tr>
+                    <tr>
+                        {% if materias_common %}
+                        {% for materia in materias_common %}
+                        <th class="text-center text-muted" style="font-size: 0.7rem;">
+                            {{ materia.materia|truncatechars:15 }}
+                        </th>
+                        {% endfor %}
+                        {% endif %}
+                        {% if materias_specific %}
+                        {% for materia in materias_specific %}
+                        <th class="text-center text-muted" style="font-size: 0.7rem;">
+                            {{ materia.materia|truncatechars:15 }}
+                        </th>
+                        {% endfor %}
+                        {% endif %}
+                        <th class="text-center bg-light" style="font-size: 0.75rem;">Komún</th>
+                        <th class="text-center bg-light" style="font-size: 0.75rem;">Esp.</th>
+                        <th class="text-center bg-light" style="font-size: 0.75rem;">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student_id, data in grades_by_student.items %}
+                    <tr>
+                        <td class="text-center">{{ forloop.counter }}</td>
+                        <td>{{ data.info.estudante.emis }}</td>
+                        <td>
+                            <a href="{% url 'estudante_valor_detail' data.info.estudante_classe.pk %}" class="text-decoration-none">
+                                {{ data.info.estudante.nome }}
+                            </a>
+                        </td>
+                        <td class="text-center">{{ data.info.estudante_classe.classe.classe }}{{ data.info.estudante_classe.turma.turma }}</td>
+
+                        <!-- Common subjects grades -->
+                        {% if materias_common %}
+                        {% for materia in materias_common %}
+                        <td class="text-center">
+                            {% with grade=data.grades_dict|get_item:materia.id %}
+                            {% if grade %}
+                            <strong class="{% if grade.valor >= 5 %}text-success{% else %}text-danger{% endif %}">
+                                {{ grade.valor }}
+                            </strong>
+                            {% else %}
+                            <span class="text-muted">-</span>
+                            {% endif %}
+                            {% endwith %}
+                        </td>
+                        {% endfor %}
+                        {% endif %}
+
+                        <!-- Specific subjects grades -->
+                        {% if materias_specific %}
+                        {% for materia in materias_specific %}
+                        <td class="text-center">
+                            {% with grade=data.grades_dict|get_item:materia.id %}
+                            {% if grade %}
+                            <strong class="{% if grade.valor >= 5 %}text-success{% else %}text-danger{% endif %}">
+                                {{ grade.valor }}
+                            </strong>
+                            {% else %}
+                            <span class="text-muted">-</span>
+                            {% endif %}
+                            {% endwith %}
+                        </td>
+                        {% endfor %}
+                        {% endif %}
+
+                        <!-- Averages -->
+                        <td class="text-center bg-light">
+                            {% if data.common_avg %}
+                            <strong class="{% if data.common_avg >= 5 %}text-success{% else %}text-danger{% endif %}">
+                                {{ data.common_avg }}
+                            </strong>
+                            {% else %}
+                            <span class="text-muted">-</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-center bg-light">
+                            {% if data.specific_avg %}
+                            <strong class="{% if data.specific_avg >= 5 %}text-success{% else %}text-danger{% endif %}">
+                                {{ data.specific_avg }}
+                            </strong>
+                            {% else %}
+                            <span class="text-muted">-</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-center bg-warning">
+                            {% if data.total_avg %}
+                            <strong class="{% if data.total_avg >= 5 %}text-success{% else %}text-danger{% endif %}">
+                                {{ data.total_avg }}
+                            </strong>
+                            {% else %}
+                            <span class="text-muted">-</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="alert alert-warning text-center">
+                <i class="fas fa-exclamation-triangle"></i> La iha valór ba filtru ne'e.
+            </div>
+            {% endif %}
+        </div>
+        {% else %}
+        <div class="alert alert-warning">
+            <i class="fas fa-exclamation-triangle"></i> La iha Tinan Akadémiku Ativu!
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

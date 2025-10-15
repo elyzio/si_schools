@@ -1,0 +1,98 @@
+{% extends 'main/base.html' %}
+
+{% block contents %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">{{ page_title }}</h3>
+        <div class="card-tools">
+            <a href="{% url 'estudante_list' %}" class="btn btn-secondary btn-sm">
+                <i class="fas fa-arrow-left"></i> Fila ba Lista
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <!-- Student Info -->
+        <div class="alert alert-info">
+            <h5><i class="fas fa-user"></i> Informasaun Estudante</h5>
+            <p class="mb-1"><strong>Naran:</strong> {{ estudante.nome }}</p>
+            <p class="mb-1"><strong>EMIS:</strong> {{ estudante.emis }}</p>
+            <p class="mb-0"><strong>Tinan Akadémiku:</strong> {{ active_ano.ano }}</p>
+        </div>
+
+        {% if existing_assignment %}
+        <div class="alert alert-warning">
+            <i class="fas fa-info-circle"></i> Estudante ne'e iha ona inskrisaun ba tinan {{ active_ano.ano }}:
+            <strong>{{ existing_assignment.classe.classe }}{{ existing_assignment.turma.turma }}</strong> ({{ existing_assignment.departamentu.departamento }})
+        </div>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+
+            <h5 class="mb-3 mt-4">Informasaun Klase</h5>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="{{ form.departamentu.id_for_label }}">{{ form.departamentu.label }} *</label>
+                        {{ form.departamentu }}
+                        {% if form.departamentu.errors %}
+                        <div class="text-danger">{{ form.departamentu.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="{{ form.classe.id_for_label }}">{{ form.classe.label }} *</label>
+                        {{ form.classe }}
+                        {% if form.classe.errors %}
+                        <div class="text-danger">{{ form.classe.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="{{ form.turma.id_for_label }}">{{ form.turma.label }} *</label>
+                        {{ form.turma }}
+                        {% if form.turma.errors %}
+                        <div class="text-danger">{{ form.turma.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="{{ form.data_enrollment.id_for_label }}">{{ form.data_enrollment.label }} *</label>
+                        {{ form.data_enrollment }}
+                        {% if form.data_enrollment.errors %}
+                        <div class="text-danger">{{ form.data_enrollment.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group mt-4">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> {% if existing_assignment %}Atualiza{% else %}Rejista{% endif %}
+                </button>
+                <a href="{% url 'estudante_list' %}" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Kansela
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock contents %}
+
+{% block scripts %}
+<script>
+$(document).ready(function() {
+    // Set default enrollment date to today
+    if (!$('#id_data_enrollment').val()) {
+        var today = new Date().toISOString().split('T')[0];
+        $('#id_data_enrollment').val(today);
+    }
+});
+</script>
+{% endblock scripts %}

@@ -1,4 +1,5 @@
 {% load static %}
+{% load user_tags %}
 <!-- Main Sidebar Container -->
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
       <!-- Brand Logo -->
@@ -13,10 +14,20 @@
         <!-- Sidebar user (optional) -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
           <div class="image">
-            <img src="{% static 'dist/img/user2-160x160.jpg' %}" class="img-circle elevation-2" alt="User Image">
+            {% if user.is_authenticated %} 
+              {% if user.professoruser.professor.imagem %}
+                <img src="{{ user.professoruser.professor.imagem.url }}" class="img-circle elevation-2" alt="User Image">
+              {% elif user.estudante.estudante.imagem %}
+                <img src="{{ user.estudante.estudante.imagem.url }}" class="img-circle elevation-2" alt="User Image">
+              {% else %}
+                <i class="fas fa-user-circle fa-2x" style="color: #d6d8d9;"></i>
+              {% endif %}
+            {% endif %}
+              
+            <!-- <img src="{% static 'dist/img/user2-160x160.jpg' %}" class="img-circle elevation-2" alt="User Image"> -->
           </div>
           <div class="info">
-            <a href="#" class="d-block">Alexander Pierce</a>
+            <a href="#" class="d-block">{{user | upper }}</a>
           </div>
         </div>
 
@@ -25,54 +36,198 @@
           <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
             <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
-            <li class="nav-header">EXAMPLES</li>
             <li class="nav-item">
-              <a href="../gallery.html" class="nav-link">
-                <i class="nav-icon far fa-image"></i>
-                <p>
-                  Gallery
-                </p>
+              <a href="{% url 'home' %}" class="nav-link">
+                <i class="nav-icon fas fa-home"></i>
+                <p>Dashboard</p>
               </a>
             </li>
-            <li class="nav-item">
-              <a href="../kanban.html" class="nav-link">
-                <i class="nav-icon fas fa-columns"></i>
-                <p>
-                  Kanban Board
-                </p>
-              </a>
-            </li>
-            <li class="nav-item">
+
+            <li class="nav-item has-treeview">
               <a href="#" class="nav-link">
-                <i class="nav-icon far fa-envelope"></i>
+                <i class="nav-icon fas fa-chalkboard-teacher"></i>
                 <p>
-                  Mailbox
+                  Profesor
                   <i class="fas fa-angle-left right"></i>
                 </p>
               </a>
               <ul class="nav nav-treeview">
                 <li class="nav-item">
-                  <a href="../mailbox/mailbox.html" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Inbox</p>
+                  <a href="{% url 'professor_list' %}" class="nav-link">
+                    <i class="fas fa-user-tie nav-icon"></i>
+                    <p>Lista Profesor</p>
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a href="../mailbox/compose.html" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Compose</p>
+                  <a href="{% url 'professoruser_list' %}" class="nav-link">
+                    <i class="fas fa-user-shield nav-icon"></i>
+                    <p>Profesor-Uzuariu</p>
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a href="../mailbox/read-mail.html" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Read</p>
+                  <a href="{% url 'professorclasse_list' %}" class="nav-link">
+                    <i class="fas fa-school nav-icon"></i>
+                    <p>Profesor-Klase</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="{% url 'professormateria_list' %}" class="nav-link">
+                    <i class="fas fa-book nav-icon"></i>
+                    <p>Profesor-Materia</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="{% url 'professordokumentu_list' %}" class="nav-link">
+                    <i class="fas fa-file-pdf nav-icon"></i>
+                    <p>Dokumentu</p>
                   </a>
                 </li>
               </ul>
             </li>
 
+            <li class="nav-item has-treeview">
+              <a href="#" class="nav-link">
+                <i class="nav-icon fas fa-user-graduate"></i>
+                <p>
+                  Estudante
+                  <i class="fas fa-angle-left right"></i>
+                </p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="{% url 'estudante_list' %}" class="nav-link">
+                    <i class="fas fa-user-friends nav-icon"></i>
+                    <p>Lista Estudante</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="{% url 'valor_list' %}" class="nav-link">
+                    <i class="fas fa-star nav-icon"></i>
+                    <p>Horariu Exame</p>
+                  </a>
+                </li>
+                
+              </ul>
+            </li>
 
+            <li class="nav-item has-treeview">
+              <a href="#" class="nav-link">
+                <i class="nav-icon fas fa-calendar-alt"></i>
+                <p>
+                  Horariu
+                  <i class="fas fa-angle-left right"></i>
+                </p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="{% url 'horariu_list' %}" class="nav-link">
+                    <i class="fas fa-calendar-week nav-icon"></i>
+                    <p>Lista Horariu</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="{% url 'horariuexame_list' %}" class="nav-link">
+                    <i class="fas fa-file-alt nav-icon"></i>
+                    <p>Horariu Exame</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="{% url 'loron_list' %}" class="nav-link">
+                    <i class="fas fa-calendar-day nav-icon"></i>
+                    <p>Loron</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="{% url 'horas_list' %}" class="nav-link">
+                    <i class="fas fa-clock nav-icon"></i>
+                    <p>Oras</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="{% url 'horariuvalor_list' %}" class="nav-link">
+                    <i class="fas fa-calendar-check nav-icon"></i>
+                    <p>Valor Horariu</p>
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+            <li class="nav-item has-treeview">
+              <a href="#" class="nav-link">
+                <i class="nav-icon fas fa-cogs"></i>
+                <p>
+                  Konfigurasaun
+                  <i class="fas fa-angle-left right"></i>
+                </p>
+              </a>
+              <ul class="nav nav-treeview">
+                <!-- Geographic Models -->
+                <li class="nav-header">GEOGRAFIA</li>
+                <li class="nav-item">
+                  <a href="{% url 'distrito_list' %}" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Distrito</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="{% url 'subdistrito_list' %}" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Subdistrito</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="{% url 'suco_list' %}" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Suco</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="{% url 'aldeia_list' %}" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Aldeia</p>
+                  </a>
+                </li>
+
+                <!-- Academic Models -->
+                <li class="nav-header">AKADEMIKU</li>
+                <li class="nav-item">
+                  <a href="{% url 'ano_list' %}" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Ano Akademiku</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="{% url 'departamentu_list' %}" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Departmento</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="{% url 'classe_list' %}" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Klase</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="{% url 'turma_list' %}" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Turma</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="{% url 'periodo_list' %}" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Periodo</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="{% url 'materia_list' %}" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Disciplina</p>
+                  </a>
+                </li>
+              </ul>
+            </li>
 
           </ul>
         </nav>

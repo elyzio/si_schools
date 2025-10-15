@@ -31,8 +31,8 @@ class ProfessorUserAdmin(admin.ModelAdmin):
 
 @admin.register(ProfessorMateria)
 class ProfessorMateriaAdmin(admin.ModelAdmin):
-    list_display = ('get_professor_nome', 'get_professor_numero', 'materia', 'classe', 'turma', 'is_active')
-    list_filter = ('materia', 'classe', 'turma', 'is_active')
+    list_display = ('get_professor_nome', 'get_professor_numero', 'materia', 'classe', 'is_active')
+    list_filter = ('materia', 'classe', 'is_active')
     search_fields = ('professor__nome', 'professor__numero_funcionario', 'materia__materia', 'materia__codigo')
     ordering = ('professor__nome', 'materia__codigo')
 
@@ -46,10 +46,10 @@ class ProfessorMateriaAdmin(admin.ModelAdmin):
 
 @admin.register(ProfessorClasse)
 class ProfessorClasseAdmin(admin.ModelAdmin):
-    list_display = ('get_professor_nome', 'get_professor_numero', 'ano', 'departamentu', 'classe', 'turma', 'is_class_teacher')
-    list_filter = ('ano', 'departamentu', 'classe', 'turma', 'is_class_teacher')
+    list_display = ('get_professor_nome', 'get_professor_numero', 'ano', 'departamentu', 'classe', 'is_class_teacher')
+    list_filter = ('ano', 'departamentu', 'classe', 'is_class_teacher')
     search_fields = ('professor__nome', 'professor__numero_funcionario')
-    ordering = ('ano__ano', 'departamentu__departamento', 'classe__classe', 'turma__turma', 'professor__nome')
+    ordering = ('ano__ano', 'departamentu__departamentu', 'classe__classe', 'professor__nome')
 
     def get_professor_nome(self, obj):
         return obj.professor.nome

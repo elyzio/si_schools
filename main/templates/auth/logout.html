@@ -1,0 +1,15 @@
+{% extends 'auth/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block extra_css %}
+<!-- <link rel="stylesheet" href="{% static 'css/login.css' %}"> -->
+{% endblock extra_css %}
+{% block contents %}
+
+<p class="login-box-msg ext-dark">Susesu ona Log Out husi Sistema</p>
+<p class="login-box-msg ext-dark">Hakarak atu Login fila fali</p>
+<div>
+  <a href="{% url 'login' %}" class="btn btn-primary btn-block">Login</a>
+</div>
+
+{% endblock contents %}

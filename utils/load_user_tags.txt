@@ -1,0 +1,24 @@
+{% load user_tags %}
+
+{# Get user role #}
+{% user_group request.user as role %}
+{% if role == 'admin' %}
+    <!-- Admin navigation -->
+{% elif role == 'director' %}
+    <!-- Director navigation -->
+{% elif role == 'professor' %}
+    <!-- Professor navigation -->
+{% elif role == 'estudante' %}
+    <!-- Estudante navigation -->
+{% endif %}
+
+{# Or check specific group #}
+{% if request.user|has_group:"Admin" %}
+    <!-- Admin only content -->
+{% endif %}
+
+{# Or use helper tags #}
+{% is_admin request.user as user_is_admin %}
+{% if user_is_admin %}
+    <!-- Admin content -->
+{% endif %}

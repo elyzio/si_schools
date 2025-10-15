@@ -41,7 +41,7 @@ class Professor(PersonInfo):
     data_contratacao = models.DateField(null=True, blank=True)
     is_active = models.BooleanField(default=True)
     estadu_civil = models.CharField(max_length=20, choices=CIVIL_STATUS_CHOICES, blank=True)
-    email = models.EmailField(blank=True)
+    email = models.EmailField(null=True, blank=True)
     imagem = models.ImageField(upload_to=img_prof, null=True, blank=True)
     
     def __str__(self):
@@ -65,31 +65,29 @@ class ProfessorClasse(models.Model):
     ano = models.ForeignKey(Ano, on_delete=models.CASCADE)
     departamentu = models.ForeignKey(Departamentu, on_delete=models.CASCADE)
     classe = models.ForeignKey(Classe, on_delete=models.CASCADE)
-    turma = models.ForeignKey(Turma, on_delete=models.CASCADE)
     is_class_teacher = models.BooleanField(default=False, help_text="Profesor ida-ne'e maka profesor prinsipal klase nian?")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
+
     def __str__(self):
-        return f"{self.professor.nome} - {self.classe.classe}{self.turma.turma} ({self.ano.ano})"
-    
+        return f"{self.professor.nome} - {self.classe.classe} ({self.ano.ano})"
+
     class Meta:
-        unique_together = ['professor', 'ano', 'classe', 'turma']
+        unique_together = ['professor', 'ano', 'classe']
 
 class ProfessorMateria(models.Model):
     professor = models.ForeignKey(Professor, on_delete=models.CASCADE)
     materia = models.ForeignKey(Materia, on_delete=models.CASCADE)
     classe = models.ForeignKey(Classe, on_delete=models.CASCADE)
-    turma = models.ForeignKey(Turma, on_delete=models.CASCADE)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
+
     def __str__(self):
-        return f"{self.professor.nome} - {self.materia.materia} ({self.classe.classe}{self.turma.turma})"
-    
+        return f"{self.professor.nome} - {self.materia.materia} ({self.classe.classe})"
+
     class Meta:
-        unique_together = ['professor', 'materia', 'classe', 'turma']
+        unique_together = ['professor', 'materia', 'classe']
         verbose_name = "Professor da Materia"
         verbose_name_plural = "Professores da Materia"
 
@@ -106,7 +104,7 @@ class ProfessorDokumentu(models.Model):
     professor = models.ForeignKey(Professor, on_delete=models.CASCADE)
     tipo_dokumentu = models.CharField(max_length=20, choices=TIPO_DOKUMENTU_CHOICES)
     file = models.FileField(upload_to=docs_prof, null=True, blank=True, validators=[FileExtensionValidator(allowed_extensions=['pdf'])])
-    obs = models.TextField(blank=True)
+    obs = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     

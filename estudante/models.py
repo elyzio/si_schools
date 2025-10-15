@@ -17,7 +17,7 @@ class Estudante(PersonInfo):
     is_active = models.BooleanField(default=True)
     is_transfer = models.BooleanField(default=False)
     is_alumni = models.BooleanField(default=False)
-    data_matricula = models.DateField(default=timezone.now)
+    data_matricula = models.DateField(blank=True, null=True, help_text="Data Matrikula")
     imagem = models.ImageField(upload_to=img_est, null=True, blank=True)
     
     def __str__(self):

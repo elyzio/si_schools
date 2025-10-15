@@ -1,0 +1,13 @@
+{% extends 'main/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block contents %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">{{ page_title }}</h3>
+    </div>
+    <div class="card-body">
+        {% crispy form %}
+    </div>
+</div>
+{% endblock contents %}

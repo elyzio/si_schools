@@ -1,0 +1,414 @@
+{% extends 'main/base.html' %}
+
+{% block contents %}
+<div class="row">
+    <div class="col-md-4">
+        <!-- Profile Image -->
+        <div class="card card-primary card-outline">
+            <div class="card-body box-profile">
+                <div class="text-center">
+                    {% if estudante.imagem %}
+                    <img class="profile-user-img img-fluid img-circle" src="{{ estudante.imagem.url }}" alt="Foto estudante">
+                    {% else %}
+                    <img class="profile-user-img img-fluid img-circle" src="https://via.placeholder.com/150" alt="Foto estudante">
+                    {% endif %}
+                </div>
+
+                <h3 class="profile-username text-center">{{ estudante.nome }}</h3>
+                <p class="text-muted text-center">{{ estudante.emis }}</p>
+
+                <ul class="list-group list-group-unbordered mb-3">
+                    <li class="list-group-item">
+                        <b>Núm. Estudante</b> <a class="float-right">{{ estudante.numero_estudante|default:"-" }}</a>
+                    </li>
+                    <li class="list-group-item">
+                        <b>Seksu</b> <a class="float-right">{{ estudante.get_sexu_display }}</a>
+                    </li>
+                    <li class="list-group-item">
+                        <b>Estadu</b>
+                        <div class="float-right">
+                            {% if estudante.is_active %}
+                            <span class="badge badge-success">Ativu</span>
+                            {% else %}
+                            <span class="badge badge-secondary">La Ativu</span>
+                            {% endif %}
+                        </div>
+                    </li>
+                </ul>
+
+                <a href="{% url 'estudante_update' estudante.pk %}" class="btn btn-primary btn-block"><b>Hadia Perfil</b></a>
+                {% if not estudante.is_transfer %}
+                <a href="{% url 'transfer_create' estudante.pk %}" class="btn btn-warning btn-block"><b><i class="fas fa-exchange-alt"></i> Transfere Estudante</b></a>
+                {% else %}
+                <div class="alert alert-warning mt-2 text-center">
+                    <i class="fas fa-exchange-alt"></i> Estudante Transfere
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- User Account Info -->
+        {% if estudante_user %}
+        <div class="card card-primary">
+            <div class="card-header">
+                <h3 class="card-title">Konta Uzuáriu</h3>
+            </div>
+            <div class="card-body">
+                <strong><i class="fas fa-user mr-1"></i> Username</strong>
+                <p class="text-muted">{{ estudante_user.user.username }}</p>
+                <hr>
+                <strong><i class="fas fa-calendar mr-1"></i> Konta Kria Iha</strong>
+                <p class="text-muted">{{ estudante_user.created_at|date:"d/m/Y H:i" }}</p>
+            </div>
+        </div>
+        {% else %}
+        <div class="card card-warning">
+            <div class="card-header">
+                <h3 class="card-title">Konta Uzuáriu</h3>
+            </div>
+            <div class="card-body">
+                <p class="text-warning">Konta uzuáriu seidauk kria ba estudante ne'e.</p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Informasaun Estudante</h3>
+                <div class="card-tools">
+                    <a href="{% url 'estudante_list' %}" class="btn btn-secondary btn-sm">
+                        <i class="fas fa-arrow-left"></i> Fila ba Lista
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="tab-content">
+                    <div class="active tab-pane" id="activity">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong><i class="fas fa-id-card mr-1"></i> EMIS</strong>
+                                <p class="text-muted">{{ estudante.emis }}</p>
+                                <hr>
+
+                                <strong><i class="fas fa-birthday-cake mr-1"></i> Data Moris</strong>
+                                <p class="text-muted">{{ estudante.data_moris|date:"d/m/Y" }}</p>
+                                <hr>
+
+                                <strong><i class="fas fa-map-marker-alt mr-1"></i> Fatin Moris</strong>
+                                <p class="text-muted">{{ estudante.fatin_moris }}</p>
+                                <hr>
+
+                                <strong><i class="fas fa-flag mr-1"></i> Nasionalidade</strong>
+                                <p class="text-muted">{{ estudante.nacionalidade }}</p>
+                                <hr>
+
+                                <strong><i class="fas fa-phone mr-1"></i> Kontaktu</strong>
+                                <p class="text-muted">{{ estudante.kontatu|default:"-" }}</p>
+                            </div>
+
+                            <div class="col-md-6">
+                                <strong><i class="fas fa-calendar-check mr-1"></i> Data Matríkula</strong>
+                                <p class="text-muted">{{ estudante.data_matricula|date:"d/m/Y"|default:"-" }}</p>
+                                <hr>
+
+                                <strong><i class="fas fa-home mr-1"></i> Enderesu</strong>
+                                <p class="text-muted">
+                                    {{ estudante.hela_fatin|default:"-" }}<br>
+                                    Aldeia: {{ estudante.aldeia.nome }}<br>
+                                    Suco: {{ estudante.suco.nome }}<br>
+                                    Subdistritu: {{ estudante.subdistrito.nome }}<br>
+                                    Distritu: {{ estudante.distrito.nome }}
+                                </p>
+                                <hr>
+
+                                <strong><i class="fas fa-info-circle mr-1"></i> Estadu Adisionál</strong>
+                                <p class="text-muted">
+                                    {% if estudante.is_transfer %}
+                                    <span class="badge badge-warning">Estudante Transfere</span><br>
+                                    {% endif %}
+                                    {% if estudante.is_alumni %}
+                                    <span class="badge badge-info">Alumni</span><br>
+                                    {% endif %}
+                                    {% if not estudante.is_transfer and not estudante.is_alumni %}
+                                    -
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Parent/Guardian Information Card -->
+        <div class="card card-success mt-3">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fas fa-users mr-1"></i> Encaregadu Edukasaun</h3>
+                <div class="card-tools">
+                    <a href="{% url 'encarregadu_create' estudante.pk %}" class="btn btn-primary btn-sm">
+                        <i class="fas fa-plus"></i> Aumenta Encaregadu
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                {% if encarregadu_list %}
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Naran</th>
+                                <th>Relasaun</th>
+                                <th>Kontatu</th>
+                                <th>Email</th>
+                                <th>Prinsipál</th>
+                                <th>Asaun</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for encarregadu in encarregadu_list %}
+                            <tr>
+                                <td>{{ encarregadu.encarregadu }}</td>
+                                <td>{{ encarregadu.get_relasaun_display }}</td>
+                                <td>{{ encarregadu.no_kontatu }}</td>
+                                <td>{{ encarregadu.email|default:"-" }}</td>
+                                <td>
+                                    {% if encarregadu.is_primary %}
+                                    <span class="badge badge-success">Loos</span>
+                                    {% else %}
+                                    <span class="badge badge-secondary">Lae</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <a href="{% url 'encarregadu_update' encarregadu.pk %}" class="btn btn-info" title="Hadia">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <button type="button" class="btn btn-danger" onclick="confirmDeleteEncarregadu({{ encarregadu.pk }}, '{{ encarregadu.encarregadu }}')" title="Hamos">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted text-center">Dadus encaregadu edukasaun la iha</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Document Information Card -->
+        <div class="card card-info mt-3">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fas fa-file-pdf mr-1"></i> Dokumentu Estudante</h3>
+                <div class="card-tools">
+                    <a href="{% url 'dokumentu_create' estudante.pk %}" class="btn btn-primary btn-sm">
+                        <i class="fas fa-plus"></i> Aumenta Dokumentu
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                {% if dokumentu_list %}
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Tipu Dokumentu</th>
+                                <th>File</th>
+                                <th>Observasaun</th>
+                                <th>Data Upload</th>
+                                <th>Asaun</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for dokumentu in dokumentu_list %}
+                            <tr>
+                                <td>{{ dokumentu.get_tipo_dokumentu_display }}</td>
+                                <td>
+                                    {% if dokumentu.file %}
+                                    <a href="{{ dokumentu.file.url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-download"></i> Download
+                                    </a>
+                                    {% else %}
+                                    <span class="text-muted">-</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ dokumentu.obs|default:"-"|truncatewords:10 }}</td>
+                                <td>{{ dokumentu.created_at|date:"d/m/Y" }}</td>
+                                <td>
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <a href="{% url 'dokumentu_update' dokumentu.pk %}" class="btn btn-info" title="Hadia">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <button type="button" class="btn btn-danger" onclick="confirmDeleteDokumentu({{ dokumentu.pk }}, '{{ dokumentu.get_tipo_dokumentu_display }}')" title="Hamos">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted text-center">Dadus dokumentu la iha</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Transfer Information Card -->
+        <div class="card card-warning mt-3">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fas fa-exchange-alt mr-1"></i> Istória Transferénsia</h3>
+                {% if not estudante.is_transfer %}
+                <div class="card-tools">
+                    <a href="{% url 'transfer_create' estudante.pk %}" class="btn btn-primary btn-sm">
+                        <i class="fas fa-plus"></i> Rejista Transferénsia
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+            <div class="card-body">
+                {% if transfer_list %}
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Husi Eskola</th>
+                                <th>Ba Eskola</th>
+                                <th>Data Transfere</th>
+                                <th>Data Simu</th>
+                                <th>Observasaun</th>
+                                <th>Asaun</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for transfer in transfer_list %}
+                            <tr>
+                                <td>{{ transfer.from_eskola }}</td>
+                                <td>{{ transfer.ba_eskola }}</td>
+                                <td>{{ transfer.data_transfer|date:"d/m/Y" }}</td>
+                                <td>{{ transfer.data_aseita|date:"d/m/Y"|default:"-" }}</td>
+                                <td>{{ transfer.obs|default:"-"|truncatewords:10 }}</td>
+                                <td>
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <a href="{% url 'transfer_update' transfer.pk %}" class="btn btn-info" title="Hadia">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <button type="button" class="btn btn-danger" onclick="confirmDeleteTransfer({{ transfer.pk }}, '{{ transfer.from_eskola }} → {{ transfer.ba_eskola }}')" title="Hamos">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted text-center">Dadus transferénsia la iha</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Encarregadu Confirmation Modal -->
+<div class="modal fade" id="deleteEncarregaduModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Konfirma Hamoos</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Ita boot hakarak hamoos encaregadu "<span id="deleteEncarregaduName"></span>"?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Kansela</button>
+                <form method="post" id="deleteEncarregaduForm" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Hamoos</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Dokumentu Confirmation Modal -->
+<div class="modal fade" id="deleteDokumentuModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Konfirma Hamoos</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Ita boot hakarak hamoos dokumentu "<span id="deleteDokumentuName"></span>"?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Kansela</button>
+                <form method="post" id="deleteDokumentuForm" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Hamoos</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Transfer Confirmation Modal -->
+<div class="modal fade" id="deleteTransferModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Konfirma Hamoos</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Ita boot hakarak hamoos transferénsia "<span id="deleteTransferName"></span>"?
+                <br><small class="text-muted">Se transferénsia ne'e maka transfere SAI husi eskola, estudante sei ativu fali.</small>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Kansela</button>
+                <form method="post" id="deleteTransferForm" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Hamoos</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock contents %}
+
+{% block scripts %}
+<script>
+function confirmDeleteEncarregadu(id, name) {
+    document.getElementById('deleteEncarregaduName').textContent = name;
+    document.getElementById('deleteEncarregaduForm').action = "{% url 'encarregadu_delete' 0 %}".replace('0', id);
+    $('#deleteEncarregaduModal').modal('show');
+}
+
+function confirmDeleteDokumentu(id, name) {
+    document.getElementById('deleteDokumentuName').textContent = name;
+    document.getElementById('deleteDokumentuForm').action = "{% url 'dokumentu_delete' 0 %}".replace('0', id);
+    $('#deleteDokumentuModal').modal('show');
+}
+
+function confirmDeleteTransfer(id, name) {
+    document.getElementById('deleteTransferName').textContent = name;
+    document.getElementById('deleteTransferForm').action = "{% url 'transfer_delete' 0 %}".replace('0', id);
+    $('#deleteTransferModal').modal('show');
+}
+</script>
+{% endblock scripts %}

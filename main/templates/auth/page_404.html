@@ -1,0 +1,61 @@
+{% extends 'auth/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/login.css' %}">
+{% endblock extra_css %}
+
+{% block contents %}
+<div class="login-page-wrapper container-fluid">
+  <!-- Left side with image and branding -->
+  <div class="login-left-side">
+    <div class="login-background-overlay"></div>
+    <div class="login-branding">
+      <img src="{% static 'img/logo-M_Edu.webp' %}" alt="School Logo" class="login-logo-img">
+      <h1 class="login-title">SIA SCHOOLS</h1>
+      <p class="login-subtitle">Sistema de Informação Académica</p>
+      <div class="login-decorative-elements">
+        <div class="floating-element element-1"></div>
+        <div class="floating-element element-2"></div>
+        <div class="floating-element element-3"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right side with 404 message -->
+  <div class="login-right-side">
+    <div class="login-form-container">
+      <div class="error-content">
+        <div class="error-number">404</div>
+        <div class="error-icon">
+          <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <h2 class="error-title">Oops! Page Not Found</h2>
+        <p class="error-message">
+          The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.
+        </p>
+
+        <div class="error-actions">
+          <a href="{% url 'home' %}" class="btn-modern-signin">
+            <span class="btn-text">Back to Home</span>
+            <i class="fas fa-home btn-icon"></i>
+          </a>
+
+          <div class="error-links">
+            <a href="{% url 'login' %}" class="error-link">
+              <i class="fas fa-sign-in-alt"></i> Go to Login
+            </a>
+            <a href="javascript:history.back()" class="error-link">
+              <i class="fas fa-arrow-left"></i> Go Back
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="login-footer">
+        <p class="copyright-text">© 2024 SIA Schools. All rights reserved.</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock contents %}

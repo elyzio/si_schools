@@ -1,0 +1,75 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block contents %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">{{ title }}</h3>
+        <div class="card-tools">
+            <a href="{% url 'horas_create' %}" class="btn btn-primary btn-sm">
+                <i class="fas fa-plus"></i> Aumenta
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        {% if object_list %}
+        <table id="dataTable" class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Oras Hahu</th>
+                    <th>Oras Remata</th>
+                    <th>Observasaun</th>
+                    <th>Aksaun</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for horas in object_list %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ horas.horas_hahu }}</td>
+                    <td>{{ horas.horas_termina }}</td>
+                    <td>{{ horas.obs|default:"-" }}</td>
+                    <td>
+                        <!-- <a href="{% url 'horas_detail' horas.pk %}" class="btn btn-info btn-sm">
+                            <i class="fas fa-eye"></i> Haree -->
+                        </a>
+                        <a href="{% url 'horas_update' horas.pk %}" class="btn btn-warning btn-sm">
+                            <i class="fas fa-edit"></i> Hadia
+                        </a>
+                        <a href="{% url 'horas_delete' horas.pk %}" class="btn btn-danger btn-sm">
+                            <i class="fas fa-trash"></i> Hamos
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="text-center">Dadus seidauk iha</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function() {
+        $('#dataTable').DataTable({
+            "language": {
+                "search": "Buka:",
+                "lengthMenu": "Hatudu _MENU_ dadus",
+                "info": "Hatudu _START_ to _END_ husi _TOTAL_ dadus",
+                "infoEmpty": "Dadus seidauk iha",
+                "infoFiltered": "(filtered husi _MAX_ total dadus)",
+                "paginate": {
+                    "first": "Uluk",
+                    "last": "Ikus",
+                    "next": "Oin",
+                    "previous": "Fila"
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}

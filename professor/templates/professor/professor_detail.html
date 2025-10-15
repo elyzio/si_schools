@@ -1,0 +1,262 @@
+{% extends 'main/base.html' %}
+
+{% block contents %}
+<div class="row">
+    <!-- Professor Information -->
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-user"></i> {{ professor.nome }}
+                </h3>
+                <div class="card-tools">
+                    <a href="{% url 'professor_update' professor.pk %}" class="btn btn-primary btn-sm">
+                        <i class="fas fa-edit"></i> Hadia
+                    </a>
+                    <a href="{% url 'professor_delete' professor.pk %}" class="btn btn-danger btn-sm">
+                        <i class="fas fa-trash"></i> Hamos
+                    </a>
+                    <a href="{% url 'professor_list' %}" class="btn btn-secondary btn-sm">
+                        <i class="fas fa-arrow-left"></i> Fila ba Lista
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5 class="text-primary">Informasaun Pesoal</h5>
+                        <table class="table table-sm">
+                            <tr>
+                                <td><strong>Naran:</strong></td>
+                                <td>{{ professor.nome }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Sexu:</strong></td>
+                                <td>{{ professor.get_sexu_display }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Data Moris:</strong></td>
+                                <td>{{ professor.data_moris|date:"d/m/Y" }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Fatin Moris:</strong></td>
+                                <td>{{ professor.fatin_moris }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Nasionalidade:</strong></td>
+                                <td>{{ professor.nacionalidade }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Estadu Sivil:</strong></td>
+                                <td>{{ professor.get_estadu_civil_display|default:"-" }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <h5 class="text-primary">Informasaun Kontaktu</h5>
+                        <table class="table table-sm">
+                            <tr>
+                                <td><strong>Email:</strong></td>
+                                <td>{{ professor.email|default:"-" }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Telefone:</strong></td>
+                                <td>{{ professor.kontatu|default:"-" }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Enderesu:</strong></td>
+                                <td>{{ professor.get_full_address }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <hr>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5 class="text-primary">Informasaun Profesional</h5>
+                        <table class="table table-sm">
+                            <tr>
+                                <td><strong>Numeru Funsionariu:</strong></td>
+                                <td>{{ professor.numero_funcionario|default:"-" }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Estadu:</strong></td>
+                                <td>
+                                    <span class="badge badge-info">{{ professor.get_estadu_display }}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Data Kontrata:</strong></td>
+                                <td>{{ professor.data_contratacao|date:"d/m/Y"|default:"-" }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Status:</strong></td>
+                                <td>
+                                    {% if professor.is_active %}
+                                        <span class="badge badge-success">Ativu</span>
+                                    {% else %}
+                                        <span class="badge badge-secondary">La Ativu</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <h5 class="text-primary">Formasaun Akademiku</h5>
+                        <table class="table table-sm">
+                            <tr>
+                                <td><strong>Nivel Akademiku:</strong></td>
+                                <td>{{ professor.get_nivel_akademiku_display }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Grau Akademiku:</strong></td>
+                                <td>{{ professor.grau_akademiku|default:"-" }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Classes Assigned -->
+        {% if professor_classes %}
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-chalkboard-teacher"></i> Klase sira ne'ebe Atribui
+                </h3>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Tinan</th>
+                            <th>Departamentu</th>
+                            <th>Klase</th>
+                            <th>Profesor Prinsipal</th>
+                            <th>Data Atribuisaun</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for pc in professor_classes %}
+                        <tr>
+                            <td>{{ pc.ano.ano }}</td>
+                            <td>{{ pc.departamentu.sigla }}</td>
+                            <td>{{ pc.classe.classe }}</td>
+                            <td>
+                                {% if pc.is_class_teacher %}
+                                    <span class="badge badge-warning">Loos</span>
+                                {% else %}
+                                    <span class="badge badge-secondary">Lae</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ pc.created_at|date:"d/m/Y" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- User Account Information -->
+    <div class="col-md-4">
+        {% if user %}
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-user-lock"></i> Konta Uzuariu
+                </h3>
+            </div>
+            <div class="card-body">
+                <table class="table table-sm">
+                    <tr>
+                        <td><strong>Naran Uzuariu:</strong></td>
+                        <td>{{ user.username }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Email:</strong></td>
+                        <td>{{ user.email|default:"-" }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Grupu:</strong></td>
+                        <td>
+                            {% for group in user.groups.all %}
+                                <span class="badge badge-primary">{{ group.name }}</span>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Ativu:</strong></td>
+                        <td>
+                            {% if user.is_active %}
+                                <span class="badge badge-success">Loos</span>
+                            {% else %}
+                                <span class="badge badge-danger">Lae</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Login Ikus:</strong></td>
+                        <td>{{ user.last_login|date:"d/m/Y H:i"|default:"Nunka" }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Data Kria:</strong></td>
+                        <td>{{ user.date_joined|date:"d/m/Y" }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        {% else %}
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-user-times"></i> Konta Uzuariu
+                </h3>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Profesor ne'e seidauk iha konta uzuariu.
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Professor Statistics -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-chart-bar"></i> Estatistika
+                </h3>
+            </div>
+            <div class="card-body">
+                <div class="info-box">
+                    <span class="info-box-icon bg-info"><i class="fas fa-chalkboard"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">Klase</span>
+                        <span class="info-box-number">{{ professor_classes.count }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Image -->
+        {% if professor.imagem %}
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-image"></i> Foto
+                </h3>
+            </div>
+            <div class="card-body text-center">
+                <img src="{{ professor.imagem.url }}" alt="{{ professor.nome }}" class="img-fluid rounded">
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock contents %}

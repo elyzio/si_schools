@@ -1,0 +1,47 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Detalle Horariu Valor{% endblock %}
+
+{% block contents %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Detalle Horariu Valor</h3>
+                    <div class="card-tools">
+                        <a href="{% url 'horariuvalor_update' horariuvalor.pk %}" class="btn btn-warning btn-sm">
+                            <i class="fas fa-edit"></i> Hadia
+                        </a>
+                        <a href="{% url 'horariuvalor_delete' horariuvalor.pk %}" class="btn btn-danger btn-sm">
+                            <i class="fas fa-trash"></i> Hamos
+                        </a>
+                        <a href="{% url 'horariuvalor_list' %}" class="btn btn-secondary btn-sm">
+                            <i class="fas fa-arrow-left"></i> Fila
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <th width="30%">Data Hahu</th>
+                                <td>{{ horariuvalor.data_hahu|date:"d/m/Y H:i" }}</td>
+                            </tr>
+                            <tr>
+                                <th>Data Remata</th>
+                                <td>{{ horariuvalor.data_termina|date:"d/m/Y H:i" }}</td>
+                            </tr>
+                            <tr>
+                                <th>Observasaun</th>
+                                <td>{{ horariuvalor.obs|default:"-" }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends 'main/base.html' %}
+
+{% block contents %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">{{ page_title }}</h3>
+        <div class="card-tools">
+            <a href="{% url 'aldeia_list' %}" class="btn btn-secondary btn-sm">
+                <i class="fas fa-arrow-left"></i> Back to List
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="nome">Nome *</label>
+                <input type="text" class="form-control" id="nome" name="nome" value="{{ aldeia.nome|default:'' }}" required>
+            </div>
+            <div class="form-group">
+                <label for="suco">Suco *</label>
+                <select class="form-control" id="suco" name="suco" required>
+                    <option value="">Select Suco</option>
+                    {% for suco in sucos %}
+                    <option value="{{ suco.pk }}" {% if aldeia.suco.pk == suco.pk %}selected{% endif %}>{{ suco.nome }} ({{ suco.subdistrito.nome }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Save
+                </button>
+                <a href="{% url 'aldeia_list' %}" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock contents %}

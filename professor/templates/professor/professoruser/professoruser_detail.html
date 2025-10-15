@@ -1,0 +1,49 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block contents %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">{{ page_title }}</h3>
+        <div class="card-tools">
+            <a href="{% url 'professoruser_update' professoruser.pk %}" class="btn btn-warning btn-sm">
+                <i class="fas fa-edit"></i> Hadia
+            </a>
+            <a href="{% url 'professoruser_delete' professoruser.pk %}" class="btn btn-danger btn-sm">
+                <i class="fas fa-trash"></i> Hamos
+            </a>
+            <a href="{% url 'professoruser_list' %}" class="btn btn-secondary btn-sm">
+                <i class="fas fa-arrow-left"></i> Fila
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered">
+            <tr>
+                <th width="30%">Profesor</th>
+                <td>{{ professoruser.professor.nome }}</td>
+            </tr>
+            <tr>
+                <th>Numeru Funsionariu</th>
+                <td>{{ professoruser.professor.numero_funcionario|default:"-" }}</td>
+            </tr>
+            <tr>
+                <th>Uzuariu</th>
+                <td>{{ professoruser.user.get_full_name|default:"-" }}</td>
+            </tr>
+            <tr>
+                <th>Username</th>
+                <td>{{ professoruser.user.username }}</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>{{ professoruser.user.email|default:"-" }}</td>
+            </tr>
+            <tr>
+                <th>Data Kria</th>
+                <td>{{ professoruser.created_at|date:"d/m/Y H:i:s" }}</td>
+            </tr>
+        </table>
+    </div>
+</div>
+{% endblock contents %}

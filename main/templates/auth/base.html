@@ -1,0 +1,194 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AdminLTE 3 | Log in</title>
+
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="{% static 'plugins/fontawesome-free/css/all.min.css' %}">
+  <!-- icheck bootstrap -->
+  <link rel="stylesheet" href="{% static 'plugins/icheck-bootstrap/icheck-bootstrap.min.css' %}">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{% static 'dist/css/adminlte.min.css' %}">
+  <!-- <link rel="stylesheet" href="{% static 'estudante/dist/css/adminlte.min.css' %}"> -->
+
+
+  {% block extra_css %}{% endblock extra_css %}
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    /* Main container handles gradient + image */
+    .main-rect {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: space-between;
+      align-items: stretch;
+      font-family: Arial, sans-serif;
+      color: white;
+      /* background: linear-gradient(
+        to bottom,
+        rgba(0, 123, 255, 0.8),
+        rgba(0, 0, 0, 0.8)
+      ),
+      url('{% static "img/logo-M_Edu.webp" %}')
+      center/cover no-repeat; */
+      background: linear-gradient(to bottom,
+          rgba(255, 255, 255, 0.2),
+          rgba(0, 0, 0, 0.5)),
+        linear-gradient(to bottom,
+          #6ec1ff, #003366);
+    }
+
+    /* LEFT SIDE */
+    .left-side {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      /* center horizontally */
+      align-items: center;
+      /* center vertically */
+      padding: 40px;
+      text-align: center;
+      background: transparent;
+      /* gradient handled by main-rect */
+      color: white;
+    }
+
+    .left-content {
+      display: flex;
+      flex-direction: column;
+      /* stack image and text vertically */
+      align-items: center;
+    }
+
+    .left-content img.logo {
+      width: 300px;
+      /* adjust size as needed */
+      height: auto;
+      margin-bottom: 20px;
+      /* space between image and text */
+    }
+
+    .left-content p {
+      font-size: 1.5rem;
+      max-width: 500px;
+      line-height: 1.4;
+    }
+
+    /* RIGHT SIDE */
+    .rectangle {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 20px;
+      background: transparent;
+    }
+
+    /* INNER WHITE BOX */
+    .inner-rectangle {
+      width: 100%;
+      max-width: 400px;
+      padding: 40px;
+      background-color: #fff;
+      border-radius: 20px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    .inner-rectangle form {
+      width: 100%;
+    }
+
+    .inner-rectangle .input-group {
+      display: flex;
+      width: 100%;
+      flex-wrap: nowrap;
+    }
+
+    .inner-rectangle .input-group .form-control {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .main-rect {
+        flex-direction: column;
+      }
+
+      .left-side {
+        width: 100%;
+        height: 40vh;
+        padding: 20px;
+      }
+
+      .left-content img.logo {
+        width: 120px;
+        /* smaller size on mobile */
+      }
+
+      .rectangle {
+        width: 100%;
+        padding: 20px;
+      }
+
+      .inner-rectangle {
+        width: 100%;
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+
+<body class="hold-transition">
+  <!-- <body class="hold-transition login-page"> -->
+  <div class="main-rect">
+    <div class="left-side">
+      <div class="left-content">
+        <!-- Image -->
+        <img src="{% static 'img/logo-M_Edu.webp' %}" alt="Logo" class="logo">
+        <!-- Text -->
+        <p>SISTEMA INFORMASAUN ACADEMIKA</p>
+      </div>
+    </div>
+    <div class="rectangle">
+      <div class="inner-rectangle">
+        <div class="login-box">
+          <div class="login-logo">
+            <a href="#"><b>SI SCHOOLS</b></a>
+          </div>
+          <!-- /.login-logo -->
+
+          {% block contents %}
+
+          {% endblock contents %}
+        </div>
+        <!-- /.login-box -->
+      </div>
+    </div>
+  </div>
+
+  <!-- jQuery -->
+  <script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
+  <!-- Bootstrap 4 -->
+  <script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <!-- AdminLTE App -->
+  <script src="{% static 'dist/js/adminlte.min.js' %}"></script>
+</body>
+
+</html>

@@ -1,0 +1,76 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Lista Horariu Valor{% endblock %}
+
+{% block contents %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Lista Horariu Valor</h3>
+                    <div class="card-tools">
+                        <a href="{% url 'horariuvalor_create' %}" class="btn btn-primary btn-sm">
+                            <i class="fas fa-plus"></i> Aumenta Horariu Valor
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <table id="horariuvalorTable" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Data Hahu</th>
+                                <th>Data Remata</th>
+                                <th>Observasaun</th>
+                                <th>Aksaun</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for horariuvalor in horariuvalor_list %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ horariuvalor.data_hahu|date:"d/m/Y H:i" }}</td>
+                                <td>{{ horariuvalor.data_termina|date:"d/m/Y H:i" }}</td>
+                                <td>{{ horariuvalor.obs|default:"-" }}</td>
+                                <td>
+                                    <a href="{% url 'horariuvalor_detail' horariuvalor.pk %}" class="btn btn-info btn-sm" title="Haree Detalle">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="{% url 'horariuvalor_update' horariuvalor.pk %}" class="btn btn-warning btn-sm" title="Hadia">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="{% url 'horariuvalor_delete' horariuvalor.pk %}" class="btn btn-danger btn-sm" title="Hamos">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center">Seidauk iha dadus</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function() {
+        $('#horariuvalorTable').DataTable({
+            "responsive": true,
+            "lengthChange": true,
+            "autoWidth": false,
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Portuguese.json"
+            }
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,170 @@
+{% extends 'main/base.html' %}
+
+{% block contents %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">{{ page_title }}</h3>
+            </div>
+            <div class="card-body">
+                <!-- Student Info -->
+                <div class="alert alert-info mb-3">
+                    <strong>Estudante:</strong> {{ estudante_classe.estudante.nome }} ({{ estudante_classe.estudante.emis }})<br>
+                    <strong>Klase:</strong> {{ estudante_classe.classe.classe }}{{ estudante_classe.turma.turma }} - {{ estudante_classe.departamentu.departamento }}
+                </div>
+
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="{{ form.periodo.id_for_label }}">{{ form.periodo.label }} <span class="text-danger">*</span></label>
+                                {{ form.periodo }}
+                                {% if form.periodo.errors %}
+                                <div class="text-danger">{{ form.periodo.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="{{ form.materia.id_for_label }}">{{ form.materia.label }} <span class="text-danger">*</span></label>
+                                {{ form.materia }}
+                                <small class="form-text text-muted">
+                                    Hatudu matéria komún (hotu estudante) no matéria espesífiku ({{ estudante_classe.departamentu.sigla|default:estudante_classe.departamentu.departamento }})
+                                </small>
+                                {% if form.materia.errors %}
+                                <div class="text-danger">{{ form.materia.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="{{ form.valor.id_for_label }}">{{ form.valor.label }} <span class="text-danger">*</span></label>
+                                {{ form.valor }}
+                                <small class="form-text text-muted">Valór entre 0 no 10</small>
+                                {% if form.valor.errors %}
+                                <div class="text-danger">{{ form.valor.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="{{ form.data_avaliacao.id_for_label }}">{{ form.data_avaliacao.label }} <span class="text-danger">*</span></label>
+                                {{ form.data_avaliacao }}
+                                {% if form.data_avaliacao.errors %}
+                                <div class="text-danger">{{ form.data_avaliacao.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.por_extenso.id_for_label }}">{{ form.por_extenso.label }}</label>
+                        {{ form.por_extenso }}
+                        <small class="form-text text-muted">Opsionál - Eskrita ba lia-loos valór nian</small>
+                        {% if form.por_extenso.errors %}
+                        <div class="text-danger">{{ form.por_extenso.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.obs.id_for_label }}">{{ form.obs.label }}</label>
+                        {{ form.obs }}
+                        <small class="form-text text-muted">Opsionál</small>
+                        {% if form.obs.errors %}
+                        <div class="text-danger">{{ form.obs.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group mt-3">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Rai
+                        </button>
+                        <a href="{% url 'estudante_valor_detail' estudante_classe.pk %}" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> Kansela
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Existing grades data: {periodo_id: [materia_id1, materia_id2, ...]}
+const existingGrades = {{ existing_grades_json|safe }};
+
+// Get form elements
+const periodoSelect = document.getElementById('{{ form.periodo.id_for_label }}');
+const materiaSelect = document.getElementById('{{ form.materia.id_for_label }}');
+
+// Store all original materia options
+const allMateriaOptions = Array.from(materiaSelect.options);
+
+// Function to filter materia based on selected period
+function filterMateriaByPeriod() {
+    const selectedPeriodoId = periodoSelect.value;
+
+    // Clear current materia options
+    materiaSelect.innerHTML = '';
+
+    // Get list of materia IDs that already have grades for this period
+    const existingMateriaIds = existingGrades[selectedPeriodoId] || [];
+
+    // Add back options that are not in the existing grades list
+    allMateriaOptions.forEach(option => {
+        if (option.value === '' || !existingMateriaIds.includes(parseInt(option.value))) {
+            materiaSelect.appendChild(option.cloneNode(true));
+        }
+    });
+
+    // Show message if no materias available
+    if (materiaSelect.options.length === 1) { // Only has the empty option
+        const messageOption = document.createElement('option');
+        messageOption.text = 'Matéria hotu iha valór ona ba períodu ne\'e';
+        messageOption.disabled = true;
+        materiaSelect.appendChild(messageOption);
+    }
+}
+
+// Add event listener to period select
+if (periodoSelect && !periodoSelect.disabled) {
+    periodoSelect.addEventListener('change', filterMateriaByPeriod);
+    // Filter on page load if a period is already selected
+    if (periodoSelect.value) {
+        filterMateriaByPeriod();
+    }
+}
+
+// Auto-fill "por extenso" based on numeric grade (optional functionality)
+document.getElementById('{{ form.valor.id_for_label }}').addEventListener('change', function() {
+    const valor = parseFloat(this.value);
+    const porExtenso = document.getElementById('{{ form.por_extenso.id_for_label }}');
+
+    if (!porExtenso.value && !isNaN(valor)) {
+        const extensos = {
+            0: 'Zero',
+            1: 'Um',
+            2: 'Dois',
+            3: 'Tres',
+            4: 'Quatro',
+            5: 'Cinco',
+            6: 'Seis',
+            7: 'Sete',
+            8: 'Oito',
+            9: 'Nove',
+            10: 'Dez'
+        };
+
+        if (valor % 1 === 0 && extensos[valor]) {
+            porExtenso.value = extensos[valor];
+        }
+    }
+});
+</script>
+{% endblock %}

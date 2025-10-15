@@ -1,0 +1,85 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block contents %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">{{ page_title }}</h3>
+        <div class="card-tools">
+            <a href="{% url 'professordokumentu_create' %}" class="btn btn-primary btn-sm">
+                <i class="fas fa-plus"></i> Aumenta Dokumentu
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <table id="professordokumentu-table" class="table table-bordered table-striped datatable">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Profesor</th>
+                    <th>Tipu Dokumentu</th>
+                    <th>Dokumentu</th>
+                    <th>Observasaun</th>
+                    <th>Data Upload</th>
+                    <th>Aksaun</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pd in professordokumentus %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>
+                        <a href="{% url 'professordokumentu_detail' pd.pk %}" class="text-primary">
+                            {{ pd.professor.nome }}
+                        </a>
+                    </td>
+                    <td>
+                        <span class="badge badge-info">{{ pd.get_tipo_dokumentu_display }}</span>
+                    </td>
+                    <td>
+                        {% if pd.file %}
+                            <a href="{{ pd.file.url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-file-pdf"></i> Haree PDF
+                            </a>
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    <td>{{ pd.obs|truncatewords:10|default:"-" }}</td>
+                    <td>{{ pd.created_at|date:"d/m/Y H:i" }}</td>
+                    <td>
+                        <div class="btn-group btn-group-sm" role="group">
+                            <a href="{% url 'professordokumentu_detail' pd.pk %}" class="btn btn-info">
+                                <i class="fas fa-eye"></i> Haree
+                            </a>
+                            <a href="{% url 'professordokumentu_update' pd.pk %}" class="btn btn-warning">
+                                <i class="fas fa-edit"></i> Hadia
+                            </a>
+                            <a href="{% url 'professordokumentu_delete' pd.pk %}" class="btn btn-danger">
+                                <i class="fas fa-trash"></i> Hamos
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center">Dadus seidauk iha</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock contents %}
+
+{% block scripts %}
+<script>
+$(document).ready(function() {
+    $('.datatable').DataTable({
+        "responsive": true,
+        "lengthChange": false,
+        "autoWidth": false,
+    });
+});
+</script>
+{% endblock scripts %}

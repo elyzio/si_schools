@@ -1,0 +1,106 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Lista Horariu{% endblock %}
+
+{% block contents %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Lista Horariu</h3>
+                    <div class="card-tools">
+                        <a href="{% url 'horariu_create' %}" class="btn btn-primary btn-sm">
+                            <i class="fas fa-plus"></i> Aumenta Horariu
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <table id="horariuTable" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Loron</th>
+                                <th>Oras</th>
+                                <th>Klase</th>
+                                <th>Turma</th>
+                                <th>Departamentu</th>
+                                <th>Materia</th>
+                                <th>Profesor</th>
+                                <th>Tinan Akademiku</th>
+                                <th>Ativu</th>
+                                <th>Aksaun</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for horariu in horarius %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ horariu.loron.get_loron_display }}</td>
+                                <td>{{ horariu.horas }}</td>
+                                <td>{{ horariu.classe.classe }}</td>
+                                <td>{{ horariu.turma.turma }}</td>
+                                <td>{{ horariu.departamentu.sigla }}</td>
+                                <td>{{ horariu.professor_materia.materia.materia }}</td>
+                                <td>{{ horariu.professor_materia.professor.nome }}</td>
+                                <td>{{ horariu.ano_academico.ano }}</td>
+                                <td>
+                                    {% if horariu.is_active %}
+                                        <span class="badge badge-success">Ativu</span>
+                                    {% else %}
+                                        <span class="badge badge-danger">La Ativu</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{% url 'horariu_detail' horariu.pk %}" class="btn btn-info btn-sm" title="Detallu">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="{% url 'horariu_update' horariu.pk %}" class="btn btn-warning btn-sm" title="Hadia">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="{% url 'horariu_delete' horariu.pk %}" class="btn btn-danger btn-sm" title="Hamoos">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="11" class="text-center">Laiha dadus</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function() {
+        $('#horariuTable').DataTable({
+            "responsive": true,
+            "lengthChange": true,
+            "autoWidth": false,
+            "language": {
+                "lengthMenu": "Hatudu _MENU_ rejistru kada pajina",
+                "zeroRecords": "Laiha dadus",
+                "info": "Hatudu pajina _PAGE_ husi _PAGES_",
+                "infoEmpty": "Laiha rejistru",
+                "infoFiltered": "(filtered husi _MAX_ total rejistru)",
+                "search": "Buka:",
+                "paginate": {
+                    "first": "Uluk",
+                    "last": "Ikus",
+                    "next": "Oinmai",
+                    "previous": "Fila"
+                }
+            },
+            "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+        }).buttons().container().appendTo('#horariuTable_wrapper .col-md-6:eq(0)');
+    });
+</script>
+{% endblock %}

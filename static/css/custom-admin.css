@@ -1,0 +1,144 @@
+/* Custom AdminLTE Theme Override */
+/* Change primary color scheme to match your brand */
+
+/* Main Navigation Bar */
+.main-header.navbar {
+    background-color: #2c3e50 !important; /* Dark blue-gray */
+    border-bottom: 1px solid #34495e;
+}
+
+.main-header.navbar .nav-link {
+    color: #ecf0f1 !important;
+}
+
+.main-header.navbar .nav-link:hover {
+    color: #3498db !important; /* Light blue on hover */
+}
+
+/* Sidebar */
+.main-sidebar {
+    background-color: #34495e !important; /* Darker blue-gray */
+}
+
+.sidebar-dark-primary .nav-sidebar > .nav-item > .nav-link {
+    background-color: transparent;
+    color: #ecf0f1;
+}
+
+.sidebar-dark-primary .nav-sidebar > .nav-item > .nav-link:hover {
+    background-color: #2c3e50;
+    color: #3498db;
+}
+
+.sidebar-dark-primary .nav-sidebar > .nav-item.menu-open > .nav-link,
+.sidebar-dark-primary .nav-sidebar > .nav-item > .nav-link.active {
+    background-color: #3498db !important; /* Active menu item */
+    color: #ffffff !important;
+}
+
+/* Brand Logo */
+.brand-link {
+    background-color: #2c3e50 !important;
+    color: #ecf0f1 !important;
+    border-bottom: 1px solid #34495e;
+}
+
+.brand-link:hover {
+    color: #3498db !important;
+}
+
+/* Content Header */
+.content-header {
+    background-color: #ecf0f1;
+    padding: 15px;
+    margin-bottom: 0;
+}
+
+/* Cards */
+.card {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: none;
+    border-radius: 8px;
+}
+
+.card-header {
+    background-color: #3498db;
+    color: #ffffff;
+    border-bottom: none;
+    border-radius: 8px 8px 0 0 !important;
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: #3498db;
+    border-color: #3498db;
+}
+
+.btn-primary:hover {
+    background-color: #2980b9;
+    border-color: #2980b9;
+}
+
+.btn-success {
+    background-color: #27ae60;
+    border-color: #27ae60;
+}
+
+.btn-success:hover {
+    background-color: #229954;
+    border-color: #229954;
+}
+
+/* Footer */
+.main-footer {
+    background-color: #ecf0f1;
+    border-top: 1px solid #bdc3c7;
+    color: #2c3e50;
+}
+
+/* Breadcrumbs */
+.breadcrumb {
+    background-color: transparent;
+    margin-bottom: 0;
+}
+
+.breadcrumb-item a {
+    color: #3498db;
+}
+
+.breadcrumb-item.active {
+    color: #2c3e50;
+}
+
+/* Info boxes and statistics */
+.info-box {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.info-box-icon {
+    border-radius: 8px 0 0 8px;
+}
+
+/* Small boxes */
+.small-box {
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Custom brand colors for small boxes */
+.small-box.bg-info {
+    background-color: #3498db !important;
+}
+
+.small-box.bg-success {
+    background-color: #27ae60 !important;
+}
+
+.small-box.bg-warning {
+    background-color: #f39c12 !important;
+}
+
+.small-box.bg-danger {
+    background-color: #e74c3c !important;
+}

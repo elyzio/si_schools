@@ -1,0 +1,139 @@
+{% extends 'main/base.html' %}
+
+{% block contents %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">{{ page_title }}</h3>
+        <div class="card-tools">
+            <a href="{% url 'ano_create' %}" class="btn btn-primary btn-sm">
+                <i class="fas fa-plus"></i> Add New
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <table id="ano-table" class="table table-bordered table-striped datatable">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Ano</th>
+                    <th>Status</th>
+                    <th>Created</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ano in anos %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ ano.ano }}</td>
+                    <td>
+                        {% if ano.is_active %}
+                            <span class="badge badge-success">Active</span>
+                        {% else %}
+                            <span class="badge badge-secondary">Inactive</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ ano.created_at|date:"d/m/Y" }}</td>
+                    <td>
+                        <div class="btn-group btn-group-sm" role="group">
+                            {% if not ano.is_active %}
+                                <button type="button" class="btn btn-success" onclick="confirmActivate({{ ano.pk }}, '{{ ano.ano }}')">
+                                    <i class="fas fa-check"></i> Activate
+                                </button>
+                            {% else %}
+                                <span class="btn btn-success btn-sm disabled">
+                                    <i class="fas fa-check"></i> Active
+                                </span>
+                            {% endif %}
+                            <a href="{% url 'ano_update' ano.pk %}" class="btn btn-info">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                            <button type="button" class="btn btn-danger" onclick="confirmDelete({{ ano.pk }}, '{{ ano.ano }}')">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center">No data available</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Activate Confirmation Modal -->
+<div class="modal fade" id="activateModal" tabindex="-1" role="dialog" aria-labelledby="activateModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="activateModalLabel">Confirm Activation</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to activate "<span id="activateItemName"></span>"? This will deactivate all other anos.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <form method="post" id="activateForm" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-success">Activate</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete "<span id="deleteItemName"></span>"?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <form method="post" id="deleteForm" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock contents %}
+
+{% block scripts %}
+<script>
+function confirmActivate(id, name) {
+    document.getElementById('activateItemName').textContent = name;
+    document.getElementById('activateForm').action = "{% url 'ano_toggle_active' 0 %}".replace('0', id);
+    $('#activateModal').modal('show');
+}
+
+function confirmDelete(id, name) {
+    document.getElementById('deleteItemName').textContent = name;
+    document.getElementById('deleteForm').action = "{% url 'ano_delete' 0 %}".replace('0', id);
+    $('#deleteModal').modal('show');
+}
+
+$(document).ready(function() {
+    $('.datatable').DataTable({
+        "responsive": true,
+        "lengthChange": false,
+        "autoWidth": false,
+        "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+    }).buttons().container().appendTo('#ano-table_wrapper .col-md-6:eq(0)');
+});
+</script>
+{% endblock scripts %}

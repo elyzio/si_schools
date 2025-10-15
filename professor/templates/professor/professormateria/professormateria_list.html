@@ -1,0 +1,79 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block contents %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">{{ page_title }}</h3>
+        <div class="card-tools">
+            <a href="{% url 'professormateria_create' %}" class="btn btn-primary btn-sm">
+                <i class="fas fa-plus"></i> Aumenta Materia ba Profesor
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <table id="professormateria-table" class="table table-bordered table-striped datatable">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Profesor</th>
+                    <th>Materia</th>
+                    <th>Klase</th>
+                    <th>Status</th>
+                    <th>Aksaun</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pm in professormaterias %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>
+                        <a href="{% url 'professormateria_detail' pm.pk %}" class="text-primary">
+                            {{ pm.professor.nome }}
+                        </a>
+                    </td>
+                    <td>{{ pm.materia.materia }}</td>
+                    <td>{{ pm.classe.classe }}</td>
+                    <td>
+                        {% if pm.is_active %}
+                            <span class="badge badge-success">Ativu</span>
+                        {% else %}
+                            <span class="badge badge-secondary">La Ativu</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="btn-group btn-group-sm" role="group">
+                            <a href="{% url 'professormateria_detail' pm.pk %}" class="btn btn-info">
+                                <i class="fas fa-eye"></i> Haree
+                            </a>
+                            <a href="{% url 'professormateria_update' pm.pk %}" class="btn btn-warning">
+                                <i class="fas fa-edit"></i> Hadia
+                            </a>
+                            <a href="{% url 'professormateria_delete' pm.pk %}" class="btn btn-danger">
+                                <i class="fas fa-trash"></i> Hamos
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center">Dadus seidauk iha</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock contents %}
+
+{% block scripts %}
+<script>
+$(document).ready(function() {
+    $('.datatable').DataTable({
+        "responsive": true,
+        "lengthChange": false,
+        "autoWidth": false,
+    });
+});
+</script>
+{% endblock scripts %}

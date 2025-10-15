@@ -81,7 +81,7 @@ class MateriaAdmin(admin.ModelAdmin):
 
 @admin.register(Periodo)
 class PeriodoAdmin(admin.ModelAdmin):
-    list_display = ('period', 'get_period_display', 'is_active', 'created_at')
+    list_display = ('period', 'is_active', 'created_at')
     list_filter = ('is_active', 'period')
     search_fields = ('period',)
     ordering = ('period',)

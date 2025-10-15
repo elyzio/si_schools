@@ -1,0 +1,238 @@
+{% extends 'main/base.html' %}
+
+{% block contents %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">{{ page_title }}</h3>
+        <div class="card-tools">
+            <a href="{% url 'estudante_create' %}" class="btn btn-primary btn-sm">
+                <i class="fas fa-plus"></i> Aumenta Foun
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <!-- Filter Section -->
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <form method="get" id="filterForm">
+                    <div class="form-group row">
+                        <label for="yearFilter" class="mx-2">Filtra tuir Tinan Matríkula:</label>
+                        <!-- <div class="col-sm-6"> -->
+                            <select name="year" id="yearFilter" class="form-control-sm" onchange="this.form.submit()">
+                            <option value="">Tinan Hotu</option>
+                            {% for year in available_years %}
+                            <option value="{{ year }}" {% if year|stringformat:'s' == selected_year %}selected{% endif %}>
+                                {{ year }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                        <!-- </div> -->
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Class Assignment Filter Buttons -->
+        {% if active_ano %}
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <div class="alert alert-info mb-2">
+                    <i class="fas fa-info-circle"></i> Tinan Akadémiku Ativu: <strong>{{ active_ano.ano }}</strong>
+                </div>
+                <div class="row">
+                    <h6 class="mx-2 my-1">Estudante:</h6>
+                    <div class="btn-group btn-group-sm btn-group-toggle" data-toggle="buttons">
+                        <a href="?year={{ selected_year }}&class_status=all" class="btn btn-outline-primary {% if class_filter == 'all' %}active{% endif %}">
+                            <i class="fas fa-users"></i> Hotu
+                            <span class="badge badge-light">{{ total_count }}</span>
+                        </a>
+                        <a href="?year={{ selected_year }}&class_status=assigned" class="btn btn-outline-success {% if class_filter == 'assigned' %}active{% endif %}">
+                            <i class="fas fa-user-check"></i> Klase Iha
+                            <span class="badge badge-light">{{ assigned_count }}</span>
+                        </a>
+                        <a href="?year={{ selected_year }}&class_status=not_assigned" class="btn btn-outline-warning {% if class_filter == 'not_assigned' %}active{% endif %}">
+                            <i class="fas fa-user-times"></i> Seidauk Iha Klase
+                            <span class="badge badge-light">{{ not_assigned_count }}</span>
+                        </a>
+                    </div>
+                    
+                </div>
+                
+            </div>
+        </div>
+
+        <!-- Department Filter (shown only when viewing assigned students) -->
+        {% if class_filter == 'assigned' and departments %}
+        <div class="row mb-3">
+            <div class="col-md-12 row">
+                <h6 class="mx-2 my-1">Departamentu:</h6>
+                <div class="btn-group btn-group-sm" role="group">
+                    <a href="?year={{ selected_year }}&class_status=assigned" class="btn btn-outline-secondary {% if not dept_filter %}active{% endif %}">
+                        <i class="fas fa-th-large"></i> Hotu
+                    </a>
+                    {% for dept in departments %}
+                    <a href="?year={{ selected_year }}&class_status=assigned&dept={{ dept.departamentu__id }}"
+                       class="btn btn-outline-info {% if dept_filter == dept.departamentu__id|stringformat:'s' %}active{% endif %}">
+                        {{ dept.departamentu__departamento }}
+                        {% if dept.departamentu__sigla %}({{ dept.departamentu__sigla }}){% endif %}
+                        <span class="badge badge-light">{{ dept.count }}</span>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Class Filter (shown only when department is selected) -->
+        {% if dept_filter and classes %}
+        <div class="row mb-3">
+            <div class="col-md-12 row">
+                <h6 class="mx-2 my-1">Klase:</h6>
+                <div class="btn-group btn-group-sm" role="group">
+                    <a href="?year={{ selected_year }}&class_status=assigned&dept={{ dept_filter }}" class="btn btn-outline-secondary {% if not classe_filter %}active{% endif %}">
+                        <i class="fas fa-th-large"></i> Hotu
+                    </a>
+                    {% for classe in classes %}
+                    <a href="?year={{ selected_year }}&class_status=assigned&dept={{ dept_filter }}&classe={{ classe.classe__id }}"
+                       class="btn btn-outline-success {% if classe_filter == classe.classe__id|stringformat:'s' %}active{% endif %}">
+                        {{ classe.classe__classe }}
+                        <span class="badge badge-light">{{ classe.count }}</span>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Turma Filter (shown only when class is selected) -->
+        {% if classe_filter and turmas %}
+        <div class="row mb-3">
+            <div class="col-md-12 row">
+                <h6 class="mx-2 my-1">Turma:</h6>
+                <div class="btn-group btn-group-sm" role="group">
+                    <a href="?year={{ selected_year }}&class_status=assigned&dept={{ dept_filter }}&classe={{ classe_filter }}" class="btn btn-outline-secondary {% if not turma_filter %}active{% endif %}">
+                        <i class="fas fa-th-large"></i> Hotu
+                    </a>
+                    {% for turma in turmas %}
+                    <a href="?year={{ selected_year }}&class_status=assigned&dept={{ dept_filter }}&classe={{ classe_filter }}&turma={{ turma.turma__id }}"
+                       class="btn btn-outline-warning {% if turma_filter == turma.turma__id|stringformat:'s' %}active{% endif %}">
+                        {{ turma.turma__turma }}
+                        <span class="badge badge-light">{{ turma.count }}</span>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% else %}
+        <div class="alert alert-warning">
+            <i class="fas fa-exclamation-triangle"></i> Tinan Akadémiku Ativu la iha! Favor ativa tinan akadémiku ida hodi bele filtra estudante sira tuir klase.
+        </div>
+        {% endif %}
+
+        <table id="estudante-table" class="table table-bordered table-striped datatable">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>EMIS</th>
+                    <th>Núm. Estudante</th>
+                    <th>Naran</th>
+                    <th>Seksu</th>
+                    <th>Data Matríkula</th>
+                    <th>Estadu</th>
+                    <th>Asaun</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for estudante in estudantes %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ estudante.emis }}</td>
+                    <td>{{ estudante.numero_estudante|default:"-" }}</td>
+                    <td>{{ estudante.nome }}</td>
+                    <td>{{ estudante.get_sexu_display }}</td>
+                    <td>{{ estudante.data_matricula|date:"d/m/Y"|default:"-" }}</td>
+                    <td>
+                        {% if estudante.is_active %}
+                        <span class="badge badge-success">Ativu</span>
+                        {% else %}
+                        <span class="badge badge-secondary">La Ativu</span>
+                        {% endif %}
+                        {% if estudante.is_transfer %}
+                        <span class="badge badge-warning">Transfere</span>
+                        {% endif %}
+                        {% if estudante.is_alumni %}
+                        <span class="badge badge-info">Alumni</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="btn-group btn-group-sm" role="group">
+                            <a href="{% url 'estudante_assign_classe' estudante.pk %}" class="btn btn-warning" title="Rejista ba Klase">
+                                <i class="fas fa-user-plus"></i>
+                            </a>
+                            <a href="{% url 'estudante_detail' estudante.pk %}" class="btn btn-success" title="Haree">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <a href="{% url 'estudante_update' estudante.pk %}" class="btn btn-info" title="Hadia">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <button type="button" class="btn btn-danger" onclick="confirmDelete({{ estudante.pk }}, '{{ estudante.nome }}')" title="Hamos">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" class="text-center">Dadus la iha</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Konfirma Hamoos</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Ita boot hakarak hamoos estudante "<span id="deleteItemName"></span>"?
+                <br><small class="text-muted">Ida-ne'e sei hamoos mós konta uzuáriu nian.</small>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Kansela</button>
+                <form method="post" id="deleteForm" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Hamoos</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock contents %}
+
+{% block scripts %}
+<script>
+function confirmDelete(id, name) {
+    document.getElementById('deleteItemName').textContent = name;
+    document.getElementById('deleteForm').action = "{% url 'estudante_delete' 0 %}".replace('0', id);
+    $('#deleteModal').modal('show');
+}
+
+$(document).ready(function() {
+    $('.datatable').DataTable({
+        "responsive": true,
+        "lengthChange": false,
+        "autoWidth": false,
+        "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+    }).buttons().container().appendTo('#estudante-table_wrapper .col-md-6:eq(0)');
+});
+</script>
+{% endblock scripts %}

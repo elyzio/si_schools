@@ -1,0 +1,166 @@
+{% extends 'main/base.html' %}
+
+{% block contents %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">{{ page_title }}</h3>
+        <div class="card-tools">
+            <a href="{% url 'estudante_detail' estudante.pk %}" class="btn btn-secondary btn-sm">
+                <i class="fas fa-arrow-left"></i> Fila
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i> Rejista/Hadia transferénsia ba estudante: <strong>{{ estudante.nome }}</strong>
+        </div>
+
+        <form method="post" enctype="multipart/form-data" id="transferForm">
+            {% csrf_token %}
+
+            <!-- Transfer Type Selection -->
+            <div class="form-group">
+                <label>{{ form.transfer_type.label }}</label>
+                <div class="row">
+                    {% for radio in form.transfer_type %}
+                    <div class="col-md-6">
+                        <div class="form-check">
+                            {{ radio.tag }}
+                            <label class="form-check-label" for="{{ radio.id_for_label }}">
+                                {{ radio.choice_label }}
+                            </label>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% if form.transfer_type.errors %}
+                <div class="text-danger">{{ form.transfer_type.errors }}</div>
+                {% endif %}
+                <small class="form-text text-muted">
+                    <strong>SAI:</strong> Estudante transfere SAI husi eskola ne'e ba eskola seluk<br>
+                    <strong>TAMA:</strong> Estudante TAMA husi eskola seluk ba eskola ne'e
+                </small>
+            </div>
+
+            <hr>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group" id="fromEskolaGroup">
+                        <label for="{{ form.from_eskola.id_for_label }}">{{ form.from_eskola.label }}</label>
+                        {{ form.from_eskola }}
+                        {% if form.from_eskola.errors %}
+                        <div class="text-danger">{{ form.from_eskola.errors }}</div>
+                        {% endif %}
+                        <small class="form-text text-muted" id="fromEskolaHelp"></small>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group" id="baEskolaGroup">
+                        <label for="{{ form.ba_eskola.id_for_label }}">{{ form.ba_eskola.label }}</label>
+                        {{ form.ba_eskola }}
+                        {% if form.ba_eskola.errors %}
+                        <div class="text-danger">{{ form.ba_eskola.errors }}</div>
+                        {% endif %}
+                        <small class="form-text text-muted" id="baEskolaHelp"></small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="{{ form.data_transfer.id_for_label }}">{{ form.data_transfer.label }}</label>
+                        {{ form.data_transfer }}
+                        {% if form.data_transfer.errors %}
+                        <div class="text-danger">{{ form.data_transfer.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group" id="dataAseitaGroup">
+                        <label for="{{ form.data_aseita.id_for_label }}">{{ form.data_aseita.label }} <small class="text-muted">(Opsionál)</small></label>
+                        {{ form.data_aseita }}
+                        {% if form.data_aseita.errors %}
+                        <div class="text-danger">{{ form.data_aseita.errors }}</div>
+                        {% endif %}
+                        <small class="form-text text-muted">Deit ba estudante TAMA</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="{{ form.obs.id_for_label }}">{{ form.obs.label }} <small class="text-muted">(Opsionál)</small></label>
+                        {{ form.obs }}
+                        {% if form.obs.errors %}
+                        <div class="text-danger">{{ form.obs.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="alert alert-warning">
+                <i class="fas fa-exclamation-triangle"></i>
+                <strong>Nota importante:</strong>
+                <ul class="mb-0 mt-2">
+                    <li>Se ita seluk <strong>SAI</strong>, estudante sei marka hanesan "transfere" no SEI LA hatudu iha lista estudante ativu.</li>
+                    <li>Se ita seluk <strong>TAMA</strong>, estudante sei kontinua ativu iha lista estudante.</li>
+                    <li>Ita bele hamoos transferénsia depois atu ativa estudante fali se presiza.</li>
+                </ul>
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Rai
+                </button>
+                <a href="{% url 'estudante_detail' estudante.pk %}" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Kansela
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock contents %}
+
+{% block scripts %}
+<script>
+$(document).ready(function() {
+    // Function to update form fields based on transfer type
+    function updateFormFields() {
+        var transferType = $('input[name="transfer_type"]:checked').val();
+
+        if (transferType === 'OUT') {
+            // Transferring OUT - disable from_eskola, enable ba_eskola
+            $('#{{ form.from_eskola.id_for_label }}').prop('readonly', true).addClass('bg-light');
+            $('#{{ form.ba_eskola.id_for_label }}').prop('readonly', false).removeClass('bg-light');
+            $('#fromEskolaHelp').text('Automátiku: Eskola ne\'e');
+            $('#baEskolaHelp').text('Hatama naran eskola destinasaun');
+
+            // Hide data_aseita for OUT transfers
+            $('#dataAseitaGroup').hide();
+        } else if (transferType === 'IN') {
+            // Transferring IN - enable from_eskola, disable ba_eskola
+            $('#{{ form.from_eskola.id_for_label }}').prop('readonly', false).removeClass('bg-light');
+            $('#{{ form.ba_eskola.id_for_label }}').prop('readonly', true).addClass('bg-light');
+            $('#fromEskolaHelp').text('Hatama naran eskola anterior');
+            $('#baEskolaHelp').text('Automátiku: Eskola ne\'e');
+
+            // Show data_aseita for IN transfers
+            $('#dataAseitaGroup').show();
+        }
+    }
+
+    // Update on page load
+    updateFormFields();
+
+    // Update when transfer type changes
+    $('input[name="transfer_type"]').change(function() {
+        updateFormFields();
+    });
+});
+</script>
+{% endblock scripts %}

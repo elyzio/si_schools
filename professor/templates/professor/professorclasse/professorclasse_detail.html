@@ -1,0 +1,59 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block contents %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">{{ page_title }}</h3>
+        <div class="card-tools">
+            <a href="{% url 'professorclasse_update' professorclasse.pk %}" class="btn btn-warning btn-sm">
+                <i class="fas fa-edit"></i> Hadia
+            </a>
+            <a href="{% url 'professorclasse_delete' professorclasse.pk %}" class="btn btn-danger btn-sm">
+                <i class="fas fa-trash"></i> Hamos
+            </a>
+            <a href="{% url 'professorclasse_list' %}" class="btn btn-secondary btn-sm">
+                <i class="fas fa-arrow-left"></i> Fila
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered">
+            <tr>
+                <th width="30%">Profesor</th>
+                <td>{{ professorclasse.professor.nome }}</td>
+            </tr>
+            <tr>
+                <th>Tinan</th>
+                <td>{{ professorclasse.ano.ano }}</td>
+            </tr>
+            <tr>
+                <th>Departamentu</th>
+                <td>{{ professorclasse.departamentu.departamentu }}</td>
+            </tr>
+            <tr>
+                <th>Klase</th>
+                <td>{{ professorclasse.classe.classe }}</td>
+            </tr>
+            <tr>
+                <th>Profesor Prinsipal Klase Nian</th>
+                <td>
+                    {% if professorclasse.is_class_teacher %}
+                        <span class="badge badge-success">Loos</span>
+                    {% else %}
+                        <span class="badge badge-secondary">Lae</span>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>Data Kria</th>
+                <td>{{ professorclasse.created_at|date:"d/m/Y H:i:s" }}</td>
+            </tr>
+            <tr>
+                <th>Atu aliasaun Ikus</th>
+                <td>{{ professorclasse.updated_at|date:"d/m/Y H:i:s" }}</td>
+            </tr>
+        </table>
+    </div>
+</div>
+{% endblock contents %}

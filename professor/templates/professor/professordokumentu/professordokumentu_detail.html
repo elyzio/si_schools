@@ -1,0 +1,63 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block contents %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">{{ page_title }}</h3>
+        <div class="card-tools">
+            <a href="{% url 'professordokumentu_update' professordokumentu.pk %}" class="btn btn-warning btn-sm">
+                <i class="fas fa-edit"></i> Hadia
+            </a>
+            <a href="{% url 'professordokumentu_delete' professordokumentu.pk %}" class="btn btn-danger btn-sm">
+                <i class="fas fa-trash"></i> Hamos
+            </a>
+            <a href="{% url 'professordokumentu_list' %}" class="btn btn-secondary btn-sm">
+                <i class="fas fa-arrow-left"></i> Fila
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered">
+            <tr>
+                <th width="30%">Profesor</th>
+                <td>{{ professordokumentu.professor.nome }}</td>
+            </tr>
+            <tr>
+                <th>Numeru Funsionariu</th>
+                <td>{{ professordokumentu.professor.numero_funcionario|default:"-" }}</td>
+            </tr>
+            <tr>
+                <th>Tipu Dokumentu</th>
+                <td>
+                    <span class="badge badge-info">{{ professordokumentu.get_tipo_dokumentu_display }}</span>
+                </td>
+            </tr>
+            <tr>
+                <th>Dokumentu</th>
+                <td>
+                    {% if professordokumentu.file %}
+                        <a href="{{ professordokumentu.file.url }}" target="_blank" class="btn btn-primary">
+                            <i class="fas fa-file-pdf"></i> Haree PDF
+                        </a>
+                    {% else %}
+                        <span class="text-muted">Dokumentu seidauk iha</span>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>Observasaun</th>
+                <td>{{ professordokumentu.obs|linebreaks|default:"-" }}</td>
+            </tr>
+            <tr>
+                <th>Data Kria</th>
+                <td>{{ professordokumentu.created_at|date:"d/m/Y H:i:s" }}</td>
+            </tr>
+            <tr>
+                <th>Atualizasaun Ikus</th>
+                <td>{{ professordokumentu.updated_at|date:"d/m/Y H:i:s" }}</td>
+            </tr>
+        </table>
+    </div>
+</div>
+{% endblock contents %}

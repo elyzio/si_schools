@@ -1,0 +1,139 @@
+{% extends 'main/base.html' %}
+
+{% block contents %}
+<div class="row">
+    <!-- Student Information Card -->
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">{{ page_title }}</h3>
+                <div class="card-tools">
+                    <a href="{% url 'estudante_valor_detail' estudante_classe.pk %}" class="btn btn-secondary btn-sm">
+                        <i class="fas fa-arrow-left"></i> Fila
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <h5>Informasaun Estudante</h5>
+                        <table class="table table-sm table-borderless">
+                            <tr>
+                                <td><strong>EMIS:</strong> {{ estudante.emis }}</td>
+                                <td><strong>Naran:</strong> {{ estudante.nome }}</td>
+                                <td><strong>Sexu:</strong> {{ estudante.get_sexu_display }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                {% if chart_data %}
+                <div class="row">
+                    <div class="col-md-12">
+                        <canvas id="valorChart" style="max-height: 500px;"></canvas>
+                    </div>
+                </div>
+                {% else %}
+                <div class="alert alert-info text-center">
+                    <i class="fas fa-info-circle"></i> La iha dadus valór ba estudante ne'e atu hatudu gráfiku.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% if chart_data %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+    const chartData = {{ chart_data|safe }};
+
+    const ctx = document.getElementById('valorChart').getContext('2d');
+    const valorChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: chartData.labels,
+            datasets: chartData.datasets.map((dataset, index) => {
+                const colors = [
+                    'rgba(255, 99, 132, 0.8)',
+                    'rgba(54, 162, 235, 0.8)',
+                    'rgba(255, 205, 86, 0.8)',
+                    'rgba(75, 192, 192, 0.8)',
+                    'rgba(153, 102, 255, 0.8)',
+                    'rgba(255, 159, 64, 0.8)',
+                    'rgba(199, 199, 199, 0.8)',
+                    'rgba(83, 102, 255, 0.8)',
+                ];
+                const color = colors[index % colors.length];
+                return {
+                    label: dataset.label,
+                    data: dataset.data,
+                    backgroundColor: color,
+                    borderColor: color.replace('0.8', '1'),
+                    borderWidth: 1
+                };
+            })
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Progresu Valór Estudante liu husi Tinan no Períodu',
+                    font: {
+                        size: 16
+                    }
+                },
+                legend: {
+                    display: true,
+                    position: 'top',
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.dataset.label || '';
+                            if (label) {
+                                label += ': ';
+                            }
+                            if (context.parsed.y !== null) {
+                                label += context.parsed.y.toFixed(2);
+                            }
+                            return label;
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 10,
+                    title: {
+                        display: true,
+                        text: 'Valór Médiu'
+                    },
+                    ticks: {
+                        stepSize: 1
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Tinan Akadémiku'
+                    }
+                }
+            },
+            interaction: {
+                mode: 'nearest',
+                axis: 'x',
+                intersect: false
+            }
+        }
+    });
+</script>
+{% endif %}
+{% endblock %}

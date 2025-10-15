@@ -1,0 +1,75 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block contents %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">{{ page_title }}</h3>
+        <div class="card-tools">
+            <a href="{% url 'professoruser_create' %}" class="btn btn-primary btn-sm">
+                <i class="fas fa-plus"></i> Aumenta
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <table id="professoruser-table" class="table table-bordered table-striped datatable">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Profesor</th>
+                    <th>Uzuariu</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Data Kria</th>
+                    <th>Aksaun</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pu in professorusers %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>
+                        <a href="{% url 'professoruser_detail' pu.pk %}" class="text-primary">
+                            {{ pu.professor.nome }}
+                        </a>
+                    </td>
+                    <td>{{ pu.user.get_full_name|default:"-" }}</td>
+                    <td>{{ pu.user.username }}</td>
+                    <td>{{ pu.user.email|default:"-" }}</td>
+                    <td>{{ pu.created_at|date:"d/m/Y H:i" }}</td>
+                    <td>
+                        <div class="btn-group btn-group-sm" role="group">
+                            <a href="{% url 'professoruser_detail' pu.pk %}" class="btn btn-info">
+                                <i class="fas fa-eye"></i> Haree
+                            </a>
+                            <a href="{% url 'professoruser_update' pu.pk %}" class="btn btn-warning">
+                                <i class="fas fa-edit"></i> Hadia
+                            </a>
+                            <a href="{% url 'professoruser_delete' pu.pk %}" class="btn btn-danger">
+                                <i class="fas fa-trash"></i> Hamos
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center">Dadus seidauk iha</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock contents %}
+
+{% block scripts %}
+<script>
+$(document).ready(function() {
+    $('.datatable').DataTable({
+        "responsive": true,
+        "lengthChange": false,
+        "autoWidth": false,
+    });
+});
+</script>
+{% endblock scripts %}

@@ -1,0 +1,55 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block contents %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">{{ page_title }}</h3>
+        <div class="card-tools">
+            <a href="{% url 'professormateria_update' professormateria.pk %}" class="btn btn-warning btn-sm">
+                <i class="fas fa-edit"></i> Hadia
+            </a>
+            <a href="{% url 'professormateria_delete' professormateria.pk %}" class="btn btn-danger btn-sm">
+                <i class="fas fa-trash"></i> Hamos
+            </a>
+            <a href="{% url 'professormateria_list' %}" class="btn btn-secondary btn-sm">
+                <i class="fas fa-arrow-left"></i> Fila
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered">
+            <tr>
+                <th width="30%">Profesor</th>
+                <td>{{ professormateria.professor.nome }}</td>
+            </tr>
+            <tr>
+                <th>Materia</th>
+                <td>{{ professormateria.materia.materia }}</td>
+            </tr>
+            <tr>
+                <th>Klase</th>
+                <td>{{ professormateria.classe.classe }}</td>
+            </tr>
+            <tr>
+                <th>Status</th>
+                <td>
+                    {% if professormateria.is_active %}
+                        <span class="badge badge-success">Ativu</span>
+                    {% else %}
+                        <span class="badge badge-secondary">La Ativu</span>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>Data Kria</th>
+                <td>{{ professormateria.created_at|date:"d/m/Y H:i:s" }}</td>
+            </tr>
+            <tr>
+                <th>Atualizasaun Ikus</th>
+                <td>{{ professormateria.updated_at|date:"d/m/Y H:i:s" }}</td>
+            </tr>
+        </table>
+    </div>
+</div>
+{% endblock contents %}

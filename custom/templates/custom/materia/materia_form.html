@@ -1,0 +1,50 @@
+{% extends 'main/base.html' %}
+
+{% block contents %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">{{ page_title }}</h3>
+        <div class="card-tools">
+            <a href="{% url 'materia_list' %}" class="btn btn-secondary btn-sm">
+                <i class="fas fa-arrow-left"></i> Back to List
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="codigo">Codigo *</label>
+                <input type="text" class="form-control" id="codigo" name="codigo" value="{{ materia.codigo|default:'' }}" required maxlength="20">
+                <small class="form-text text-muted">Subject code (unique identifier)</small>
+            </div>
+            <div class="form-group">
+                <label for="materia">Materia *</label>
+                <input type="text" class="form-control" id="materia" name="materia" value="{{ materia.materia|default:'' }}" required maxlength="100">
+            </div>
+            <div class="form-group">
+                <label for="departamentu">Departamento</label>
+                <select class="form-control" id="departamentu" name="departamentu">
+                    <option value="">Select Departamento (Optional)</option>
+                    {% for departamentu in departamentus %}
+                    <option value="{{ departamentu.pk }}" {% if materia.departamentu.pk == departamentu.pk %}selected{% endif %}>{{ departamentu.departamento }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="descricao">Descricao</label>
+                <textarea class="form-control" id="descricao" name="descricao" rows="3">{{ materia.descricao|default:'' }}</textarea>
+                <small class="form-text text-muted">Optional description of the subject</small>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Save
+                </button>
+                <a href="{% url 'materia_list' %}" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock contents %}

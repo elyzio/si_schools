@@ -1,0 +1,69 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Hamoos Horariu{% endblock %}
+
+{% block contents %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card card-danger">
+                <div class="card-header">
+                    <h3 class="card-title">Hamoos Horariu</h3>
+                    <div class="card-tools">
+                        <a href="{% url 'horariu_list' %}" class="btn btn-secondary btn-sm">
+                            <i class="fas fa-arrow-left"></i> Fila
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <h5><i class="icon fas fa-exclamation-triangle"></i> Atensaun!</h5>
+                        Ita boot hakarak hamoos horariu ne'e?
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-8 offset-md-2">
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th style="width: 30%">Loron</th>
+                                        <td>{{ horariu.loron.get_loron_display }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Oras</th>
+                                        <td>{{ horariu.horas }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Klase</th>
+                                        <td>{{ horariu.classe.classe }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Turma</th>
+                                        <td>{{ horariu.turma.turma }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Materia</th>
+                                        <td>{{ horariu.professor_materia.materia.materia }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="form-group text-center">
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash"></i> Loos, Hamoos
+                            </button>
+                            <a href="{% url 'horariu_list' %}" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Kansela
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

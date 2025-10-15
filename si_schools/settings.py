@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     "main",
     "landing",
     "konaba",
-    # "crispy_bootstrap5",
+    "crispy_forms",
     "crispy_bootstrap4",
 ]
 
@@ -140,6 +140,7 @@ MEDIA_ROOT = BASE_DIR / "media"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Login Settings
-# LOGIN_REDIRECT_URL = 'home'
-# LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'home'
+LOGIN_URL = 'login'
+LOGOUT_REDIRECT_URL = 'home'
 

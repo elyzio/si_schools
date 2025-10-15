@@ -1,0 +1,99 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Detallu Horariu{% endblock %}
+
+{% block contents %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Detallu Horariu</h3>
+                    <div class="card-tools">
+                        <a href="{% url 'horariu_update' horariu.pk %}" class="btn btn-warning btn-sm">
+                            <i class="fas fa-edit"></i> Hadia
+                        </a>
+                        <a href="{% url 'horariu_delete' horariu.pk %}" class="btn btn-danger btn-sm">
+                            <i class="fas fa-trash"></i> Hamoos
+                        </a>
+                        <a href="{% url 'horariu_list' %}" class="btn btn-secondary btn-sm">
+                            <i class="fas fa-arrow-left"></i> Fila
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th style="width: 40%">Loron</th>
+                                        <td>{{ horariu.loron.get_loron_display }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Oras</th>
+                                        <td>{{ horariu.horas }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Klase</th>
+                                        <td>{{ horariu.classe.classe }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Turma</th>
+                                        <td>{{ horariu.turma.turma }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Departamentu</th>
+                                        <td>{{ horariu.departamentu.departamentu }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Materia</th>
+                                        <td>{{ horariu.professor_materia.materia.materia }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Profesor</th>
+                                        <td>{{ horariu.professor_materia.professor.nome }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th style="width: 40%">Tinan Akademiku</th>
+                                        <td>{{ horariu.ano_academico.ano }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Ativu</th>
+                                        <td>
+                                            {% if horariu.is_active %}
+                                                <span class="badge badge-success">Ativu</span>
+                                            {% else %}
+                                                <span class="badge badge-danger">La Ativu</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Observasaun</th>
+                                        <td>{{ horariu.obs|default:"-" }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Kria Iha</th>
+                                        <td>{{ horariu.created_at|date:"d/m/Y H:i" }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Atualiza Iha</th>
+                                        <td>{{ horariu.updated_at|date:"d/m/Y H:i" }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

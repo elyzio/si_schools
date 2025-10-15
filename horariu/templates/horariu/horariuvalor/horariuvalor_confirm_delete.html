@@ -1,0 +1,34 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Hamos Horariu Valor{% endblock %}
+
+{% block contents %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <div class="card card-danger">
+                <div class="card-header">
+                    <h3 class="card-title">Konfirma Hamos</h3>
+                </div>
+                <div class="card-body">
+                    <p>Ita boot hakarak hamos horariu valor ne'e?</p>
+                    <div class="alert alert-info">
+                        <strong>Data Hahu:</strong> {{ horariuvalor.data_hahu|date:"d/m/Y H:i" }}<br>
+                        <strong>Data Remata:</strong> {{ horariuvalor.data_termina|date:"d/m/Y H:i" }}<br>
+                        <strong>Observasaun:</strong> {{ horariuvalor.obs|default:"-" }}
+                    </div>
+                    <form method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-trash"></i> Sin, Hamos
+                        </button>
+                        <a href="{% url 'horariuvalor_list' %}" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> Lae, Kansela
+                        </a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

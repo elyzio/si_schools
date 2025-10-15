@@ -1,0 +1,94 @@
+{% extends 'main/base.html' %}
+
+{% block contents %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">{{ page_title }}</h3>
+        <div class="card-tools">
+            <a href="{% url 'suco_create' %}" class="btn btn-primary btn-sm">
+                <i class="fas fa-plus"></i> Add New
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <table id="suco-table" class="table table-bordered table-striped datatable">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Nome</th>
+                    <th>Subdistrito</th>
+                    <th>Distrito</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for suco in sucos %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ suco.nome }}</td>
+                    <td>{{ suco.subdistrito.nome }}</td>
+                    <td>{{ suco.subdistrito.distrito.nome }}</td>
+                    <td>
+                        <div class="btn-group btn-group-sm" role="group">
+                            <a href="{% url 'suco_update' suco.pk %}" class="btn btn-info">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                            <button type="button" class="btn btn-danger" onclick="confirmDelete({{ suco.pk }}, '{{ suco.nome }}')">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center">No data available</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete "<span id="deleteItemName"></span>"?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <form method="post" id="deleteForm" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock contents %}
+
+{% block scripts %}
+<script>
+function confirmDelete(id, name) {
+    document.getElementById('deleteItemName').textContent = name;
+    document.getElementById('deleteForm').action = "{% url 'suco_delete' 0 %}".replace('0', id);
+    $('#deleteModal').modal('show');
+}
+
+$(document).ready(function() {
+    $('.datatable').DataTable({
+        "responsive": true,
+        "lengthChange": false,
+        "autoWidth": false,
+        "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+    }).buttons().container().appendTo('#suco-table_wrapper .col-md-6:eq(0)');
+});
+</script>
+{% endblock scripts %}

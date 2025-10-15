@@ -1,0 +1,35 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Hamos Horariu Exame{% endblock %}
+
+{% block contents %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <div class="card card-danger">
+                <div class="card-header">
+                    <h3 class="card-title">Konfirma Hamos</h3>
+                </div>
+                <div class="card-body">
+                    <p>Ita boot hakarak hamos horariu exame ne'e?</p>
+                    <div class="alert alert-info">
+                        <strong>Loron:</strong> {{ horariuexame.loron|date:"d/m/Y" }}<br>
+                        <strong>Oras:</strong> {{ horariuexame.horas|date:"H:i" }}<br>
+                        <strong>Departamentu:</strong> {{ horariuexame.departamentu.nome }}<br>
+                        <strong>Materia:</strong> {{ horariuexame.materia.nome }}
+                    </div>
+                    <form method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-trash"></i> Sin, Hamos
+                        </button>
+                        <a href="{% url 'horariuexame_list' %}" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> Lae, Kansela
+                        </a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

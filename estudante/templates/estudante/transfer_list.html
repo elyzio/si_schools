@@ -1,0 +1,152 @@
+{% extends 'main/base.html' %}
+
+{% block contents %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">{{ page_title }}</h3>
+    </div>
+    <div class="card-body">
+        <!-- Filter Section -->
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <form method="get" id="filterForm">
+                    <div class="form-group row">
+                        <label for="yearFilter" class="mx-2">Filtra tuir Tinan Transfere:</label>
+                        <select name="year" id="yearFilter" class="form-control-sm" onchange="this.form.submit()">
+                            <option value="">Tinan Hotu</option>
+                            {% for year in available_years %}
+                            <option value="{{ year }}" {% if year|stringformat:'s' == selected_year %}selected{% endif %}>
+                                {{ year }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Transfer Type Filter Buttons -->
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <div class="alert alert-info mb-2">
+                    <i class="fas fa-school"></i> Eskola Atual: <strong>{{ current_school }}</strong>
+                </div>
+                <div class="row">
+                    <h6 class="mx-2 my-1">Tipu Transferénsia:</h6>
+                    <div class="btn-group btn-group-sm btn-group-toggle" data-toggle="buttons">
+                        <a href="?year={{ selected_year }}&type=all" class="btn btn-outline-primary {% if transfer_type_filter == 'all' %}active{% endif %}">
+                            <i class="fas fa-exchange-alt"></i> Hotu
+                            <span class="badge badge-light">{{ total_count }}</span>
+                        </a>
+                        <a href="?year={{ selected_year }}&type=out" class="btn btn-outline-danger {% if transfer_type_filter == 'out' %}active{% endif %}">
+                            <i class="fas fa-sign-out-alt"></i> Sai (OUT)
+                            <span class="badge badge-light">{{ out_count }}</span>
+                        </a>
+                        <a href="?year={{ selected_year }}&type=in" class="btn btn-outline-success {% if transfer_type_filter == 'in' %}active{% endif %}">
+                            <i class="fas fa-sign-in-alt"></i> Tama (IN)
+                            <span class="badge badge-light">{{ in_count }}</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <table id="transfer-table" class="table table-bordered table-striped datatable">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Estudante</th>
+                    <th>EMIS</th>
+                    <th>Husi Eskola</th>
+                    <th>Ba Eskola</th>
+                    <th>Data Transfere</th>
+                    <th>Data Simu</th>
+                    <th>Tipu</th>
+                    <th>Asaun</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for transfer in transfers %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ transfer.estudante.nome }}</td>
+                    <td>{{ transfer.estudante.emis }}</td>
+                    <td>{{ transfer.from_eskola }}</td>
+                    <td>{{ transfer.ba_eskola }}</td>
+                    <td>{{ transfer.data_transfer|date:"d/m/Y" }}</td>
+                    <td>{{ transfer.data_aseita|date:"d/m/Y"|default:"-" }}</td>
+                    <td>
+                        {% if transfer.from_eskola == current_school %}
+                        <span class="badge badge-danger"><i class="fas fa-sign-out-alt"></i> SAI</span>
+                        {% else %}
+                        <span class="badge badge-success"><i class="fas fa-sign-in-alt"></i> TAMA</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="btn-group btn-group-sm" role="group">
+                            <a href="{% url 'estudante_detail' transfer.estudante.pk %}" class="btn btn-success" title="Haree Estudante">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <a href="{% url 'transfer_update' transfer.pk %}" class="btn btn-info" title="Hadia">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <button type="button" class="btn btn-danger" onclick="confirmDelete({{ transfer.pk }}, '{{ transfer.estudante.nome }}')" title="Hamos">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="9" class="text-center">Dadus la iha</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Konfirma Hamoos</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Ita boot hakarak hamoos transferénsia ba estudante "<span id="deleteItemName"></span>"?
+                <br><small class="text-muted">Se transferénsia ne'e maka transfere SAI husi eskola, estudante sei ativu fali.</small>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Kansela</button>
+                <form method="post" id="deleteForm" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Hamoos</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock contents %}
+
+{% block scripts %}
+<script>
+function confirmDelete(id, name) {
+    document.getElementById('deleteItemName').textContent = name;
+    document.getElementById('deleteForm').action = "{% url 'transfer_delete' 0 %}".replace('0', id);
+    $('#deleteModal').modal('show');
+}
+
+$(document).ready(function() {
+    $('.datatable').DataTable({
+        "responsive": true,
+        "lengthChange": false,
+        "autoWidth": false,
+        "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+    }).buttons().container().appendTo('#transfer-table_wrapper .col-md-6:eq(0)');
+});
+</script>
+{% endblock scripts %}

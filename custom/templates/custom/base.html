@@ -1,0 +1,214 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ page_title }} - SIA Schools{% endblock %}</title>
+
+    <!-- AdminLTE CSS -->
+    <link rel="stylesheet" href="{% static 'dist/css/adminlte.min.css' %}">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="{% static 'docs/assets/plugins/fontawesome-free/css/all.min.css' %}">
+    <!-- DataTables -->
+    <link rel="stylesheet" href="{% static 'plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/custom-admin.css' %}">
+
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+    <div class="wrapper">
+        <!-- Navbar -->
+        <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'logout' %}">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Main Sidebar -->
+        <aside class="main-sidebar sidebar-dark-primary elevation-4">
+            <a href="{% url 'home' %}" class="brand-link">
+                <img src="{% static 'img/logo-M_Edu.webp' %}" alt="SIA Schools" class="brand-image img-circle elevation-3" style="opacity: .8">
+                <span class="brand-text font-weight-light">SIA Schools</span>
+            </a>
+
+            <div class="sidebar">
+                <nav class="mt-2">
+                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                        <li class="nav-item">
+                            <a href="{% url 'home' %}" class="nav-link">
+                                <i class="nav-icon fas fa-home"></i>
+                                <p>Dashboard</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="{% url 'professor_list' %}" class="nav-link">
+                                <i class="nav-icon fas fa-chalkboard-teacher"></i>
+                                <p>Professores</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item has-treeview">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-cogs"></i>
+                                <p>
+                                    Konfigurasaun
+                                    <i class="fas fa-angle-left right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <!-- Geographic Models -->
+                                <li class="nav-header">GEOGRAPHIC</li>
+                                <li class="nav-item">
+                                    <a href="{% url 'distrito_list' %}" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Distrito</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{% url 'subdistrito_list' %}" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Subdistrito</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{% url 'suco_list' %}" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Suco</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{% url 'aldeia_list' %}" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Aldeia</p>
+                                    </a>
+                                </li>
+
+                                <!-- Academic Models -->
+                                <li class="nav-header">ACADEMIC</li>
+                                <li class="nav-item">
+                                    <a href="{% url 'ano_list' %}" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Ano Akademiku</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{% url 'departamentu_list' %}" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Departmento</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{% url 'classe_list' %}" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Klase</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{% url 'turma_list' %}" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Turma</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{% url 'periodo_list' %}" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Periodo</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{% url 'materia_list' %}" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Disciplina</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- Content Wrapper -->
+        <div class="content-wrapper">
+            <div class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1 class="m-0">{{ page_title }}</h1>
+                        </div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-right">
+                                <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                                <li class="breadcrumb-item active">{{ page_title }}</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <section class="content">
+                <div class="container-fluid">
+                    <!-- Messages -->
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    {% block content %}{% endblock %}
+                </div>
+            </section>
+        </div>
+
+        <!-- Footer -->
+        <footer class="main-footer">
+            <strong>&copy; 2024 <a href="#">SIA Schools</a>.</strong>
+            All rights reserved.
+            <div class="float-right d-none d-sm-inline-block">
+                <b>Version</b> 1.0.0
+            </div>
+        </footer>
+    </div>
+
+    <!-- jQuery -->
+    <script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
+    <!-- Bootstrap 4 -->
+    <script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <!-- AdminLTE App -->
+    <script src="{% static 'dist/js/adminlte.min.js' %}"></script>
+    <!-- DataTables -->
+    <script src="{% static 'plugins/datatables/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+
+    <script>
+        $(document).ready(function() {
+            // Initialize DataTables
+            $('.datatable').DataTable({
+                "responsive": true,
+                "lengthChange": false,
+                "autoWidth": false,
+                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+            });
+        });
+    </script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

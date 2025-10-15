@@ -1,0 +1,282 @@
+{% extends 'main/base.html' %}
+
+{% block contents %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">{{ page_title }}</h3>
+        <div class="card-tools">
+            <a href="{% url 'estudante_list' %}" class="btn btn-secondary btn-sm">
+                <i class="fas fa-arrow-left"></i> Fila ba Lista
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <h5 class="mb-3">Informasaun Estudante</h5>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="{{ form.emis.id_for_label }}">EMIS * <small class="text-muted">(sei uza hanesan username)</small></label>
+                        {{ form.emis }}
+                        {% if form.emis.errors %}
+                        <div class="text-danger">{{ form.emis.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="{{ form.numero_estudante.id_for_label }}">Núm. Estudante</label>
+                        {{ form.numero_estudante }}
+                        {% if form.numero_estudante.errors %}
+                        <div class="text-danger">{{ form.numero_estudante.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <h5 class="mb-3 mt-4">Informasaun Pesoál</h5>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="{{ form.nome.id_for_label }}">Naran Kompletu *</label>
+                        {{ form.nome }}
+                        {% if form.nome.errors %}
+                        <div class="text-danger">{{ form.nome.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="{{ form.sexu.id_for_label }}">Seksu *</label>
+                        {{ form.sexu }}
+                        {% if form.sexu.errors %}
+                        <div class="text-danger">{{ form.sexu.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="{{ form.data_moris.id_for_label }}">Data Moris *</label>
+                        {{ form.data_moris }}
+                        {% if form.data_moris.errors %}
+                        <div class="text-danger">{{ form.data_moris.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="{{ form.fatin_moris.id_for_label }}">Fatin Moris *</label>
+                        {{ form.fatin_moris }}
+                        {% if form.fatin_moris.errors %}
+                        <div class="text-danger">{{ form.fatin_moris.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="{{ form.nacionalidade.id_for_label }}">Nasionalidade *</label>
+                        {{ form.nacionalidade }}
+                        {% if form.nacionalidade.errors %}
+                        <div class="text-danger">{{ form.nacionalidade.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="{{ form.kontatu.id_for_label }}">Núm. Kontaktu</label>
+                        {{ form.kontatu }}
+                        {% if form.kontatu.errors %}
+                        <div class="text-danger">{{ form.kontatu.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <h5 class="mb-3 mt-4">Informasaun Enderesu</h5>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="{{ form.distrito.id_for_label }}">Distritu *</label>
+                        {{ form.distrito }}
+                        {% if form.distrito.errors %}
+                        <div class="text-danger">{{ form.distrito.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="{{ form.subdistrito.id_for_label }}">Subdistritu *</label>
+                        {{ form.subdistrito }}
+                        {% if form.subdistrito.errors %}
+                        <div class="text-danger">{{ form.subdistrito.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="{{ form.suco.id_for_label }}">Suco *</label>
+                        {{ form.suco }}
+                        {% if form.suco.errors %}
+                        <div class="text-danger">{{ form.suco.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="{{ form.aldeia.id_for_label }}">Aldeia *</label>
+                        {{ form.aldeia }}
+                        {% if form.aldeia.errors %}
+                        <div class="text-danger">{{ form.aldeia.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="{{ form.hela_fatin.id_for_label }}">Enderesu Kompletu</label>
+                        {{ form.hela_fatin }}
+                        {% if form.hela_fatin.errors %}
+                        <div class="text-danger">{{ form.hela_fatin.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <h5 class="mb-3 mt-4">Informasaun Matríkula</h5>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="{{ form.data_matricula.id_for_label }}">Data Matríkula</label>
+                        {{ form.data_matricula }}
+                        {% if form.data_matricula.errors %}
+                        <div class="text-danger">{{ form.data_matricula.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="{{ form.imagem.id_for_label }}">Foto</label>
+                        {{ form.imagem }}
+                        {% if form.imagem.errors %}
+                        <div class="text-danger">{{ form.imagem.errors }}</div>
+                        {% endif %}
+                        {% if estudante.imagem %}
+                        <div class="mt-2">
+                            <img src="{{ estudante.imagem.url }}" alt="Foto agora" style="max-width: 150px; max-height: 150px;">
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <div class="form-check">
+                            {{ form.is_active }}
+                            <label class="form-check-label" for="{{ form.is_active.id_for_label }}">
+                                Estadu Ativu
+                            </label>
+                        </div>
+                        {% if form.is_active.errors %}
+                        <div class="text-danger">{{ form.is_active.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group mt-4">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Rai
+                </button>
+                <a href="{% url 'estudante_list' %}" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Kansela
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock contents %}
+
+{% block scripts %}
+<script>
+$(document).ready(function() {
+    // Only initialize empty state if the fields are actually empty
+    // This preserves selections when form is redisplayed with validation errors
+    if ($('#id_subdistrito option').length <= 1) {
+        $('#id_subdistrito').empty().append('<option value="">Hili distritu dahulu...</option>');
+    }
+    if ($('#id_suco option').length <= 1) {
+        $('#id_suco').empty().append('<option value="">Hili subdistritu dahulu...</option>');
+    }
+    if ($('#id_aldeia option').length <= 1) {
+        $('#id_aldeia').empty().append('<option value="">Hili suco dahulu...</option>');
+    }
+
+    // Dependent dropdowns for address fields
+    $('#id_distrito').change(function() {
+        var distritoId = $(this).val();
+
+        // Clear and reset dependent fields
+        $('#id_subdistrito').empty().append('<option value="">---------</option>');
+        $('#id_suco').empty().append('<option value="">Hili subdistritu dahulu...</option>');
+        $('#id_aldeia').empty().append('<option value="">Hili suco dahulu...</option>');
+
+        if (distritoId) {
+            $.get('{% url "ajax_subdistrito" %}', {distrito_id: distritoId}, function(data) {
+                $.each(data, function(index, item) {
+                    $('#id_subdistrito').append('<option value="' + item.id + '">' + item.name + '</option>');
+                });
+            });
+        } else {
+            $('#id_subdistrito').empty().append('<option value="">Hili distritu dahulu...</option>');
+        }
+    });
+
+    $('#id_subdistrito').change(function() {
+        var subdistritoId = $(this).val();
+
+        // Clear and reset dependent fields
+        $('#id_suco').empty().append('<option value="">---------</option>');
+        $('#id_aldeia').empty().append('<option value="">Hili suco dahulu...</option>');
+
+        if (subdistritoId) {
+            $.get('{% url "ajax_suco" %}', {subdistrito_id: subdistritoId}, function(data) {
+                $.each(data, function(index, item) {
+                    $('#id_suco').append('<option value="' + item.id + '">' + item.name + '</option>');
+                });
+            });
+        } else {
+            $('#id_suco').empty().append('<option value="">Hili subdistritu dahulu...</option>');
+        }
+    });
+
+    $('#id_suco').change(function() {
+        var sucoId = $(this).val();
+
+        // Clear dependent field
+        $('#id_aldeia').empty().append('<option value="">---------</option>');
+
+        if (sucoId) {
+            $.get('{% url "ajax_aldeia" %}', {suco_id: sucoId}, function(data) {
+                $.each(data, function(index, item) {
+                    $('#id_aldeia').append('<option value="' + item.id + '">' + item.name + '</option>');
+                });
+            });
+        } else {
+            $('#id_aldeia').empty().append('<option value="">Hili suco dahulu...</option>');
+        }
+    });
+});
+</script>
+{% endblock scripts %}
