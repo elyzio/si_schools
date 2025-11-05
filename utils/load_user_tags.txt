@@ -1,24 +1,94 @@
+### load it in your templates:
+
 {% load user_tags %}
 
-{# Get user role #}
+### user_group
+## Returns the user’s primary group (role) based on priority:
+## Admin > Director > Secretaria > Professor > Estudante
+
 {% user_group request.user as role %}
-{% if role == 'admin' %}
-    <!-- Admin navigation -->
-{% elif role == 'director' %}
-    <!-- Director navigation -->
-{% elif role == 'professor' %}
-    <!-- Professor navigation -->
-{% elif role == 'estudante' %}
-    <!-- Estudante navigation -->
+{% if role == "admin" %}
+  <p>Welcome Admin!</p>
+{% elif role == "director" %}
+  <p>Welcome Director!</p>
 {% endif %}
 
-{# Or check specific group #}
-{% if request.user|has_group:"Admin" %}
-    <!-- Admin only content -->
+## Output (examples):
+## "admin"
+## "director"
+## "secretaria"
+## "professor"
+## "estudante"
+## "guest" (if not logged in)
+## "default" (if no group found)
+
+
+
+### has_group
+## Checks if the user belongs to one specific group.
+
+{% if request.user|has_group:"admin" %}
+    <p>You are an admin.</p>
 {% endif %}
 
-{# Or use helper tags #}
-{% is_admin request.user as user_is_admin %}
-{% if user_is_admin %}
-    <!-- Admin content -->
+
+
+### has_any_group
+## Checks if the user belongs to any group in a comma-separated list.
+
+## Multiple group
+{% if request.user|has_any_group:"admin,director" %}
+    <p>Welcome Admin or Director!</p>
+{% endif %}
+
+## can include as many groups as needed:
+{% if request.user|has_any_group:"admin,director,secretaria" %}
+    <p>Access granted to management staff.</p>
+{% endif %}
+
+
+
+### Role-specific simple tags
+## Each of the following tags returns True if the user belongs to that specific role:
+| **Tag**                               | **Description**                         | **Example**                                                          |
+| ------------------------------------- | --------------------------------------- | -------------------------------------------------------------------- |
+|  {% if is_admin request.user %}       | Checks if user is an admin or superuser |  {% if is_admin request.user %} Admin Panel {% endif %}              |
+|  {% if is_director request.user %}    | Checks if user is director              |  {% if is_director request.user %} Director Page {% endif %}         |
+|  {% if is_secretaria request.user %}  | Checks if user is secretaria            |  {% if is_secretaria request.user %} Staff Portal {% endif %}        |
+|  {% if is_professor request.user %}   | Checks if user is professor             |  {% if is_professor request.user %} Professor Dashboard {% endif %}  |
+|  {% if is_estudante request.user %}   | Checks if user is estudante (student)   |  {% if is_estudante request.user %} Student Home {% endif %}         |
+
+
+
+#====================================================================================
+#====================================================================================
+
+
+#### Examples of Combined Conditions
+
+### Example 1: Admin or Director Access
+{% if request.user|has_any_group:"admin,director" %}
+    <p>Welcome, Admin or Director!</p>
+{% endif %}
+
+## Or, using simple tags:
+{% if is_admin request.user or is_director request.user %}
+    <p>Welcome, Admin or Director!</p>
+{% endif %}
+
+
+### Example 2: Show content for logged-in users only
+{% if request.user.is_authenticated %}
+    <p>Welcome back, {{ request.user.username }}!</p>
+{% else %}
+    <p>Please log in to continue.</p>
+{% endif %}
+
+
+### Example 3: Show content depending on role
+{% user_group request.user as role %}
+{% if role == "professor" %}
+    <p>Professor Area</p>
+{% elif role == "estudante" %}
+    <p>Student Area</p>
 {% endif %}

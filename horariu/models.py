@@ -66,16 +66,16 @@ class HorariuManager(models.Manager):
             return self.filter(ano_academico=current_year, is_active=True)
         except Ano.DoesNotExist:
             return self.none()
-    
-    def by_class(self, classe, turma, ano_academico=None):
+
+    def by_class(self, classe, departamentu, turma, ano_academico=None):
         """Returns schedule for a specific class and section, ordered by day and time"""
         if not ano_academico:
             try:
                 ano_academico = Ano.objects.get(is_active=True)
             except Ano.DoesNotExist:
                 pass
-        
-        queryset = self.filter(classe=classe, turma=turma, is_active=True)
+
+        queryset = self.filter(classe=classe, departamentu=departamentu, turma=turma, is_active=True)
         if ano_academico:
             queryset = queryset.filter(ano_academico=ano_academico)
         
@@ -136,7 +136,7 @@ class Horariu(models.Model):
     
     class Meta:
         unique_together = [
-            ['loron', 'horas', 'classe', 'turma'],  # One subject per time slot per class
+            ['loron', 'horas','departamentu', 'classe', 'turma'],  # One subject per time slot per class
             ['loron', 'horas', 'professor_materia'],  # Professor can't be in two places at once
         ]
         verbose_name = "Horariu"

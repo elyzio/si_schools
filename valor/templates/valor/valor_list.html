@@ -15,86 +15,66 @@
             </div>
         </div>
 
-        <!-- Period Filter -->
-        {% if periodos %}
-        <div class="row mb-3">
-            <div class="col-md-12 row">
-                <h6 class="mx-2 my-1">Períodu:</h6>
-                <div class="btn-group btn-group-sm" role="group">
+        <!-- Filter Section -->
+        <form method="get" id="filterForm" class="form-inline mb-3">
+            <!-- Period Filter -->
+            {% if periodos %}
+            <div class="form-group mr-3">
+                <label for="periodoFilter" class="mx-2">Períodu:</label>
+                <select name="periodo" id="periodoFilter" class="form-control form-control-sm" onchange="this.form.submit()">
+                    <option value="">Hotu</option>
                     {% for periodo in periodos %}
-                    <a href="?periodo={{ periodo.id }}{% if dept_filter %}&dept={{ dept_filter }}{% endif %}{% if classe_filter %}&classe={{ classe_filter }}{% endif %}{% if turma_filter %}&turma={{ turma_filter }}{% endif %}"
-                       class="btn btn-outline-primary {% if periodo_filter == periodo.id|stringformat:'s' %}active{% endif %}">
+                    <option value="{{ periodo.id }}" {% if periodo_filter == periodo.id|stringformat:'s' %}selected{% endif %}>
                         {{ periodo }}
-                    </a>
+                    </option>
                     {% endfor %}
-                </div>
+                </select>
             </div>
-        </div>
-        {% endif %}
+            {% endif %}
 
-        <!-- Department Filter -->
-        {% if departments %}
-        <div class="row mb-3">
-            <div class="col-md-12 row">
-                <h6 class="mx-2 my-1">Departamentu:</h6>
-                <div class="btn-group btn-group-sm" role="group">
-                    <a href="?{% if periodo_filter %}periodo={{ periodo_filter }}{% endif %}" class="btn btn-outline-secondary {% if not dept_filter %}active{% endif %}">
-                        <i class="fas fa-th-large"></i> Hotu
-                    </a>
+            <!-- Department Filter -->
+            <div class="form-group mr-3">
+                <label for="depFilter" class="mx-2">Departamentu:</label>
+                <select name="dept" id="depFilter" class="form-control form-control-sm" onchange="this.form.submit()">
+                    <option value="">Hotu</option>
                     {% for dept in departments %}
-                    <a href="?{% if periodo_filter %}periodo={{ periodo_filter }}&{% endif %}dept={{ dept.departamentu__id }}"
-                       class="btn btn-outline-info {% if dept_filter == dept.departamentu__id|stringformat:'s' %}active{% endif %}">
-                        {{ dept.departamentu__departamento }}
-                        {% if dept.departamentu__sigla %}({{ dept.departamentu__sigla }}){% endif %}
-                        <span class="badge badge-light">{{ dept.count }}</span>
-                    </a>
+                    <option value="{{ dept.departamentu__id }}" {% if dept_filter == dept.departamentu__id|stringformat:'s' %}selected{% endif %}>
+                        {{ dept.departamentu__departamento }}{% if dept.departamentu__sigla %} ({{ dept.departamentu__sigla }}){% endif %} - {{ dept.count }}
+                    </option>
                     {% endfor %}
-                </div>
+                </select>
             </div>
-        </div>
-        {% endif %}
 
-        <!-- Class Filter -->
-        {% if dept_filter and classes %}
-        <div class="row mb-3">
-            <div class="col-md-12 row">
-                <h6 class="mx-2 my-1">Klase:</h6>
-                <div class="btn-group btn-group-sm" role="group">
-                    <a href="?{% if periodo_filter %}periodo={{ periodo_filter }}&{% endif %}dept={{ dept_filter }}" class="btn btn-outline-secondary {% if not classe_filter %}active{% endif %}">
-                        <i class="fas fa-th-large"></i> Hotu
-                    </a>
+            <!-- Class Filter -->
+            {% if classes %}
+            <div class="form-group mr-3">
+                <label for="classeFilter" class="mx-2">Klase:</label>
+                <select name="classe" id="classeFilter" class="form-control form-control-sm" onchange="this.form.submit()">
+                    <option value="">Hotu</option>
                     {% for classe in classes %}
-                    <a href="?{% if periodo_filter %}periodo={{ periodo_filter }}&{% endif %}dept={{ dept_filter }}&classe={{ classe.classe__id }}"
-                       class="btn btn-outline-success {% if classe_filter == classe.classe__id|stringformat:'s' %}active{% endif %}">
-                        {{ classe.classe__classe }}
-                        <span class="badge badge-light">{{ classe.count }}</span>
-                    </a>
+                    <option value="{{ classe.classe__id }}" {% if classe_filter == classe.classe__id|stringformat:'s' %}selected{% endif %}>
+                        {{ classe.classe__classe }} - {{ classe.count }}
+                    </option>
                     {% endfor %}
-                </div>
+                </select>
             </div>
-        </div>
-        {% endif %}
+            {% endif %}
 
-        <!-- Turma Filter -->
-        {% if classe_filter and turmas %}
-        <div class="row mb-3">
-            <div class="col-md-12 row">
-                <h6 class="mx-2 my-1">Turma:</h6>
-                <div class="btn-group btn-group-sm" role="group">
-                    <a href="?{% if periodo_filter %}periodo={{ periodo_filter }}&{% endif %}dept={{ dept_filter }}&classe={{ classe_filter }}" class="btn btn-outline-secondary {% if not turma_filter %}active{% endif %}">
-                        <i class="fas fa-th-large"></i> Hotu
-                    </a>
+            <!-- Turma Filter -->
+            {% if turmas %}
+            <div class="form-group mr-3">
+                <label for="turmaFilter" class="mx-2">Turma:</label>
+                <select name="turma" id="turmaFilter" class="form-control form-control-sm" onchange="this.form.submit()">
+                    <option value="">Hotu</option>
                     {% for turma in turmas %}
-                    <a href="?{% if periodo_filter %}periodo={{ periodo_filter }}&{% endif %}dept={{ dept_filter }}&classe={{ classe_filter }}&turma={{ turma.turma__id }}"
-                       class="btn btn-outline-warning {% if turma_filter == turma.turma__id|stringformat:'s' %}active{% endif %}">
-                        {{ turma.turma__turma }}
-                        <span class="badge badge-light">{{ turma.count }}</span>
-                    </a>
+                    <option value="{{ turma.turma__id }}" {% if turma_filter == turma.turma__id|stringformat:'s' %}selected{% endif %}>
+                        {{ turma.turma__turma }} - {{ turma.count }}
+                    </option>
                     {% endfor %}
-                </div>
+                </select>
             </div>
-        </div>
-        {% endif %}
+            {% endif %}
+        </form>
 
         <!-- Students Table -->
         <div class="table-responsive mt-3">

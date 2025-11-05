@@ -29,6 +29,8 @@ urlpatterns = [
     path("horariu/", include("horariu.urls")),
     path("estudante/", include("estudante.urls")),
     path("valor/", include("valor.urls")),
+    path("inf/", include("konaba.urls")),
+    path("users/", include("users.urls")),
 ]
 
 if settings.DEBUG:

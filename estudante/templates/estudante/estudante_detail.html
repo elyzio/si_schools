@@ -1,4 +1,5 @@
 {% extends 'main/base.html' %}
+{% load user_tags %}
 
 {% block contents %}
 <div class="row">
@@ -35,7 +36,7 @@
                         </div>
                     </li>
                 </ul>
-
+                {% if request.user|has_any_group:"admin,director,secretaria" %}
                 <a href="{% url 'estudante_update' estudante.pk %}" class="btn btn-primary btn-block"><b>Hadia Perfil</b></a>
                 {% if not estudante.is_transfer %}
                 <a href="{% url 'transfer_create' estudante.pk %}" class="btn btn-warning btn-block"><b><i class="fas fa-exchange-alt"></i> Transfere Estudante</b></a>
@@ -44,12 +45,13 @@
                     <i class="fas fa-exchange-alt"></i> Estudante Transfere
                 </div>
                 {% endif %}
+                {% endif %}
             </div>
         </div>
-
+        {% if request.user|has_any_group:"admin,director,secretaria" %}
         <!-- User Account Info -->
         {% if estudante_user %}
-        <div class="card card-primary">
+        <div class="card card-primary card-outline">
             <div class="card-header">
                 <h3 class="card-title">Konta Uzuáriu</h3>
             </div>
@@ -62,7 +64,7 @@
             </div>
         </div>
         {% else %}
-        <div class="card card-warning">
+        <div class="card card-warning card-outline">
             <div class="card-header">
                 <h3 class="card-title">Konta Uzuáriu</h3>
             </div>
@@ -71,6 +73,7 @@
             </div>
         </div>
         {% endif %}
+        {% endif %}
     </div>
 
     <div class="col-md-8">
@@ -78,7 +81,7 @@
             <div class="card-header">
                 <h3 class="card-title">Informasaun Estudante</h3>
                 <div class="card-tools">
-                    <a href="{% url 'estudante_list' %}" class="btn btn-secondary btn-sm">
+                    <a href="javascript:void(0);" class="btn btn-secondary btn-sm" onclick="history.back();">
                         <i class="fas fa-arrow-left"></i> Fila ba Lista
                     </a>
                 </div>
@@ -143,14 +146,16 @@
         </div>
 
         <!-- Parent/Guardian Information Card -->
-        <div class="card card-success mt-3">
+        <div class="card card-success mt-3 card-outline">
             <div class="card-header">
                 <h3 class="card-title"><i class="fas fa-users mr-1"></i> Encaregadu Edukasaun</h3>
+                {% if request.user|has_any_group:"admin,director,secretaria" %}
                 <div class="card-tools">
                     <a href="{% url 'encarregadu_create' estudante.pk %}" class="btn btn-primary btn-sm">
                         <i class="fas fa-plus"></i> Aumenta Encaregadu
                     </a>
                 </div>
+                {% endif %}
             </div>
             <div class="card-body">
                 {% if encarregadu_list %}
@@ -163,7 +168,9 @@
                                 <th>Kontatu</th>
                                 <th>Email</th>
                                 <th>Prinsipál</th>
+                                {% if request.user|has_any_group:"admin,director,secretaria" %}
                                 <th>Asaun</th>
+                                {% endif %}
                             </tr>
                         </thead>
                         <tbody>
@@ -180,6 +187,7 @@
                                     <span class="badge badge-secondary">Lae</span>
                                     {% endif %}
                                 </td>
+                                {% if request.user|has_any_group:"admin,director,secretaria" %}
                                 <td>
                                     <div class="btn-group btn-group-sm" role="group">
                                         <a href="{% url 'encarregadu_update' encarregadu.pk %}" class="btn btn-info" title="Hadia">
@@ -190,6 +198,7 @@
                                         </button>
                                     </div>
                                 </td>
+                                {% endif %}
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -202,14 +211,16 @@
         </div>
 
         <!-- Document Information Card -->
-        <div class="card card-info mt-3">
+        <div class="card card-info mt-3 card-outline">
             <div class="card-header">
                 <h3 class="card-title"><i class="fas fa-file-pdf mr-1"></i> Dokumentu Estudante</h3>
+                {% if request.user|has_any_group:"admin,director,secretaria" %}
                 <div class="card-tools">
                     <a href="{% url 'dokumentu_create' estudante.pk %}" class="btn btn-primary btn-sm">
                         <i class="fas fa-plus"></i> Aumenta Dokumentu
                     </a>
                 </div>
+                {% endif %}
             </div>
             <div class="card-body">
                 {% if dokumentu_list %}
@@ -218,17 +229,19 @@
                         <thead>
                             <tr>
                                 <th>Tipu Dokumentu</th>
-                                <th>File</th>
+                                <!-- <th>File</th> -->
                                 <th>Observasaun</th>
                                 <th>Data Upload</th>
+                                {% if request.user|has_any_group:"admin,director,secretaria" %}
                                 <th>Asaun</th>
+                                {% endif %}
                             </tr>
                         </thead>
                         <tbody>
                             {% for dokumentu in dokumentu_list %}
                             <tr>
                                 <td>{{ dokumentu.get_tipo_dokumentu_display }}</td>
-                                <td>
+                                {% comment %} <td>
                                     {% if dokumentu.file %}
                                     <a href="{{ dokumentu.file.url }}" target="_blank" class="btn btn-sm btn-outline-primary">
                                         <i class="fas fa-download"></i> Download
@@ -236,11 +249,15 @@
                                     {% else %}
                                     <span class="text-muted">-</span>
                                     {% endif %}
-                                </td>
+                                </td> {% endcomment %}
                                 <td>{{ dokumentu.obs|default:"-"|truncatewords:10 }}</td>
                                 <td>{{ dokumentu.created_at|date:"d/m/Y" }}</td>
+                                {% if request.user|has_any_group:"admin,director,secretaria" %}
                                 <td>
                                     <div class="btn-group btn-group-sm" role="group">
+                                        <a href="{{ dokumentu.file.url }}" target="_blank" class="btn btn-primary btn-xs" title="Haree Dokumentu">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
                                         <a href="{% url 'dokumentu_update' dokumentu.pk %}" class="btn btn-info" title="Hadia">
                                             <i class="fas fa-edit"></i>
                                         </a>
@@ -249,6 +266,7 @@
                                         </button>
                                     </div>
                                 </td>
+                                {% endif %}
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -261,15 +279,17 @@
         </div>
 
         <!-- Transfer Information Card -->
-        <div class="card card-warning mt-3">
+        <div class="card card-warning card-outline mt-3">
             <div class="card-header">
                 <h3 class="card-title"><i class="fas fa-exchange-alt mr-1"></i> Istória Transferénsia</h3>
+                {% if request.user|has_any_group:"admin,director,secretaria" %}
                 {% if not estudante.is_transfer %}
                 <div class="card-tools">
                     <a href="{% url 'transfer_create' estudante.pk %}" class="btn btn-primary btn-sm">
                         <i class="fas fa-plus"></i> Rejista Transferénsia
                     </a>
                 </div>
+                {% endif %}
                 {% endif %}
             </div>
             <div class="card-body">
@@ -283,7 +303,9 @@
                                 <th>Data Transfere</th>
                                 <th>Data Simu</th>
                                 <th>Observasaun</th>
+                                {% if request.user|has_any_group:"admin,director,secretaria" %}
                                 <th>Asaun</th>
+                                {% endif %}
                             </tr>
                         </thead>
                         <tbody>
@@ -294,6 +316,7 @@
                                 <td>{{ transfer.data_transfer|date:"d/m/Y" }}</td>
                                 <td>{{ transfer.data_aseita|date:"d/m/Y"|default:"-" }}</td>
                                 <td>{{ transfer.obs|default:"-"|truncatewords:10 }}</td>
+                                {% if request.user|has_any_group:"admin,director,secretaria" %}
                                 <td>
                                     <div class="btn-group btn-group-sm" role="group">
                                         <a href="{% url 'transfer_update' transfer.pk %}" class="btn btn-info" title="Hadia">
@@ -304,6 +327,7 @@
                                         </button>
                                     </div>
                                 </td>
+                                {% endif %}
                             </tr>
                             {% endfor %}
                         </tbody>

@@ -1,0 +1,242 @@
+{% extends 'main/base.html' %}
+
+{% block contents %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">{{ page_title }}</h3>
+        <div class="card-tools">
+            <a href="{% url 'estudante_list' %}" class="btn btn-secondary btn-sm">
+                <i class="fas fa-arrow-left"></i> Fila Ba Lista
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <!-- Info Section -->
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <div class="alert alert-default-info">
+                    <i class="fas fa-info-circle"></i>
+                    <strong>Tinan Akadémiku Ativu: {{ active_ano.ano }}</strong><br>
+                    <small>Estudante sira-ne'ebé kompleta valor hotu iha periodo 3 bele reinskrisaun ba klase {{ next_grade }} ba tinan tuir mai.</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Requirements Info -->
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <div class="alert alert-default-warning">
+                    <h5><i class="fas fa-clipboard-check"></i> Rekizitu ba Reinskrisaun:</h5>
+                    <ul class="mb-0">
+                        <li>Estudante presiza iha <strong>13 disiplina</strong> nia valor iha kada periodo</li>
+                        <li>Presiza kompleta <strong>3 periodu</strong> (Periodo 1, 2, no 3)</li>
+                        <li>Total: <strong>39 valor</strong> (13 × 3 periodu)</li>
+                        <li><strong>Média >= 6.0:</strong> Passa ba klase tuir mai</li>
+                        <li><strong>Média < 6.0:</strong> Tenki repete klase</li>
+                        <li><em>Nota:</em> Bele hatama kompensasaun atitude (max 2 pontos) ba estudante sira-ne'ebé presiza</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Students Table -->
+        {% if students_data %}
+        <div class="table-responsive" style="overflow-x: auto;">
+            <table id="reassignStudentsTable" class="table table-bordered table-striped table-hover table-sm" style="white-space: nowrap;">
+                <thead class="thead-light">
+                    <tr>
+                        <th style="width: 40px;">No.</th>
+                        <th style="min-width: 80px;">EMIS</th>
+                        <th style="min-width: 150px;">Naran Estudante</th>
+                        <th style="width: 60px;">Dept</th>
+                        <th style="width: 60px;">Klase</th>
+                        <th style="width: 70px;">Média</th>
+                        <th style="width: 180px;">Status Valor</th>
+                        <th style="min-width: 120px;">Progress</th>
+                        <th style="width: 90px;">Status</th>
+                        <th style="width: 100px;">Aksaun</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for data in students_data %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ data.estudante_classe.estudante.emis }}</td>
+                        <td>
+                            <a href="{% url 'estudante_detail' data.estudante_classe.estudante.pk %}">
+                                {{ data.estudante_classe.estudante.nome }}
+                            </a>
+                        </td>
+                        <td>{{ data.estudante_classe.departamentu.sigla }}</td>
+                        <td>{{ data.estudante_classe.classe.classe }}{{ data.estudante_classe.turma.turma }}</td>
+                        <td>
+                            <!-- Average Score -->
+                            {% if data.completion_info.average_score %}
+                                {% if data.completion_info.average_score >= 6.0 %}
+                                    <span class="badge badge-success" style="font-size: 14px;">
+                                        {{ data.completion_info.average_score }}
+                                    </span>
+                                {% else %}
+                                    <span class="badge badge-danger" style="font-size: 14px;">
+                                        {{ data.completion_info.average_score }}
+                                    </span>
+                                {% endif %}
+                                {% if data.estudante_classe.kompensasaun_atitude %}
+                                    <small class="text-success">+{{ data.estudante_classe.kompensasaun_atitude }}</small>
+                                {% endif %}
+                            {% else %}
+                                <span class="badge badge-secondary">-</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <!-- Period completion badges -->
+                            {% for period_detail in data.completion_info.period_details %}
+                            <span class="badge {% if period_detail.is_complete %}badge-success{% else %}badge-warning{% endif %}"
+                                  title="{{ period_detail.period.period }}: {{ period_detail.marks_count }}/{{ period_detail.required }}">
+                                P{{ forloop.counter }}: {{ period_detail.marks_count }}/{{ period_detail.required }}
+                            </span>
+                            {% endfor %}
+                        </td>
+                        <td>
+                            <!-- Overall progress -->
+                            <div class="progress" style="height: 25px;">
+                                {% widthratio data.completion_info.total_marks data.completion_info.required_total_marks 100 as progress_percent %}
+                                <div class="progress-bar {% if data.is_eligible %}bg-success{% else %}bg-warning{% endif %}"
+                                     role="progressbar"
+                                     style="width: {{ progress_percent }}%;"
+                                     aria-valuenow="{{ data.completion_info.total_marks }}"
+                                     aria-valuemin="0"
+                                     aria-valuemax="{{ data.completion_info.required_total_marks }}">
+                                    {{ data.completion_info.total_marks }}/{{ data.completion_info.required_total_marks }}
+                                </div>
+                            </div>
+                        </td>
+                        <td style="text-align: center;">
+                            <!-- Passing Status -->
+                            {% if data.completion_info.can_pass %}
+                                <span class="badge badge-success badge-sm" title="{{ data.completion_info.pass_reason }}">
+                                    <i class="fas fa-check"></i> Passa
+                                </span>
+                            {% elif data.completion_info.average_score %}
+                                <span class="badge badge-danger badge-sm" title="{{ data.completion_info.pass_reason }}">
+                                    <i class="fas fa-times"></i> Fali
+                                </span>
+                            {% else %}
+                                <span class="badge badge-secondary badge-sm">
+                                    <i class="fas fa-hourglass-half"></i>
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td style="text-align: center;">
+                            {% if data.is_eligible %}
+                                {% if data.estudante_classe.is_passa %}
+                                    <span class="badge badge-info badge-sm">
+                                        <i class="fas fa-check"></i> Ona
+                                    </span>
+                                {% else %}
+                                    <a href="{% url 'reassign_student' data.estudante_classe.pk %}"
+                                       class="btn btn-success btn-xs"
+                                       title="Reasigna ba Klase {{ next_grade }}">
+                                        <i class="fas fa-arrow-up"></i> Reinskrisaun
+                                    </a>
+                                {% endif %}
+                            {% else %}
+                                <span class="badge badge-secondary badge-sm" title="{{ data.completion_info.pass_reason }}">
+                                    <i class="fas fa-ban"></i>
+                                </span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Summary -->
+        <div class="row mt-3">
+            <div class="col-md-12">
+                <div class="card card-outline card-primary">
+                    <div class="card-body">
+                        <h5><i class="fas fa-chart-pie"></i> Sumariu:</h5>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="info-box bg-info">
+                                    <span class="info-box-icon"><i class="fas fa-users"></i></span>
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">Total Estudante</span>
+                                        <span class="info-box-number">{{ students_data|length }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="info-box bg-success">
+                                    <span class="info-box-icon"><i class="fas fa-check-circle"></i></span>
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">Bele Reinskrisaun</span>
+                                        <span class="info-box-number">{{ eligible_count }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="info-box bg-warning">
+                                    <span class="info-box-icon"><i class="fas fa-exclamation-triangle"></i></span>
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">Seidauk Kompleta</span>
+                                        <span class="info-box-number">{{ not_eligible_count }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% else %}
+        <div class="alert alert-default-warning">
+            <i class="fas fa-exclamation-triangle"></i>
+            La iha estudante iha klase {{ grade }} ba tinan akadémiku {{ active_ano.ano }}.
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function() {
+    $('#reassignStudentsTable').DataTable({
+        "paging": true,
+        "lengthChange": true,
+        "searching": true,
+        "ordering": true,
+        "info": true,
+        "autoWidth": false,
+        "responsive": false,
+        "scrollX": true,
+        "pageLength": 25,
+        "language": {
+            "search": "Buka:",
+            "lengthMenu": "Hatudu _MENU_ rejistru",
+            "info": "Hatudu _START_ to _END_ husi _TOTAL_ estudante",
+            "infoEmpty": "La iha estudante",
+            "infoFiltered": "(filtru husi _MAX_ total estudante)",
+            "paginate": {
+                "first": "Uluk",
+                "last": "Ikus",
+                "next": "Oinmai",
+                "previous": "Fila"
+            },
+            "zeroRecords": "La hetan estudante"
+        },
+        "order": [[2, 'asc']], // Sort by name
+        "columnDefs": [
+            { "orderable": false, "targets": [6, 7, 8, 9] }, // Disable sorting for status valor, progress, status, action
+            { "searchable": false, "targets": [0, 6, 7, 8, 9] }, // Disable search for no, status valor, progress, status, action
+            { "className": "text-center", "targets": [0, 3, 4, 5, 8, 9] } // Center align specific columns
+        ]
+    });
+});
+</script>
+{% endblock %}

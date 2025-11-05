@@ -130,13 +130,7 @@ class Turma(models.Model):
         ordering = ['turma']
 
 class Periodo(models.Model):
-    # PERIODO_CHOICES = [
-    #     ('1P', 'Primeiro Periodo'),
-    #     ('2P', 'Segundo Periodo'),
-    #     ('3P', 'Terseiro Periodo'),
-    #     ('SEM', 'Semester'),
-    #     ('AN', 'Annual'),
-    # ]
+
     period = models.CharField(max_length=10, unique=True)
     is_active = models.BooleanField()
     created_at = models.DateTimeField(auto_now_add=True)

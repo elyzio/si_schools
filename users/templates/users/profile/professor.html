@@ -1,0 +1,140 @@
+{% load static %}
+<div class="mb-4 d-flex justify-content-end">
+    <a href="{% url 'update_profile_professor' %}" class="btn btn-sm btn-primary">Update Profile</a>
+</div>
+<div class="row">
+    <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+        <div class="card">
+            <div class="card-header"><i class="fas fa-image mr-2"></i> <span class="font-weight-bold">Imagen</span></div>
+            <div class="card-body">
+                <div class="text-center">
+                    {% if user.professoruser.professor.image%}
+                    <img src="{{ user.professoruser.professor.image.url }}" style="width: 100px;" class="img-fluid rounded-circle"
+                        alt="Profile Image">
+                    {% else %}
+                    <img src="{% static 'img/default_profile.png' %}" class="img-fluid rounded-circle" style="width: 100px;" alt="Image Profile">
+                    {% endif %}
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+        <div class="card">
+            <div class="card-header"><i class="fas fa-id-card mr-2"></i><span class="font-weight-bold">Personal</span></div>
+            <div class="card-body">
+                <table class="table table-bordered table-hover table-sm table-striped">
+                    <tr>
+                        <td>Naran</td>
+                        <td>: {{user.professoruser.professor.nome | default:"-"}}</td>
+                    </tr>
+                    <tr>
+                        <td>Sexu</td>
+                        <td>: {{user.professoruser.professor.sexu | default:"-"}}</td>
+                    </tr>
+                    <tr>
+                        <td>Data Moris</td>
+                        <td>: {{user.professoruser.professor.data_moris | default:"-"}}</td>
+                    </tr>
+                    <tr>
+                        <td>Fatin Moris</td>
+                        <td>: {{user.professoruser.professor.fatin_moris | default:"-"}}</td>
+                    </tr>
+                    <tr>
+                        <td>Nacionalidade</td>
+                        <td>: {{user.professoruser.professor.nacionalidade | default:"-"}}</td>
+                    </tr>
+                    <tr>
+                        <td>Estadu Civil</td>
+                        <td>: {{user.professoruser.professor.estadu_civil | default:"-"}}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+        <div class="card">
+            <div class="card-header"><i class="fas fa-map-marker-alt mr-2"></i><span class="font-weight-bold">Origen</span></div>
+            <div class="card-body">
+                <table class="table table-bordered table-hover table-sm table-striped">
+                    <tr>
+                        <td>Distrito</td>
+                        <td>: {{user.professoruser.professor.distrito.nome | default:"-"}}</td>
+                    </tr>
+                    <tr>
+                        <td>Subdistritu</td>
+                        <td>: {{user.professoruser.professor.subdistrito.nome | default:"-"}}</td>
+                    </tr>
+                    <tr>
+                        <td>Suku</td>
+                        <td>: {{user.professoruser.professor.suco.nome | default:"-"}}</td>
+                    </tr>
+                    <tr>
+                        <td>Aldeia</td>
+                        <td>: {{user.professoruser.professor.aldeia.nome | default:"-"}}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+        <div class="card">
+            <div class="card-header"><i class="fas fa-address-book mr-2"></i><span class="font-weight-bold">Kontatu</span></div>
+            <div class="card-body">
+                <table class="table table-bordered table-hover table-sm table-striped">
+                    <tr>
+                        <td>Hela Fatin</td>
+                        <td>: {{user.professoruser.professor.hela_fatin | default:"-"}}</td>
+                    </tr>
+                    <tr>
+                        <td>Email</td>
+                        <td>: {{user.professoruser.professor.email | default:"-"}}</td>
+                    </tr>
+                    <tr>
+                        <td>No. Kontatu</td>
+                        <td>: {{user.professoruser.professor.kontatu | default:"-"}}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+        <div class="card">
+            <div class="card-header"><i class="fas fa-graduation-cap mr-2"></i><span class="font-weight-bold">Akademiku</span></div>
+            <div class="card-body">
+                <table class="table table-bordered table-hover table-sm table-striped">
+                    <tr>
+                        <td>Grau Akademiku</td>
+                        <td>: {{user.professoruser.professor.grau_akademiku | default:"-"}}</td>
+                    </tr>
+                    <tr>
+                        <td>Nivel Akademiku</td>
+                        <td>: {{user.professoruser.professor.nivel_akademiku | default:"-"}}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+        <div class="card">
+            <div class="card-header"><i class="fas fa-file-contract mr-2"></i><span class="font-weight-bold">Kontratu</span></div>
+            <div class="card-body">
+                <table class="table table-bordered table-hover table-sm table-striped">
+                    <tr>
+                        <td>Data Kontratu</td>
+                        <td>: {{user.professoruser.professor.data_contratacao | default:"-"}}</td>
+                    </tr>
+                    <tr>
+                        <td>Estadu</td>
+                        <td>: {{user.professoruser.professor.estadu | default:"-"}}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>

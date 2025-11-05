@@ -19,6 +19,7 @@
                     <th>Profesor</th>
                     <th>Materia</th>
                     <th>Klase</th>
+                    <th>Dep</th>
                     <th>Status</th>
                     <th>Aksaun</th>
                 </tr>
@@ -34,6 +35,7 @@
                     </td>
                     <td>{{ pm.materia.materia }}</td>
                     <td>{{ pm.classe.classe }}</td>
+                    <td>{{ pm.materia.departamentu.sigla|default:'Geral' }}</td>
                     <td>
                         {% if pm.is_active %}
                             <span class="badge badge-success">Ativu</span>

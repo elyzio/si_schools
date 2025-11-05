@@ -1,0 +1,102 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% load user_tags %}
+{% load crispy_forms_tags %}
+
+
+{% block breadcrumb-items %}
+
+{% endblock breadcrumb-items %}
+
+
+{% block contents %}
+
+{% if page == 'list' %}  
+    {% if request.user|has_group:"professor" %}
+        {% include 'users/profile/professor.html' %}
+    {% elif request.user|has_group:"estudante" %}
+        {% include 'users/profile/estudante.html' %}
+    {% endif %}
+{% elif page == 'form' %}
+<div class="card">
+    <div class="card-header">Update Profile</div>
+    <div class="card-body">
+        {% crispy form %}
+    </div>
+</div>
+{% endif %}
+
+{% endblock contents %}
+
+{% block scripts %}
+<script>
+$(document).ready(function() {
+    // Only initialize empty state if the fields are actually empty
+    // This preserves selections when form is redisplayed with validation errors
+    if ($('#id_subdistrito option').length <= 1) {
+        $('#id_subdistrito').empty().append('<option value="">Hili distritu dahulu...</option>');
+    }
+    if ($('#id_suco option').length <= 1) {
+        $('#id_suco').empty().append('<option value="">Hili subdistritu dahulu...</option>');
+    }
+    if ($('#id_aldeia option').length <= 1) {
+        $('#id_aldeia').empty().append('<option value="">Hili suco dahulu...</option>');
+    }
+
+    // Dependent dropdowns for address fields
+    $('#id_distrito').change(function() {
+        var distritoId = $(this).val();
+
+        // Clear and reset dependent fields
+        $('#id_subdistrito').empty().append('<option value="">---------</option>');
+        $('#id_suco').empty().append('<option value="">Hili subdistritu dahulu...</option>');
+        $('#id_aldeia').empty().append('<option value="">Hili suco dahulu...</option>');
+
+        if (distritoId) {
+            $.get('{% url "ajax_subdistrito" %}', {distrito_id: distritoId}, function(data) {
+                $.each(data, function(index, item) {
+                    $('#id_subdistrito').append('<option value="' + item.id + '">' + item.name + '</option>');
+                });
+            });
+        } else {
+            $('#id_subdistrito').empty().append('<option value="">Hili distritu dahulu...</option>');
+        }
+    });
+
+    $('#id_subdistrito').change(function() {
+        var subdistritoId = $(this).val();
+
+        // Clear and reset dependent fields
+        $('#id_suco').empty().append('<option value="">---------</option>');
+        $('#id_aldeia').empty().append('<option value="">Hili suco dahulu...</option>');
+
+        if (subdistritoId) {
+            $.get('{% url "ajax_suco" %}', {subdistrito_id: subdistritoId}, function(data) {
+                $.each(data, function(index, item) {
+                    $('#id_suco').append('<option value="' + item.id + '">' + item.name + '</option>');
+                });
+            });
+        } else {
+            $('#id_suco').empty().append('<option value="">Hili subdistritu dahulu...</option>');
+        }
+    });
+
+    $('#id_suco').change(function() {
+        var sucoId = $(this).val();
+
+        // Clear dependent field
+        $('#id_aldeia').empty().append('<option value="">---------</option>');
+
+        if (sucoId) {
+            $.get('{% url "ajax_aldeia" %}', {suco_id: sucoId}, function(data) {
+                $.each(data, function(index, item) {
+                    $('#id_aldeia').append('<option value="' + item.id + '">' + item.name + '</option>');
+                });
+            });
+        } else {
+            $('#id_aldeia').empty().append('<option value="">Hili suco dahulu...</option>');
+        }
+    });
+});
+</script>
+{% endblock scripts %}

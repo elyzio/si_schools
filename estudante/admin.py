@@ -44,6 +44,22 @@ class EstudanteTransferAdmin(admin.ModelAdmin):
         return obj.estudante.emis
     get_estudante_emis.short_description = 'EMIS'
 
+@admin.register(EstudanteAlumni)
+class EstudanteAlumniAdmin(admin.ModelAdmin):
+    list_display = ('get_estudante_nome', 'get_estudante_emis', 'data_alumni', 'obs')
+    list_filter = ('data_alumni',)
+    search_fields = ('estudante__nome', 'estudante__emis', 'data_alumni', 'obs')
+    ordering = ('-data_alumni',)
+    readonly_fields = ('created_at',)
+
+    def get_estudante_nome(self, obj):
+        return obj.estudante.nome
+    get_estudante_nome.short_description = 'Nome Estudante'
+
+    def get_estudante_emis(self, obj):
+        return obj.estudante.emis
+    get_estudante_emis.short_description = 'EMIS'
+
 @admin.register(EstudanteUser)
 class EstudanteUserAdmin(admin.ModelAdmin):
     list_display = ('get_estudante_nome', 'get_estudante_emis', 'get_username', 'created_at')

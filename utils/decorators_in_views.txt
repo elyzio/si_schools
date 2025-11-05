@@ -1,0 +1,15 @@
+
+from .decorators import group_required
+
+## Single Group
+@group_required('admin')
+def admin_dashboard(request):
+    # Only users in 'admin' group (or superusers) can access this
+    return render(request, 'admin/dashboard.html')
+
+
+## Multiple Group
+@group_required('admin', 'director', 'secretaria')
+def staff_portal(request):
+    # Any of these groups can access
+    return render(request, 'staff/portal.html')

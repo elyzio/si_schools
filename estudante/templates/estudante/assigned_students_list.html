@@ -1,0 +1,310 @@
+{% extends 'main/base.html' %}
+
+{% block contents %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">{{ page_title }}</h3>
+        <div class="card-tools">
+            <a href="{% url 'estudante_list' %}" class="btn btn-secondary btn-sm">
+                <i class="fas fa-arrow-left"></i> Fila Ba Lista Estudante
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <!-- Info Section -->
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <div class="alert alert-default-info">
+                    <i class="fas fa-info-circle"></i>
+                    <strong>Tinan Akadémiku Ativu: {{ active_ano.ano }}</strong><br>
+                    <small>Lista estudante hotu-hotu ne'ebé iha klase iha tinan akadémiku ativu.</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="card card-outline card-primary mb-3">
+            <div class="card-header">
+                <h5 class="card-title"><i class="fas fa-filter"></i> Filtra</h5>
+            </div>
+            <div class="card-body">
+                <form method="get" id="filterForm" class="form-inline">
+                    <!-- Department Filter -->
+                    <div class="form-group mr-3 mb-2">
+                        <label for="deptFilter" class="mr-2">Departamentu:</label>
+                        <select name="dept" id="deptFilter" class="form-control form-control-sm" onchange="this.form.submit()">
+                            <option value="">Hotu ({{ total_count }})</option>
+                            {% for dept in departments %}
+                            <option value="{{ dept.departamentu__id }}"
+                                    {% if dept.departamentu__id|stringformat:'s' == dept_filter %}selected{% endif %}>
+                                {{ dept.departamentu__sigla }} ({{ dept.count }})
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Class Filter (only if department selected) -->
+                    {% if dept_filter %}
+                    <div class="form-group mr-3 mb-2">
+                        <label for="classeFilter" class="mr-2">Klase:</label>
+                        <select name="classe" id="classeFilter" class="form-control form-control-sm" onchange="this.form.submit()">
+                            <option value="">Hotu</option>
+                            {% for classe in classes %}
+                            <option value="{{ classe.classe__id }}"
+                                    {% if classe.classe__id|stringformat:'s' == classe_filter %}selected{% endif %}>
+                                {{ classe.classe__classe }} ({{ classe.count }})
+                            </option>
+                            {% endfor %}
+                        </select>
+                        <input type="hidden" name="dept" value="{{ dept_filter }}">
+                    </div>
+                    {% endif %}
+
+                    <!-- Turma Filter (only if class selected) -->
+                    {% if classe_filter and dept_filter %}
+                    <div class="form-group mr-3 mb-2">
+                        <label for="turmaFilter" class="mr-2">Turma:</label>
+                        <select name="turma" id="turmaFilter" class="form-control form-control-sm" onchange="this.form.submit()">
+                            <option value="">Hotu</option>
+                            {% for turma in turmas %}
+                            <option value="{{ turma.turma__id }}"
+                                    {% if turma.turma__id|stringformat:'s' == turma_filter %}selected{% endif %}>
+                                {{ turma.turma__turma }} ({{ turma.count }})
+                            </option>
+                            {% endfor %}
+                        </select>
+                        <input type="hidden" name="dept" value="{{ dept_filter }}">
+                        <input type="hidden" name="classe" value="{{ classe_filter }}">
+                    </div>
+                    {% endif %}
+
+                    <!-- Clear Filter Button -->
+                    {% if dept_filter or classe_filter or turma_filter %}
+                    <div class="form-group mb-2">
+                        <a href="{% url 'assigned_students_list' %}" class="btn btn-secondary btn-sm">
+                            <i class="fas fa-times"></i> Hamoos Filtru
+                        </a>
+                    </div>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+
+        <!-- Students Table -->
+        {% if students_data %}
+        <div class="table-responsive" style="overflow-x: auto;">
+            <table id="assignedStudentsTable" class="table table-bordered table-striped table-hover table-sm" style="white-space: nowrap;">
+                <thead class="thead-light">
+                    <tr>
+                        <th style="width: 40px;">No.</th>
+                        <th style="min-width: 80px;">EMIS</th>
+                        <th style="min-width: 200px;">Naran Estudante</th>
+                        <th style="width: 60px;">Dept</th>
+                        <th style="width: 60px;">Klase</th>
+                        <!-- <th style="width: 70px;">Média</th> -->
+                        <th style="width: 90px;">Data</th>
+                        <th style="width: 210px;">Status Valor</th>
+                        <th style="min-width: 80px;">Progress</th>
+                        <!-- <th style="width: 90px;">Status</th> -->
+                        <th style="width: 90px;">Aksaun</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for data in students_data %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ data.estudante_classe.estudante.emis }}</td>
+                        <td>
+                            <a href="{% url 'estudante_detail' data.estudante_classe.estudante.pk %}">
+                                {{ data.estudante_classe.estudante.nome }}
+                            </a>
+                        </td>
+                        <td>{{ data.estudante_classe.departamentu.sigla }}</td>
+                        <td>{{ data.estudante_classe.classe.classe }}/{{ data.estudante_classe.turma.turma }}</td>
+                        <!-- <td>
+                            Average Score
+                            {% if data.completion_info.average_score %}
+                                {% if data.completion_info.average_score >= 6.0 %}
+                                    <span class="badge badge-success" style="font-size: 13px;">
+                                        {{ data.completion_info.average_score }}
+                                    </span>
+                                {% else %}
+                                    <span class="badge badge-danger" style="font-size: 13px;">
+                                        {{ data.completion_info.average_score }}
+                                    </span>
+                                {% endif %}
+                                {% if data.estudante_classe.kompensasaun_atitude %}
+                                    <small class="text-success">+{{ data.estudante_classe.kompensasaun_atitude }}</small>
+                                {% endif %}
+                            {% else %}
+                                <span class="badge badge-secondary">-</span>
+                            {% endif %}
+                        </td> -->
+                        <td>{{ data.estudante_classe.data_enrollment|date:"d/m/Y" }}</td>
+                        <td>
+                            <!-- Period completion badges -->
+                            {% for period_detail in data.completion_info.period_details %}
+                            <span class="badge {% if period_detail.is_complete %}badge-success{% else %}badge-warning{% endif %}"
+                                  title="{{ period_detail.period.period }}: {{ period_detail.marks_count }}/{{ period_detail.required }}">
+                                P{{ forloop.counter }}: {{ period_detail.marks_count }}/{{ period_detail.required }}
+                            </span>
+                            {% endfor %}
+                        </td>
+                        <td>
+                            <!-- Overall progress -->
+                            <div class="progress" style="height: 20px;">
+                                {% widthratio data.completion_info.total_marks data.completion_info.required_total_marks 100 as progress_percent %}
+                                <div class="progress-bar {% if data.is_eligible %}bg-success{% else %}bg-warning{% endif %}"
+                                     role="progressbar"
+                                     style="width: {{ progress_percent }}%;"
+                                     aria-valuenow="{{ data.completion_info.total_marks }}"
+                                     aria-valuemin="0"
+                                     aria-valuemax="{{ data.completion_info.required_total_marks }}">
+                                    <small>{{ data.completion_info.total_marks }}/{{ data.completion_info.required_total_marks }}</small>
+                                </div>
+                            </div>
+                        </td>
+                        <!-- <td style="text-align: center;">
+                            Passing Status
+                            {% if data.completion_info.can_pass %}
+                                <span class="badge badge-success badge-sm" title="{{ data.completion_info.pass_reason }}">
+                                    <i class="fas fa-check"></i> Passa
+                                </span>
+                            {% elif data.completion_info.average_score %}
+                                <span class="badge badge-danger badge-sm" title="{{ data.completion_info.pass_reason }}">
+                                    <i class="fas fa-times"></i> Fali
+                                </span>
+                            {% else %}
+                                <span class="badge badge-secondary badge-sm">
+                                    <i class="fas fa-hourglass-half"></i>
+                                </span>
+                            {% endif %}
+                        </td> -->
+                        <td style="text-align: center;">
+                            <div class="btn-group btn-group-sm">
+                                <a href="{% url 'estudante_detail' data.estudante_classe.estudante.pk %}"
+                                   class="btn btn-info btn-xs"
+                                   title="Haree Detallu">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                {% if data.is_eligible and not data.estudante_classe.is_passa %}
+                                    {% if data.estudante_classe.classe.classe == '12 Ano' %}
+                                    <a href="{% url 'reassign_student' data.estudante_classe.pk %}"
+                                       class="btn btn-primary btn-xs"
+                                       title="Halo Alumni"
+                                       onclick="return confirm('Konfirma halo estudante {{ data.estudante_classe.estudante.nome }} sai Alumni?')">
+                                        <i class="fas fa-graduation-cap"></i>
+                                    </a>
+                                    {% else %}
+                                    <a href="{% url 'reassign_student' data.estudante_classe.pk %}"
+                                       class="btn btn-success btn-xs"
+                                       title="Reasigna ba Klase oin">
+                                        <i class="fas fa-arrow-up"></i>
+                                    </a>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Summary -->
+        <div class="row mt-3">
+            <div class="col-md-12">
+                <div class="card card-outline card-primary">
+                    <div class="card-body">
+                        <h5><i class="fas fa-chart-pie"></i> Sumariu:</h5>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="info-box bg-info">
+                                    <span class="info-box-icon"><i class="fas fa-users"></i></span>
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">Total Estudante</span>
+                                        <span class="info-box-number">{{ total_count }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="info-box bg-success">
+                                    <span class="info-box-icon"><i class="fas fa-check-circle"></i></span>
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">Kompleta Valor</span>
+                                        <span class="info-box-number">{{ complete_count }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="info-box bg-warning">
+                                    <span class="info-box-icon"><i class="fas fa-exclamation-triangle"></i></span>
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">Seidauk Kompleta</span>
+                                        <span class="info-box-number">{{ incomplete_count }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="info-box bg-primary">
+                                    <span class="info-box-icon"><i class="fas fa-school"></i></span>
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">Departamentu</span>
+                                        <span class="info-box-number">{{ departments|length }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% else %}
+        <div class="alert alert-default-warning">
+            <i class="fas fa-exclamation-triangle"></i>
+            La iha estudante ho klase ba tinan akadémiku {{ active_ano.ano }}.
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function() {
+    $('#assignedStudentsTable').DataTable({
+        "paging": true,
+        "lengthChange": true,
+        "searching": true,
+        "ordering": true,
+        "info": true,
+        "autoWidth": false,
+        "responsive": false,
+        "scrollX": true,
+        "pageLength": 25,
+        "language": {
+            "search": "Buka:",
+            "lengthMenu": "Hatudu _MENU_ rejistru",
+            "info": "Hatudu _START_ to _END_ husi _TOTAL_ estudante",
+            "infoEmpty": "La iha estudante",
+            "infoFiltered": "(filtru husi _MAX_ total estudante)",
+            "paginate": {
+                "first": "Uluk",
+                "last": "Ikus",
+                "next": "Tuirmai",
+                "previous": "Fila"
+            },
+            "zeroRecords": "La hetan estudante"
+        },
+        "order": [[3, 'desc'], [2, 'asc']], // Sort by name
+        "columnDefs": [
+            { "orderable": false, "targets": [6, 7, 8] },
+            { "searchable": false, "targets": [0, 6, 7, 8] },
+            { "className": "text-center", "targets": [0, 3, 4, 8] }
+        ]
+    });
+});
+</script>
+{% endblock %}

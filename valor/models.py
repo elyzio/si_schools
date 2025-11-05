@@ -33,9 +33,6 @@ class Valor(models.Model):
 class Klassifikasaun(models.Model):
     estudante_classe = models.ForeignKey(EstudanteClasse, on_delete=models.CASCADE)
     periodo = models.ForeignKey(Periodo, on_delete=models.CASCADE)
-    # classe = models.ForeignKey(Classe, on_delete=models.CASCADE)
-    # turma = models.ForeignKey(Turma, on_delete=models.CASCADE)
-    # departamentu = models.ForeignKey(Departamentu, on_delete=models.CASCADE)
     classificasaun_turma = models.IntegerField(help_text="Rank Iha Turma")
     classificasaun_departamentu = models.IntegerField(help_text="Rank iha Departamentu")
     classificasaun_geral = models.IntegerField(help_text="Rank em geral")

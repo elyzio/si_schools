@@ -214,11 +214,16 @@ def valor_list(request):
     turma_filter = request.GET.get('turma', '')
     periodo_filter = request.GET.get('periodo', '')
 
-    # Get active periods
-    periodos = Periodo.objects.filter(is_active=True).order_by('period')
+    # Get all periods (both active and inactive)
+    periodos = Periodo.objects.all().order_by('period')
+
+    # Get active period as default
+    active_periodo = Periodo.objects.filter(is_active=True).first()
 
     # Set default period filter to first active period
-    if not periodo_filter and periodos.exists():
+    if not periodo_filter and active_periodo:
+        periodo_filter = str(active_periodo.id)
+    elif not periodo_filter and periodos.exists():
         periodo_filter = str(periodos[0].id)
 
     # Get all students enrolled in the active year
@@ -547,3 +552,280 @@ def valor_graph(request, estudante_pk):
         'enrollments': enrollments,
     }
     return render(request, 'valor/valor_graph.html', context)
+
+
+# =============================================================================
+# KLASSIFIKASAUN - FINALIZE RANKINGS FOR YEAR
+# =============================================================================
+
+@login_required
+def finalize_year_rankings(request, ano_id):
+    """
+    Finalize rankings for ALL periods in an academic year
+    Creates Klassifikasaun records for historical reference
+    Call this ONCE when academic year ends (before deactivating year)
+    """
+    from django.db.models import Sum, Q
+    from valor.models import Klassifikasaun
+    from django.views.decorators.http import require_POST
+
+    ano = get_object_or_404(Ano, pk=ano_id)
+
+    if not ano.is_active:
+        messages.warning(request, f'Tinan {ano.ano} la aktiva ona!')
+        return redirect('custom:ano_list')
+
+    # Check if already finalized
+    existing = Klassifikasaun.objects.filter(ano=ano).count()
+    if existing > 0:
+        messages.warning(
+            request,
+            f'Tinan {ano.ano} iha rankings finalizadu ona ({existing} rekord). '
+            f'Atu finalize fali, hamoos rankings sira dahulu iha admin.'
+        )
+        return redirect('custom:ano_detail', pk=ano_id)
+
+    # Get all periods
+    periods = Periodo.objects.all().order_by('period')
+    total_created = 0
+
+    try:
+        with transaction.atomic():
+            for periodo in periods:
+                # Get all students for this year
+                students = EstudanteClasse.objects.filter(ano=ano).annotate(
+                    total_valor=Sum('valor__valor', filter=Q(valor__periodo=periodo))
+                ).order_by('-total_valor')
+
+                # Calculate ranks for each scope
+                for student in students:
+                    if not student.total_valor:
+                        continue  # Skip students with no marks for this period
+
+                    # 1. General rank (all students in this year)
+                    general_rank = EstudanteClasse.objects.filter(
+                        ano=ano
+                    ).annotate(
+                        total=Sum('valor__valor', filter=Q(valor__periodo=periodo))
+                    ).filter(total__gt=student.total_valor).count() + 1
+
+                    # 2. Turma rank (same turma, same class, same dept)
+                    turma_rank = EstudanteClasse.objects.filter(
+                        ano=ano,
+                        turma=student.turma,
+                        departamentu=student.departamentu,
+                        classe=student.classe
+                    ).annotate(
+                        total=Sum('valor__valor', filter=Q(valor__periodo=periodo))
+                    ).filter(total__gt=student.total_valor).count() + 1
+
+                    # 3. Department rank (same department)
+                    dept_rank = EstudanteClasse.objects.filter(
+                        ano=ano,
+                        departamentu=student.departamentu
+                    ).annotate(
+                        total=Sum('valor__valor', filter=Q(valor__periodo=periodo))
+                    ).filter(total__gt=student.total_valor).count() + 1
+
+                    # Create Klassifikasaun record
+                    Klassifikasaun.objects.create(
+                        estudante_classe=student,
+                        periodo=periodo,
+                        ano=ano,
+                        classificasaun_geral=general_rank,
+                        classificasaun_turma=turma_rank,
+                        classificasaun_departamentu=dept_rank,
+                        media_geral=student.total_valor / 13 if student.total_valor else 0
+                    )
+                    total_created += 1
+
+        messages.success(
+            request,
+            f'Rankings finalizadu ona ba tinan {ano.ano}! '
+            f'Total {total_created} klassifikasaun rekord kria ba {periods.count()} períodu.'
+        )
+    except Exception as e:
+        messages.error(request, f'Erru wainhira finalize rankings: {str(e)}')
+
+    return redirect('custom:ano_detail', pk=ano_id)
+
+
+@login_required
+def rankings_leaderboard(request):
+    """
+    Display student rankings leaderboard with filtering
+    SMART: Uses Valor (active year) or Klassifikasaun (historical year)
+    """
+    from django.db.models import Sum, Q, F
+    from valor.models import Klassifikasaun
+
+    # Get filter parameters
+    ano_filter = request.GET.get('ano', '')
+    periodo_filter = request.GET.get('periodo', '')
+    scope = request.GET.get('scope', 'turma')  # turma, departamentu, geral
+    dept_filter = request.GET.get('dept', '')
+    classe_filter = request.GET.get('classe', '')
+    turma_filter = request.GET.get('turma', '')
+
+    # Get all anos
+    anos = Ano.objects.all().order_by('-ano')
+
+    # Set default ano to active year
+    active_ano = Ano.objects.filter(is_active=True).first()
+    if not ano_filter and active_ano:
+        ano_filter = str(active_ano.id)
+    elif not ano_filter and anos.exists():
+        ano_filter = str(anos[0].id)
+
+    # Get selected ano object
+    ano = get_object_or_404(Ano, pk=ano_filter) if ano_filter else None
+
+    # Get all periodos
+    periodos = Periodo.objects.all().order_by('period')
+
+    # Set default periodo
+    active_periodo = Periodo.objects.filter(is_active=True).first()
+    if not periodo_filter and active_periodo:
+        periodo_filter = str(active_periodo.id)
+    elif not periodo_filter and periodos.exists():
+        periodo_filter = str(periodos[0].id)
+
+    periodo = get_object_or_404(Periodo, pk=periodo_filter) if periodo_filter else None
+
+    # Get departments
+    departments = Departamentu.objects.all().order_by('sigla')
+
+    # Get classes based on department filter
+    classes = []
+    if dept_filter:
+        classes = EstudanteClasse.objects.filter(
+            ano=ano,
+            departamentu_id=dept_filter
+        ).values('classe__id', 'classe__classe').distinct().order_by('classe__classe')
+
+    # Get turmas based on department and class filter
+    turmas = []
+    if dept_filter and classe_filter:
+        turmas = EstudanteClasse.objects.filter(
+            ano=ano,
+            departamentu_id=dept_filter,
+            classe_id=classe_filter
+        ).values('turma__id', 'turma__turma').distinct().order_by('turma__turma')
+
+    # Determine if this is historical data
+    is_historical = not ano.is_active if ano else False
+
+    rankings = []
+
+    if ano and periodo:
+        if is_historical:
+            # HISTORICAL: Use Klassifikasaun table
+            klass_query = Klassifikasaun.objects.filter(
+                ano=ano,
+                periodo=periodo
+            ).select_related(
+                'estudante_classe__estudante',
+                'estudante_classe__classe',
+                'estudante_classe__turma',
+                'estudante_classe__departamentu'
+            )
+
+            # Apply scope filter
+            if scope == 'turma' and turma_filter:
+                klass_query = klass_query.filter(estudante_classe__turma_id=turma_filter)
+                order_field = 'classificasaun_turma'
+            elif scope == 'departamentu' and dept_filter:
+                klass_query = klass_query.filter(estudante_classe__departamentu_id=dept_filter)
+                order_field = 'classificasaun_departamentu'
+            else:  # geral
+                order_field = 'classificasaun_geral'
+
+            # Additional filters for turma scope
+            if scope == 'turma':
+                if dept_filter:
+                    klass_query = klass_query.filter(estudante_classe__departamentu_id=dept_filter)
+                if classe_filter:
+                    klass_query = klass_query.filter(estudante_classe__classe_id=classe_filter)
+
+            klass_query = klass_query.order_by(order_field, 'estudante_classe__estudante__nome')
+
+            for klass in klass_query:
+                if scope == 'turma':
+                    rank = klass.classificasaun_turma
+                elif scope == 'departamentu':
+                    rank = klass.classificasaun_departamentu
+                else:
+                    rank = klass.classificasaun_geral
+
+                rankings.append({
+                    'rank': rank,
+                    'estudante_id': klass.estudante_classe.estudante.id,
+                    'emis': klass.estudante_classe.estudante.emis,
+                    'nome': klass.estudante_classe.estudante.nome,
+                    'classe': klass.estudante_classe.classe.classe,
+                    'turma': klass.estudante_classe.turma.turma,
+                    'departamentu': klass.estudante_classe.departamentu.sigla,
+                    'total': klass.media_geral * 13,  # Reverse calculate total
+                    'media': klass.media_geral,
+                })
+
+        else:
+            # ACTIVE: Calculate from Valor table
+            students_query = EstudanteClasse.objects.filter(
+                ano=ano
+            ).select_related(
+                'estudante', 'classe', 'turma', 'departamentu'
+            ).annotate(
+                total_valor=Sum('valor__valor', filter=Q(valor__periodo=periodo))
+            )
+
+            # Apply scope-specific filters
+            if scope == 'turma':
+                if dept_filter:
+                    students_query = students_query.filter(departamentu_id=dept_filter)
+                if classe_filter:
+                    students_query = students_query.filter(classe_id=classe_filter)
+                if turma_filter:
+                    students_query = students_query.filter(turma_id=turma_filter)
+            elif scope == 'departamentu' and dept_filter:
+                students_query = students_query.filter(departamentu_id=dept_filter)
+
+            # Order by total valor
+            students_query = students_query.order_by('-total_valor', 'estudante__nome')
+
+            # Calculate ranks
+            rank = 1
+            for student in students_query:
+                if not student.total_valor:
+                    continue
+
+                rankings.append({
+                    'rank': rank,
+                    'estudante_id': student.estudante.id,
+                    'emis': student.estudante.emis,
+                    'nome': student.estudante.nome,
+                    'classe': student.classe.classe,
+                    'turma': student.turma.turma,
+                    'departamentu': student.departamentu.sigla,
+                    'total': student.total_valor,
+                    'media': student.total_valor / 13 if student.total_valor else 0,
+                })
+                rank += 1
+
+    context = {
+        'page_title': 'Rankings Leaderboard',
+        'rankings': rankings,
+        'anos': anos,
+        'ano': ano,
+        'periodos': periodos,
+        'periodo': periodo,
+        'scope': scope,
+        'departments': departments,
+        'classes': list(classes),
+        'turmas': list(turmas),
+        'dept_filter': dept_filter,
+        'classe_filter': classe_filter,
+        'turma_filter': turma_filter,
+        'is_historical': is_historical,
+    }
+    return render(request, 'valor/klassifikasaun/rankings_leaderboard.html', context)

@@ -1,0 +1,47 @@
+{% extends 'main/base.html' %}
+
+{% block contents %}
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <div class="card card-danger">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-trash"></i> Konfirma Hamos Dokumentu
+                </h3>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <strong>Atensaun!</strong> Atu hamos dokumentu ne'e.
+                </div>
+
+                <div class="mb-3">
+                    <p><strong>Profesor:</strong> {{ professor.nome }}</p>
+                    <p><strong>Tipu Dokumentu:</strong>
+                        <span class="badge badge-info">{{ document.get_tipo_dokumentu_display }}</span>
+                    </p>
+                    {% if document.obs %}
+                    <p><strong>Observasaun:</strong> {{ document.obs }}</p>
+                    {% endif %}
+                    <p><strong>Data Upload:</strong> {{ document.created_at|date:"d/m/Y H:i" }}</p>
+                </div>
+
+                <p class="text-danger">
+                    <i class="fas fa-exclamation-circle"></i>
+                    Dokumentu ne'e sei hamos permanente. Aksaun ne'e la bele fila fali.
+                </p>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Loos, Hamos Dokumentu
+                    </button>
+                    <a href="{% url 'professor_detail' professor.pk %}" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Kansela
+                    </a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock contents %}

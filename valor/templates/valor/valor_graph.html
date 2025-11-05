@@ -1,5 +1,5 @@
 {% extends 'main/base.html' %}
-
+{% load static %}
 {% block contents %}
 <div class="row">
     <!-- Student Information Card -->
@@ -46,7 +46,8 @@
 
 {% block scripts %}
 {% if chart_data %}
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="{% static 'js/Chart.min.js' %}"></script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script> -->
 <script>
     const chartData = {{ chart_data|safe }};
 

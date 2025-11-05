@@ -1,0 +1,212 @@
+{% extends 'main/base.html' %}
+
+{% block contents %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">{{ page_title }}</h3>
+        <div class="card-tools">
+            <a href="{% url 'estudante_list' %}" class="btn btn-secondary btn-sm">
+                <i class="fas fa-arrow-left"></i> Fila Ba Lista Estudante
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <!-- Info Section -->
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <div class="alert alert-default-info">
+                    <i class="fas fa-graduation-cap"></i>
+                    <strong>Lista Alumni</strong><br>
+                    <small>Estudante hotu-hotu ne'ebé graduadu ona husi eskola.</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters & Search -->
+        <div class="card card-outline card-primary mb-3">
+            <div class="card-header">
+                <h5 class="card-title"><i class="fas fa-filter"></i> Filtra no Buka</h5>
+            </div>
+            <div class="card-body">
+                <form method="get" id="filterForm">
+                    <div class="row">
+                        <!-- Search -->
+                        <div class="col-md-4 mb-2">
+                            <div class="input-group">
+                                <input type="text"
+                                       name="search"
+                                       class="form-control form-control-sm"
+                                       placeholder="Buka naran ka EMIS..."
+                                       value="{{ search_query }}">
+                                <div class="input-group-append">
+                                    <button type="submit" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Year Filter -->
+                        <div class="col-md-3 mb-2">
+                            <select name="ano" id="anoFilter" class="form-control form-control-sm" onchange="this.form.submit()">
+                                <option value="">Tinan Graduasaun Hotu ({{ total_all_alumni }})</option>
+                                {% for year in graduation_years %}
+                                <option value="{{ year.ano__id }}"
+                                        {% if year.ano__id|stringformat:'s' == ano_filter %}selected{% endif %}>
+                                    {{ year.ano__ano }} ({{ year.count }})
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- Clear Filter Button -->
+                        {% if ano_filter or search_query %}
+                        <div class="col-md-2 mb-2">
+                            <a href="{% url 'alumni_list' %}" class="btn btn-secondary btn-sm">
+                                <i class="fas fa-times"></i> Hamoos Filtru
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Alumni Table -->
+        {% if alumni_list %}
+        <div class="table-responsive">
+            <table id="alumniTable" class="table table-bordered table-striped table-hover table-sm">
+                <thead class="thead-light">
+                    <tr>
+                        <th style="width: 40px;">No.</th>
+                        <th>EMIS</th>
+                        <th>Naran</th>
+                        <th>Tinan Graduasaun</th>
+                        <th>Data Graduasaun</th>
+                        <th>Observasaun</th>
+                        <th style="width: 100px;">Aksaun</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for alumni in alumni_list %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ alumni.estudante.emis }}</td>
+                        <td>
+                            <a href="{% url 'alumni_detail' alumni.pk %}">
+                                {{ alumni.estudante.nome }}
+                            </a>
+                        </td>
+                        <td>{{ alumni.ano.ano }}</td>
+                        <td>{{ alumni.data_alumni|date:"d/m/Y" }}</td>
+                        <td>
+                            {% if alumni.obs %}
+                                <small>{{ alumni.obs|truncatewords:10 }}</small>
+                            {% else %}
+                                <small class="text-muted">-</small>
+                            {% endif %}
+                        </td>
+                        <td style="text-align: center;">
+                            <div class="btn-group btn-group-sm">
+                                <a href="{% url 'alumni_detail' alumni.pk %}"
+                                   class="btn btn-info btn-xs"
+                                   title="Haree Detallu">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Summary -->
+        <div class="row mt-3">
+            <div class="col-md-12">
+                <div class="card card-outline card-primary">
+                    <div class="card-body">
+                        <h5><i class="fas fa-chart-pie"></i> Sumariu:</h5>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="info-box bg-primary">
+                                    <span class="info-box-icon"><i class="fas fa-graduation-cap"></i></span>
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">Total Alumni</span>
+                                        <span class="info-box-number">{{ total_all_alumni }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="info-box bg-success">
+                                    <span class="info-box-icon"><i class="fas fa-filter"></i></span>
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">Filtru Atual</span>
+                                        <span class="info-box-number">{{ total_alumni }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="info-box bg-info">
+                                    <span class="info-box-icon"><i class="fas fa-calendar"></i></span>
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">Tinan Graduasaun</span>
+                                        <span class="info-box-number">{{ graduation_years|length }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% else %}
+        <div class="alert alert-default-warning">
+            <i class="fas fa-exclamation-triangle"></i>
+            La iha alumni
+            {% if search_query %}ho naran/EMIS "{{ search_query }}"{% endif %}
+            {% if ano_filter %}iha tinan ne'e{% endif %}.
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function() {
+    $('#alumniTable').DataTable({
+        "paging": true,
+        "lengthChange": true,
+        "searching": true,
+        "ordering": true,
+        "info": true,
+        "autoWidth": false,
+        "responsive": true,
+        "pageLength": 25,
+        "language": {
+            "search": "Buka:",
+            "lengthMenu": "Hatudu _MENU_ rejistru",
+            "info": "Hatudu _START_ to _END_ husi _TOTAL_ alumni",
+            "infoEmpty": "La iha alumni",
+            "infoFiltered": "(filtru husi _MAX_ total alumni)",
+            "paginate": {
+                "first": "Uluk",
+                "last": "Ikus",
+                "next": "Tuirmai",
+                "previous": "Fila"
+            },
+            "zeroRecords": "La hetan alumni"
+        },
+        "order": [[3, 'desc'], [2, 'asc']], // Sort by graduation year desc, then name
+        "columnDefs": [
+            { "orderable": false, "targets": [0, 6] },
+            { "searchable": false, "targets": [0, 6] },
+            { "className": "text-center", "targets": [0, 3, 4, 6] }
+        ]
+    });
+});
+</script>
+{% endblock %}

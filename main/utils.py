@@ -58,3 +58,26 @@ def get_user_role(user):
             return role.lower()
 
     return None
+
+def InttoRoman(num):
+    """
+    Converts an Integer to Roman Number
+    num: An integer between 1 and 3999
+    """
+    if num is None:
+        return "-"
+    if not isinstance(num, int) or not (1 <= num <= 3999):
+        return "Input must be an integer between 1 and 3999."
+
+    roman_map = [
+        (1000, 'M'), (900, 'CM'), (500, 'D'), (400, 'CD'), 
+        (100, 'C'), (90, 'XC'), (50, 'L'), (40, 'XL'), 
+        (10, 'X'), (9, 'IX'), (5, 'V'), (4, 'IV'), (1, 'I')
+    ]
+
+    roman_numeral = ""
+    for value, symbol in roman_map:
+        while num >= value:
+            roman_numeral += symbol
+            num -= value
+    return roman_numeral

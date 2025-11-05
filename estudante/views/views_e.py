@@ -39,6 +39,9 @@ def estudante_list(request):
     # Get active academic year for class assignment filter
     try:
         active_ano = Ano.objects.get(is_active=True)
+        estudantes_assigned = EstudanteClasse.objects.filter(
+            ano=active_ano
+        ).values_list('estudante_id', flat=True)
 
         # Apply class assignment filter
         if class_filter == 'assigned':
@@ -142,6 +145,8 @@ def estudante_list(request):
         departments = []
         classes = []
         turmas = []
+
+    # estudante_assigns = EstudanteClasse.objects.filter(ano=active_ano).values_list('estudante_id', flat=True)
 
     context = {
         'page_title': 'Estudante',
@@ -309,6 +314,8 @@ def estudante_assign_classe(request, pk):
         estudante=estudante,
         ano=active_ano
     ).first()
+
+    print(existing_assignment)
 
     if request.method == 'POST':
         form = EstudanteClasseForm(request.POST, instance=existing_assignment)

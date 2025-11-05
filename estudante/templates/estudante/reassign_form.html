@@ -1,0 +1,58 @@
+{% extends 'main/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block contents %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">{{ page_title }}</h3>
+        <div class="card-tools">
+            <a href="{% url 'reassign_grade_'|add:current_grade|slice:':-4'|add:'_list' %}" class="btn btn-secondary btn-sm">
+                <i class="fas fa-arrow-left"></i> Fila Ba Lista
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <!-- Student Info -->
+        <div class="alert alert-default-info">
+            <h5><i class="fas fa-user"></i> Informasaun Estudante</h5>
+            <table class="table table-sm table-borderless mb-0">
+                <tr>
+                    <td style="width: 150px;"><strong>EMIS:</strong></td>
+                    <td>{{ estudante_classe.estudante.emis }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Naran:</strong></td>
+                    <td>{{ estudante_classe.estudante.nome }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Klase Atual:</strong></td>
+                    <td>{{ estudante_classe.classe.classe }}{{ estudante_classe.turma.turma }} - {{ estudante_classe.departamentu.sigla }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Tinan:</strong></td>
+                    <td>{{ estudante_classe.ano.ano }}</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Reassignment Alert -->
+        <div class="alert alert-default-success">
+            <h5><i class="fas fa-arrow-up"></i> Reasignasaun</h5>
+            <p class="mb-0">
+                Estudante ne'e sei reasignadu ba <strong>Klase {{ next_grade_name }}</strong>
+                ba tinan akadémiku <strong>{{ estudante_classe.ano.ano|add:1 }}</strong>.
+            </p>
+        </div>
+
+        <!-- Form -->
+        <div class="card card-outline card-primary">
+            <div class="card-header">
+                <h5 class="card-title">Detallu Inskrisaun Foun</h5>
+            </div>
+            <div class="card-body">
+                {% crispy form %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,8 +1,6 @@
 {% load static %}
 {% include 'main/head.html' %}
-
 {% block head_link %}{% endblock head_link %}
-
 {% include 'main/topbar.html' %}
 {% include 'main/sidebar.html' %}
 
@@ -31,7 +29,7 @@
         <!-- Messages -->
         {% if messages %}
           {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            <div class="alert alert-default-{{ message.tags }} alert-dismissible fade show" role="alert">
               {{ message }}
               <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>

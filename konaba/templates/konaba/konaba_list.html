@@ -1,0 +1,64 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Kona Ba - Lista{% endblock %}
+
+{% block breadcrumb_item %}
+<li class="breadcrumb-item active">Kona Ba</li>
+{% endblock breadcrumb_item %}
+
+{% block contents %}
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Lista Kona Ba</h3>
+            <div class="card-tools">
+                <a href="{% url 'konaba:konaba_create' %}" class="btn btn-primary btn-sm">
+                    <i class="fas fa-plus"></i> Aumenta Foun
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Orden</th>
+                        <th>Titulu</th>
+                        <th>Deskrisaun</th>
+                        <th>Status</th>
+                        <th>Opsaun</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for konaba in konaba_list %}
+                    <tr>
+                        <td>{{ konaba.orden }}</td>
+                        <td>{{ konaba.titulu }}</td>
+                        <td>{{ konaba.deskrisaun|truncatewords:20 }}</td>
+                        <td>
+                            {% if konaba.is_active %}
+                                <span class="badge badge-success">Ativu</span>
+                            {% else %}
+                                <span class="badge badge-danger">La Ativu</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'konaba:konaba_update' konaba.pk %}" class="btn btn-info btn-sm">
+                                <i class="fas fa-edit"></i> Hadia
+                            </a>
+                            <a href="{% url 'konaba:konaba_delete' konaba.pk %}" class="btn btn-danger btn-sm">
+                                <i class="fas fa-trash"></i> Hamos
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center">Seidauk iha dadus</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock contents %}

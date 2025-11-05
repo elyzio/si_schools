@@ -39,6 +39,17 @@ def has_group(user, group_name):
         return False
     return user.groups.filter(name=group_name).exists()
 
+@register.filter
+def has_any_group(user, group_names):
+    """
+    Check if user belongs to any of the given groups.
+    Usage: {% if request.user|has_any_group:"admin,director" %}
+    """
+    if not user.is_authenticated:
+        return False
+    group_list = [g.strip() for g in group_names.split(',')]
+    return user.groups.filter(name__in=group_list).exists()
+
 
 @register.simple_tag
 def is_admin(user):

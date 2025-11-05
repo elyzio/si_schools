@@ -37,6 +37,11 @@ urlpatterns = [
     path('professordokumentu/<int:pk>/update/', views_professordokumentu.professordokumentu_update, name='professordokumentu_update'),
     path('professordokumentu/<int:pk>/delete/', views_professordokumentu.professordokumentu_delete, name='professordokumentu_delete'),
 
+    # Professor Document URLs (specific to professor)
+    path('<int:professor_id>/document/create/', views_p.professor_document_create, name='professor_document_create'),
+    path('document/<int:pk>/update/', views_p.professor_document_update, name='professor_document_update'),
+    path('document/<int:pk>/delete/', views_p.professor_document_delete, name='professor_document_delete'),
+
     # AJAX endpoints for dependent dropdowns
     path('ajax/subdistrito/', views_p.ajax_subdistrito, name='ajax_subdistrito'),
     path('ajax/suco/', views_p.ajax_suco, name='ajax_suco'),

@@ -1,0 +1,287 @@
+{% extends 'main/base.html' %}
+
+{% block contents %}
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="fas fa-trophy"></i> {{ page_title }}
+        </h3>
+        <div class="card-tools">
+            {% if is_historical %}
+            <span class="badge badge-success">
+                <i class="fas fa-lock"></i> Rankings Finalizadu ({{ ano.ano }})
+            </span>
+            {% else %}
+            <span class="badge badge-warning">
+                <i class="fas fa-sync-alt"></i> Rankings Real-Time
+            </span>
+            {% endif %}
+        </div>
+    </div>
+    <div class="card-body">
+
+        <!-- Info Alert -->
+        {% if is_historical %}
+        <div class="alert alert-success">
+            <i class="fas fa-check-circle"></i>
+            <strong>Rankings Ofisiál:</strong> Rankings ne'e finalizadu tiha ona ba tinan {{ ano.ano }}.
+        </div>
+        {% else %}
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i>
+            <strong>Rankings Real-Time:</strong> Rankings ne'e kalkula husi valór atuál. Rankings bele muda bainhira profesór hatama valór foun.
+        </div>
+        {% endif %}
+
+        <!-- Filters -->
+        <div class="card card-outline card-primary mb-3">
+            <div class="card-header">
+                <h5 class="card-title"><i class="fas fa-filter"></i> Filtra</h5>
+            </div>
+            <div class="card-body">
+                <form method="get" id="filterForm">
+                    <div class="row">
+                        <!-- Year Filter -->
+                        <div class="col-md-3 mb-2">
+                            <label for="anoFilter">Tinan Akadémiku:</label>
+                            <select name="ano" id="anoFilter" class="form-control form-control-sm" onchange="this.form.submit()">
+                                {% for year in anos %}
+                                <option value="{{ year.id }}" {% if year.id == ano.id %}selected{% endif %}>
+                                    {{ year.ano }} {% if year.is_active %}(Ativu){% endif %}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- Period Filter -->
+                        <div class="col-md-3 mb-2">
+                            <label for="periodoFilter">Períodu:</label>
+                            <select name="periodo" id="periodoFilter" class="form-control form-control-sm" onchange="this.form.submit()">
+                                {% for period in periodos %}
+                                <option value="{{ period.id }}" {% if period.id == periodo.id %}selected{% endif %}>
+                                    {{ period.period }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- Scope Filter -->
+                        <div class="col-md-3 mb-2">
+                            <label for="scopeFilter">Rank Tipu:</label>
+                            <select name="scope" id="scopeFilter" class="form-control form-control-sm" onchange="this.form.submit()">
+                                <option value="turma" {% if scope == 'turma' %}selected{% endif %}>Turma</option>
+                                <option value="departamentu" {% if scope == 'departamentu' %}selected{% endif %}>Departamentu</option>
+                                <option value="geral" {% if scope == 'geral' %}selected{% endif %}>Jerál (Hotu)</option>
+                            </select>
+                        </div>
+
+                        <!-- Department/Class Filter (if scope is turma) -->
+                        {% if scope == 'turma' or scope == 'departamentu' %}
+                        <div class="col-md-3 mb-2">
+                            <label for="deptFilter">Departamentu:</label>
+                            <select name="dept" id="deptFilter" class="form-control form-control-sm" onchange="this.form.submit()">
+                                <option value="">Hotu</option>
+                                {% for dept in departments %}
+                                <option value="{{ dept.id }}" {% if dept.id|stringformat:'s' == dept_filter %}selected{% endif %}>
+                                    {{ dept.sigla }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        {% endif %}
+
+                        {% if scope == 'turma' and dept_filter %}
+                        <div class="col-md-3 mb-2">
+                            <label for="classeFilter">Klase:</label>
+                            <select name="classe" id="classeFilter" class="form-control form-control-sm" onchange="this.form.submit()">
+                                <option value="">Hotu</option>
+                                {% for classe in classes %}
+                                <option value="{{ classe.id }}" {% if classe.id|stringformat:'s' == classe_filter %}selected{% endif %}>
+                                    {{ classe.classe }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-md-3 mb-2">
+                            <label for="turmaFilter">Turma:</label>
+                            <select name="turma" id="turmaFilter" class="form-control form-control-sm" onchange="this.form.submit()">
+                                <option value="">Hotu</option>
+                                {% for turma in turmas %}
+                                <option value="{{ turma.id }}" {% if turma.id|stringformat:'s' == turma_filter %}selected{% endif %}>
+                                    {{ turma.turma }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        {% endif %}
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Rankings Table -->
+        {% if rankings %}
+        <div class="table-responsive">
+            <table id="rankingsTable" class="table table-bordered table-striped table-hover">
+                <thead class="thead-light">
+                    <tr>
+                        <th style="width: 60px;">Rank</th>
+                        <th>EMIS</th>
+                        <th>Naran Estudante</th>
+                        <th>Klase</th>
+                        <th>Turma</th>
+                        <th>Departamentu</th>
+                        <th>Total</th>
+                        <th>Média</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in rankings %}
+                    <tr>
+                        <td style="text-align: center;">
+                            {% if item.rank <= 3 %}
+                                {% if item.rank == 1 %}
+                                <span class="badge" style="background-color: #FFD700; color: #000; font-size: 18px;">
+                                    <i class="fas fa-trophy"></i> {{ item.rank }}
+                                </span>
+                                {% elif item.rank == 2 %}
+                                <span class="badge" style="background-color: #C0C0C0; color: #000; font-size: 18px;">
+                                    <i class="fas fa-medal"></i> {{ item.rank }}
+                                </span>
+                                {% elif item.rank == 3 %}
+                                <span class="badge" style="background-color: #CD7F32; color: #fff; font-size: 18px;">
+                                    <i class="fas fa-medal"></i> {{ item.rank }}
+                                </span>
+                                {% endif %}
+                            {% else %}
+                                <strong style="font-size: 16px;">{{ item.rank }}</strong>
+                            {% endif %}
+                        </td>
+                        <td>{{ item.emis }}</td>
+                        <td>
+                            <a href="{% url 'estudante_detail' item.estudante_id %}">
+                                {{ item.nome }}
+                            </a>
+                        </td>
+                        <td>{{ item.classe }}</td>
+                        <td>{{ item.turma }}</td>
+                        <td>{{ item.departamentu }}</td>
+                        <td style="text-align: center;">
+                            <strong>{{ item.total|floatformat:0 }}</strong>
+                        </td>
+                        <td style="text-align: center;">
+                            {% if item.media >= 8 %}
+                                <span class="badge badge-success" style="font-size: 14px;">{{ item.media|floatformat:2 }}</span>
+                            {% elif item.media >= 6 %}
+                                <span class="badge badge-primary" style="font-size: 14px;">{{ item.media|floatformat:2 }}</span>
+                            {% else %}
+                                <span class="badge badge-danger" style="font-size: 14px;">{{ item.media|floatformat:2 }}</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Summary -->
+        <div class="row mt-3">
+            <div class="col-md-12">
+                <div class="card card-outline card-info">
+                    <div class="card-body">
+                        <h5><i class="fas fa-chart-bar"></i> Estatístika:</h5>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="info-box bg-info">
+                                    <span class="info-box-icon"><i class="fas fa-users"></i></span>
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">Total Estudante</span>
+                                        <span class="info-box-number">{{ rankings|length }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            {% if rankings %}
+                            <div class="col-md-3">
+                                <div class="info-box bg-warning">
+                                    <span class="info-box-icon"><i class="fas fa-chart-line"></i></span>
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">Média Aas</span>
+                                        <span class="info-box-number">{{ rankings.0.media|floatformat:2 }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="info-box bg-success">
+                                    <span class="info-box-icon"><i class="fas fa-trophy"></i></span>
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">Rank 1</span>
+                                        <span class="info-box-number">{{ rankings.0.nome|truncatewords:2 }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="info-box bg-primary">
+                                    <span class="info-box-icon"><i class="fas fa-calendar"></i></span>
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">Períodu</span>
+                                        <span class="info-box-number">{{ periodo.period }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% else %}
+        <div class="alert alert-warning">
+            <i class="fas fa-exclamation-triangle"></i>
+            La iha rankings ba filtru ne'e. Favor hili tinan, períodu, ka scope seluk.
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+
+{% endblock contents %}
+
+{% block scripts %}
+<script>
+$(document).ready(function() {
+    $('#rankingsTable').DataTable({
+        "paging": true,
+        "lengthChange": true,
+        "searching": true,
+        "ordering": true,
+        "info": true,
+        "autoWidth": false,
+        "responsive": true,
+        "pageLength": 25,
+        "language": {
+            "search": "Buka:",
+            "lengthMenu": "Hatudu _MENU_ rejistru",
+            "info": "Hatudu _START_ to _END_ husi _TOTAL_ estudante",
+            "infoEmpty": "La iha estudante",
+            "infoFiltered": "(filtru husi _MAX_ total estudante)",
+            "paginate": {
+                "first": "Uluk",
+                "last": "Ikus",
+                "next": "Tuirmai",
+                "previous": "Fila"
+            },
+            "zeroRecords": "La hetan estudante"
+        },
+        "order": [[0, 'asc']], // Sort by rank
+        "columnDefs": [
+            { "orderable": false, "targets": [] },
+            { "searchable": true, "targets": [1, 2, 3, 4, 5] },
+            { "className": "text-center", "targets": [0, 6, 7] }
+        ]
+    });
+});
+</script>
+{% endblock scripts %}

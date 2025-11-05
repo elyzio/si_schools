@@ -5,14 +5,14 @@
     <div class="card-header">
         <h3 class="card-title">{{ page_title }}</h3>
         <div class="card-tools">
-            <a href="{% url 'estudante_list' %}" class="btn btn-secondary btn-sm">
+            <a href="javascript:void(0);" class="btn btn-secondary btn-sm" onclick="history.back();">
                 <i class="fas fa-arrow-left"></i> Fila ba Lista
             </a>
         </div>
     </div>
     <div class="card-body">
         <!-- Student Info -->
-        <div class="alert alert-info">
+        <div class="alert alert-default-info">
             <h5><i class="fas fa-user"></i> Informasaun Estudante</h5>
             <p class="mb-1"><strong>Naran:</strong> {{ estudante.nome }}</p>
             <p class="mb-1"><strong>EMIS:</strong> {{ estudante.emis }}</p>
@@ -20,7 +20,7 @@
         </div>
 
         {% if existing_assignment %}
-        <div class="alert alert-warning">
+        <div class="alert alert-default-warning">
             <i class="fas fa-info-circle"></i> Estudante ne'e iha ona inskrisaun ba tinan {{ active_ano.ano }}:
             <strong>{{ existing_assignment.classe.classe }}{{ existing_assignment.turma.turma }}</strong> ({{ existing_assignment.departamentu.departamento }})
         </div>

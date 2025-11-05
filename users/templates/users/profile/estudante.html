@@ -1,0 +1,110 @@
+{% load static %}
+<div class="mb-4 d-flex justify-content-end">
+    <a href="{% url 'update_profile_estudante' %}" class="btn btn-sm btn-primary">Update Profile</a>
+</div>
+<div class="row">
+    <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+        <div class="card">
+            <div class="card-header"><i class="fas fa-image mr-2"></i> <span class="font-weight-bold">Imagen</span></div>
+            <div class="card-body">
+                <div class="text-center">
+                    {% if user.estudanteuser.estudante.image %}
+                    <img src="{{ user.estudanteuser.estudante.image.url }}" style="width: 100px;" class="img-fluid rounded-circle"
+                        alt="Profile Image">
+                    {% else %}
+                    <img src="{% static 'img/default_profile.png' %}" class="img-fluid rounded-circle" style="width: 100px;" alt="Image Profile">
+                    {% endif %}
+                </div>
+                <div class="mt-2 font-weight-bold">
+                    <div class="row mb-2 d-flex justify-content-between">
+                        <div class="col-4">Emis</div>
+                        <div class="col-4 text-primary">{{user.estudanteuser.estudante.emis}}</div>
+                    </div>
+                    <div class="row mb-2 d-flex justify-content-between">
+                        <div class="col-4">No Registu</div>
+                        <div class="col-4 text-primary">{{user.estudanteuser.estudante.numero_estudante}}</div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+        <div class="card">
+            <div class="card-header"><i class="fas fa-id-card mr-2"></i><span class="font-weight-bold">Personal</span></div>
+            <div class="card-body">
+                <table class="table table-bordered table-hover table-sm table-striped">
+                    <tr>
+                        <td>Naran</td>
+                        <td>: {{user.estudanteuser.estudante.nome | default:"-"}}</td>
+                    </tr>
+                    <tr>
+                        <td>Sexu</td>
+                        <td>: {{user.estudanteuser.estudante.sexu | default:"-"}}</td>
+                    </tr>
+                    <tr>
+                        <td>Data Moris</td>
+                        <td>: {{user.estudanteuser.estudante.data_moris | default:"-"}}</td>
+                    </tr>
+                    <tr>
+                        <td>Fatin Moris</td>
+                        <td>: {{user.estudanteuser.estudante.fatin_moris | default:"-"}}</td>
+                    </tr>
+                    <tr>
+                        <td>Nacionalidade</td>
+                        <td>: {{user.estudanteuser.estudante.nacionalidade | default:"-"}}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+        <div class="card">
+            <div class="card-header"><i class="fas fa-map-marker-alt mr-2"></i><span class="font-weight-bold">Origen</span></div>
+            <div class="card-body">
+                <table class="table table-bordered table-hover table-sm table-striped">
+                    <tr>
+                        <td>Distrito</td>
+                        <td>: {{user.estudanteuser.estudante.distrito.nome | default:"-"}}</td>
+                    </tr>
+                    <tr>
+                        <td>Subdistritu</td>
+                        <td>: {{user.estudanteuser.estudante.subdistrito.nome | default:"-"}}</td>
+                    </tr>
+                    <tr>
+                        <td>Suku</td>
+                        <td>: {{user.estudanteuser.estudante.suco.nome | default:"-"}}</td>
+                    </tr>
+                    <tr>
+                        <td>Aldeia</td>
+                        <td>: {{user.estudanteuser.estudante.aldeia.nome | default:"-"}}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+        <div class="card">
+            <div class="card-header"><i class="fas fa-address-book mr-2"></i><span class="font-weight-bold">Kontatu</span></div>
+            <div class="card-body">
+                <table class="table table-bordered table-hover table-sm table-striped">
+                    <tr>
+                        <td>Hela Fatin</td>
+                        <td>: {{user.estudanteuser.estudante.hela_fatin | default:"-"}}</td>
+                    </tr>
+                    <tr>
+                        <td>Email</td>
+                        <td>: {{user.email | default:"-"}}</td>
+                    </tr>
+                    <tr>
+                        <td>No. Kontatu</td>
+                        <td>: {{user.estudanteuser.estudante.kontatu | default:"-"}}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>

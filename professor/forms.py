@@ -260,13 +260,14 @@ class ProfessorUserForm(forms.ModelForm):
 class ProfessorClasseForm(forms.ModelForm):
     class Meta:
         model = ProfessorClasse
-        fields = ['professor', 'ano', 'departamentu', 'classe', 'is_class_teacher']
+        fields = ['professor', 'ano', 'departamentu', 'classe', 'is_class_teacher', 'turma']
         labels = {
             'professor': 'Profesor',
             'ano': 'Tinan',
             'departamentu': 'Departamentu',
             'classe': 'Klase',
             'is_class_teacher': 'Profesor Prinsipal Klase Nian',
+            'turma': 'Turma',
         }
 
     def __init__(self, *args, **kwargs):
@@ -281,8 +282,9 @@ class ProfessorClasseForm(forms.ModelForm):
                 css_class='form-row'
             ),
             Row(
-                Column('departamentu', css_class='form-group col-md-6 mb-0'),
-                Column('classe', css_class='form-group col-md-6 mb-0'),
+                Column('departamentu', css_class='form-group col-md-4 mb-0'),
+                Column('classe', css_class='form-group col-md-4 mb-0'),
+                Column('turma', css_class='form-group col-md-4 mb-0'),
                 css_class='form-row'
             ),
             'is_class_teacher',
@@ -350,7 +352,17 @@ class ProfessorDokumentuForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
+        professor_pk = kwargs.pop('professor_pk', None)
         super().__init__(*args, **kwargs)
+
+        # Determine cancel URL
+        if professor_pk:
+            cancel_url = f'/professor/{professor_pk}/'
+        elif self.instance and self.instance.pk and self.instance.professor:
+            cancel_url = f'/professor/{self.instance.professor.pk}/'
+        else:
+            cancel_url = '/professor/professordokumentu/'
+
         self.helper = FormHelper()
         self.helper.form_method = 'post'
         self.helper.form_enctype = 'multipart/form-data'
@@ -367,7 +379,7 @@ class ProfessorDokumentuForm(forms.ModelForm):
             Row(
                 Column(
                     Submit('submit', 'Rai', css_class='btn btn-primary'),
-                    HTML('<a href="{% url \'professordokumentu_list\' %}" class="btn btn-secondary ml-2">Kansela</a>'),
+                    HTML(f'<a href="{cancel_url}" class="btn btn-secondary ml-2">Kansela</a>'),
                     css_class='form-group col-md-12 mb-0'
                 ),
                 css_class='form-row'

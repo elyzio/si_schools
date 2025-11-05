@@ -32,100 +32,73 @@
             </div>
         </div>
 
-        <!-- Class Assignment Filter Buttons -->
+        <!-- Class Assignment Filter -->
         {% if active_ano %}
         <div class="row mb-3">
             <div class="col-md-12">
-                <div class="alert alert-info mb-2">
+                <div class="alert alert-default-info mb-2">
                     <i class="fas fa-info-circle"></i> Tinan Akadémiku Ativu: <strong>{{ active_ano.ano }}</strong>
                 </div>
-                <div class="row">
-                    <h6 class="mx-2 my-1">Estudante:</h6>
-                    <div class="btn-group btn-group-sm btn-group-toggle" data-toggle="buttons">
-                        <a href="?year={{ selected_year }}&class_status=all" class="btn btn-outline-primary {% if class_filter == 'all' %}active{% endif %}">
-                            <i class="fas fa-users"></i> Hotu
-                            <span class="badge badge-light">{{ total_count }}</span>
-                        </a>
-                        <a href="?year={{ selected_year }}&class_status=assigned" class="btn btn-outline-success {% if class_filter == 'assigned' %}active{% endif %}">
-                            <i class="fas fa-user-check"></i> Klase Iha
-                            <span class="badge badge-light">{{ assigned_count }}</span>
-                        </a>
-                        <a href="?year={{ selected_year }}&class_status=not_assigned" class="btn btn-outline-warning {% if class_filter == 'not_assigned' %}active{% endif %}">
-                            <i class="fas fa-user-times"></i> Seidauk Iha Klase
-                            <span class="badge badge-light">{{ not_assigned_count }}</span>
-                        </a>
+                <form method="get" id="filterForm" class="form-inline">
+                    <div class="form-group mr-3">
+                        <label for="classStatusFilter" class="mr-2" style="font-size: 0.9rem;">estudante:</label>
+                        <select name="class_status" id="classStatusFilter" class="form-control form-control-sm" onchange="this.form.submit()">
+                            <option value="all" {% if class_filter == 'all' %}selected{% endif %}>Hotu ({{ total_count }})</option>
+                            <option value="assigned" {% if class_filter == 'assigned' %}selected{% endif %}>Klase Iha ({{ assigned_count }})</option>
+                            <option value="not_assigned" {% if class_filter == 'not_assigned' %}selected{% endif %}>Seidauk Iha Klase ({{ not_assigned_count }})</option>
+                        </select>
                     </div>
-                    
-                </div>
-                
-            </div>
-        </div>
 
-        <!-- Department Filter (shown only when viewing assigned students) -->
-        {% if class_filter == 'assigned' and departments %}
-        <div class="row mb-3">
-            <div class="col-md-12 row">
-                <h6 class="mx-2 my-1">Departamentu:</h6>
-                <div class="btn-group btn-group-sm" role="group">
-                    <a href="?year={{ selected_year }}&class_status=assigned" class="btn btn-outline-secondary {% if not dept_filter %}active{% endif %}">
-                        <i class="fas fa-th-large"></i> Hotu
-                    </a>
-                    {% for dept in departments %}
-                    <a href="?year={{ selected_year }}&class_status=assigned&dept={{ dept.departamentu__id }}"
-                       class="btn btn-outline-info {% if dept_filter == dept.departamentu__id|stringformat:'s' %}active{% endif %}">
-                        {{ dept.departamentu__departamento }}
-                        {% if dept.departamentu__sigla %}({{ dept.departamentu__sigla }}){% endif %}
-                        <span class="badge badge-light">{{ dept.count }}</span>
-                    </a>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-        {% endif %}
+                    {% if class_filter == 'assigned' and departments %}
+                    <div class="form-group mr-3">
+                        <label for="deptFilter" class="mr-2" style="font-size: 0.9rem;">departamentu:</label>
+                        <select name="dept" id="deptFilter" class="form-control form-control-sm" onchange="this.form.submit()">
+                            <option value="">Hotu</option>
+                            {% for dept in departments %}
+                            <option value="{{ dept.departamentu__id }}" {% if dept_filter == dept.departamentu__id|stringformat:'s' %}selected{% endif %}>
+                                <!-- {{ dept.departamentu__departamento }} -->
+                                {% if dept.departamentu__sigla %}({{ dept.departamentu__sigla }}){% endif %}
+                                ({{ dept.count }})
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    {% endif %}
 
-        <!-- Class Filter (shown only when department is selected) -->
-        {% if dept_filter and classes %}
-        <div class="row mb-3">
-            <div class="col-md-12 row">
-                <h6 class="mx-2 my-1">Klase:</h6>
-                <div class="btn-group btn-group-sm" role="group">
-                    <a href="?year={{ selected_year }}&class_status=assigned&dept={{ dept_filter }}" class="btn btn-outline-secondary {% if not classe_filter %}active{% endif %}">
-                        <i class="fas fa-th-large"></i> Hotu
-                    </a>
-                    {% for classe in classes %}
-                    <a href="?year={{ selected_year }}&class_status=assigned&dept={{ dept_filter }}&classe={{ classe.classe__id }}"
-                       class="btn btn-outline-success {% if classe_filter == classe.classe__id|stringformat:'s' %}active{% endif %}">
-                        {{ classe.classe__classe }}
-                        <span class="badge badge-light">{{ classe.count }}</span>
-                    </a>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-        {% endif %}
+                    {% if dept_filter and classes %}
+                    <div class="form-group mr-3">
+                        <label for="classeFilter" class="mr-2" style="font-size: 0.9rem;">klase:</label>
+                        <select name="classe" id="classeFilter" class="form-control form-control-sm" onchange="this.form.submit()">
+                            <option value="">Hotu</option>
+                            {% for classe in classes %}
+                            <option value="{{ classe.classe__id }}" {% if classe_filter == classe.classe__id|stringformat:'s' %}selected{% endif %}>
+                                {{ classe.classe__classe }} ({{ classe.count }})
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    {% endif %}
 
-        <!-- Turma Filter (shown only when class is selected) -->
-        {% if classe_filter and turmas %}
-        <div class="row mb-3">
-            <div class="col-md-12 row">
-                <h6 class="mx-2 my-1">Turma:</h6>
-                <div class="btn-group btn-group-sm" role="group">
-                    <a href="?year={{ selected_year }}&class_status=assigned&dept={{ dept_filter }}&classe={{ classe_filter }}" class="btn btn-outline-secondary {% if not turma_filter %}active{% endif %}">
-                        <i class="fas fa-th-large"></i> Hotu
-                    </a>
-                    {% for turma in turmas %}
-                    <a href="?year={{ selected_year }}&class_status=assigned&dept={{ dept_filter }}&classe={{ classe_filter }}&turma={{ turma.turma__id }}"
-                       class="btn btn-outline-warning {% if turma_filter == turma.turma__id|stringformat:'s' %}active{% endif %}">
-                        {{ turma.turma__turma }}
-                        <span class="badge badge-light">{{ turma.count }}</span>
-                    </a>
-                    {% endfor %}
-                </div>
+                    {% if classe_filter and turmas %}
+                    <div class="form-group mr-3">
+                        <label for="turmaFilter" class="mr-2" style="font-size: 0.9rem;">turma:</label>
+                        <select name="turma" id="turmaFilter" class="form-control form-control-sm" onchange="this.form.submit()">
+                            <option value="">Hotu</option>
+                            {% for turma in turmas %}
+                            <option value="{{ turma.turma__id }}" {% if turma_filter == turma.turma__id|stringformat:'s' %}selected{% endif %}>
+                                {{ turma.turma__turma }} ({{ turma.count }})
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    {% endif %}
+
+                    <input type="hidden" name="year" value="{{ selected_year }}">
+                </form>
             </div>
         </div>
-        {% endif %}
         {% else %}
-        <div class="alert alert-warning">
+        <div class="alert alert-default-warning">
             <i class="fas fa-exclamation-triangle"></i> Tinan Akadémiku Ativu la iha! Favor ativa tinan akadémiku ida hodi bele filtra estudante sira tuir klase.
         </div>
         {% endif %}
@@ -227,12 +200,20 @@ function confirmDelete(id, name) {
 }
 
 $(document).ready(function() {
-    $('.datatable').DataTable({
-        "responsive": true,
-        "lengthChange": false,
-        "autoWidth": false,
-        "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-    }).buttons().container().appendTo('#estudante-table_wrapper .col-md-6:eq(0)');
+    try {
+        $('.datatable').DataTable({
+            "responsive": true,
+            "lengthChange": false,
+            "autoWidth": false,
+            "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+        }).buttons().container().appendTo('#estudante-table_wrapper .col-md-6:eq(0)');
+        console.log('DataTable initialized successfully');
+    } catch(error) {
+        console.error('DataTable initialization error:', error);
+    }
+
+    // Reinitialize sidebar treeview
+    // $('[data-widget="treeview"]').treeview('init');
 });
 </script>
 {% endblock scripts %}

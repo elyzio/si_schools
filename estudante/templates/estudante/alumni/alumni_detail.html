@@ -1,0 +1,197 @@
+{% extends 'main/base.html' %}
+
+{% block contents %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">{{ page_title }}</h3>
+        <div class="card-tools">
+            <a href="{% url 'alumni_list' %}" class="btn btn-secondary btn-sm">
+                <i class="fas fa-arrow-left"></i> Fila Ba Lista Alumni
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+
+        <!-- Alumni Info Card -->
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card card-primary card-outline">
+                    <div class="card-body box-profile">
+                        <div class="text-center">
+                            {% if alumni.estudante.imagem %}
+                            <img class="profile-user-img img-fluid img-circle"
+                                 src="{{ alumni.estudante.imagem.url }}"
+                                 alt="Foto Estudante">
+                            {% else %}
+                            <img class="profile-user-img img-fluid img-circle"
+                                 src="{{ STATIC_URL }}img/default_profile.png"
+                                 alt="Default Profile">
+                            {% endif %}
+                        </div>
+
+                        <h3 class="profile-username text-center">{{ alumni.estudante.nome }}</h3>
+
+                        <p class="text-muted text-center">
+                            <i class="fas fa-graduation-cap"></i> Alumni {{ alumni.ano.ano }}
+                        </p>
+
+                        <ul class="list-group list-group-unbordered mb-3">
+                            <li class="list-group-item">
+                                <b>EMIS</b> <span class="float-right">{{ alumni.estudante.emis }}</span>
+                            </li>
+                            <li class="list-group-item">
+                                <b>Data Graduasaun</b> <span class="float-right">{{ alumni.data_alumni|date:"d/m/Y" }}</span>
+                            </li>
+                            <li class="list-group-item">
+                                <b>Tinan Graduasaun</b> <span class="float-right">{{ alumni.ano.ano }}</span>
+                            </li>
+                            {% if alumni.estudante.sexo %}
+                            <li class="list-group-item">
+                                <b>Sexo</b> <span class="float-right">{{ alumni.estudante.get_sexo_display }}</span>
+                            </li>
+                            {% endif %}
+                            {% if alumni.estudante.data_moris %}
+                            <li class="list-group-item">
+                                <b>Data Moris</b> <span class="float-right">{{ alumni.estudante.data_moris|date:"d/m/Y" }}</span>
+                            </li>
+                            {% endif %}
+                        </ul>
+
+                        <a href="{% url 'estudante_detail' alumni.estudante.pk %}" class="btn btn-primary btn-block">
+                            <i class="fas fa-user"></i> Haree Perfil Kompletu
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-8">
+                <!-- Graduation Info -->
+                <div class="card card-success card-outline">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-graduation-cap"></i> Informasaun Graduasaun
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        {% if final_class %}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Klase Ikus:</strong> {{ final_class.classe.classe }}</p>
+                                <p><strong>Departamentu:</strong> {{ final_class.departamentu.departamento }}</p>
+                                <p><strong>Turma:</strong> {{ final_class.turma.turma }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                {% if final_class.average_score %}
+                                <p><strong>Média Final:</strong>
+                                    <span class="badge badge-success" style="font-size: 14px;">
+                                        {{ final_class.average_score }}
+                                    </span>
+                                </p>
+                                {% endif %}
+                                <p><strong>Tinan Akadémiku:</strong> {{ final_class.ano.ano }}</p>
+                            </div>
+                        </div>
+                        {% else %}
+                        <p class="text-muted">La iha informasaun klase ikus.</p>
+                        {% endif %}
+
+                        {% if alumni.obs %}
+                        <hr>
+                        <h5>Observasaun:</h5>
+                        <p>{{ alumni.obs }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Academic History -->
+                <div class="card card-info card-outline">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-history"></i> Istória Akadémiku
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        {% if class_history %}
+                        <div class="table-responsive">
+                            <table class="table table-sm table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Tinan Akadémiku</th>
+                                        <th>Departamentu</th>
+                                        <th>Klase</th>
+                                        <th>Turma</th>
+                                        <th>Média</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for ec in class_history %}
+                                    <tr>
+                                        <td>{{ ec.ano.ano }}</td>
+                                        <td>{{ ec.departamentu.sigla }}</td>
+                                        <td>{{ ec.classe.classe }}</td>
+                                        <td>{{ ec.turma.turma }}</td>
+                                        <td>
+                                            {% if ec.average_score %}
+                                                {% if ec.average_score >= 6.0 %}
+                                                    <span class="badge badge-success">{{ ec.average_score }}</span>
+                                                {% else %}
+                                                    <span class="badge badge-danger">{{ ec.average_score }}</span>
+                                                {% endif %}
+                                            {% else %}
+                                                <span class="badge badge-secondary">-</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if ec.is_passa %}
+                                                <span class="badge badge-success">
+                                                    <i class="fas fa-check"></i> Passa
+                                                </span>
+                                            {% elif ec.is_passa == False %}
+                                                <span class="badge badge-danger">
+                                                    <i class="fas fa-times"></i> Fali
+                                                </span>
+                                            {% else %}
+                                                <span class="badge badge-secondary">
+                                                    <i class="fas fa-hourglass-half"></i> Labele Define
+                                                </span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <p class="text-muted">La iha istória akadémiku.</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Contact Information -->
+                {% if alumni.estudante.no_kontatu or alumni.estudante.email %}
+                <div class="card card-warning card-outline">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-address-book"></i> Informasaun Kontatu
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        {% if alumni.estudante.no_kontatu %}
+                        <p><strong>Telemóvel:</strong> {{ alumni.estudante.no_kontatu }}</p>
+                        {% endif %}
+                        {% if alumni.estudante.email %}
+                        <p><strong>Email:</strong> {{ alumni.estudante.email }}</p>
+                        {% endif %}
+                        {% if alumni.estudante.endereco %}
+                        <p><strong>Enderesu:</strong> {{ alumni.estudante.endereco }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

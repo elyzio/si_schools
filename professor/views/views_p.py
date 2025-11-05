@@ -5,11 +5,12 @@ from django.db import transaction
 from django.contrib.auth.decorators import login_required
 from django.utils.text import slugify
 from django.http import JsonResponse
+from django import forms
 import random
 import string
 import re
-from professor.models import Professor, ProfessorUser, ProfessorClasse
-from professor.forms import ProfessorForm
+from professor.models import Professor, ProfessorUser, ProfessorClasse, ProfessorDokumentu
+from professor.forms import ProfessorForm, ProfessorDokumentuForm
 from custom.models import Distrito, Subdistrito, Suco, Aldeia, Ano, Departamentu, Classe, Turma
 
 # =============================================================================
@@ -103,11 +104,14 @@ def professor_detail(request, pk):
         'ano', 'departamentu', 'classe'
     )
 
+    professor_documents = ProfessorDokumentu.objects.filter(professor=professor).order_by('-created_at')
+
     context = {
         'page_title': f'Professor: {professor.nome}',
         'professor': professor,
-        'user': user,
+        'ownuser': user,
         'professor_classes': professor_classes,
+        'professor_documents': professor_documents,
     }
     return render(request, 'professor/professor_detail.html', context)
 
@@ -172,4 +176,76 @@ def ajax_aldeia(request):
     aldeias = Aldeia.objects.filter(suco_id=suco_id).order_by('nome')
     data = [{'id': a.id, 'name': a.nome} for a in aldeias]
     return JsonResponse(data, safe=False)
+
+
+# =============================================================================
+# PROFESSOR DOCUMENT VIEWS
+# =============================================================================
+
+@login_required
+def professor_document_create(request, professor_id):
+    professor = get_object_or_404(Professor, pk=professor_id)
+
+    if request.method == 'POST':
+        form = ProfessorDokumentuForm(request.POST, request.FILES, professor_pk=professor_id)
+        if form.is_valid():
+            document = form.save(commit=False)
+            document.professor = professor
+            document.save()
+            messages.success(request, 'Dokumentu aumenta ho suksesu!')
+            return redirect('professor_detail', pk=professor_id)
+        else:
+            messages.error(request, 'Favór hatán erru sira iha formulariu.')
+    else:
+        form = ProfessorDokumentuForm(initial={'professor': professor}, professor_pk=professor_id)
+        form.fields['professor'].widget = forms.HiddenInput()
+
+    context = {
+        'page_title': f'Aumenta Dokumentu: {professor.nome}',
+        'form': form,
+        'professor': professor,
+    }
+    return render(request, 'professor/professor_document_form.html', context)
+
+@login_required
+def professor_document_update(request, pk):
+    document = get_object_or_404(ProfessorDokumentu, pk=pk)
+    professor = document.professor
+
+    if request.method == 'POST':
+        form = ProfessorDokumentuForm(request.POST, request.FILES, instance=document, professor_pk=professor.id)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Dokumentu hadia ho suksesu!')
+            return redirect('professor_detail', pk=professor.id)
+        else:
+            messages.error(request, 'Favór hatán erru sira iha formulariu.')
+    else:
+        form = ProfessorDokumentuForm(instance=document, professor_pk=professor.id)
+        form.fields['professor'].widget = forms.HiddenInput()
+
+    context = {
+        'page_title': f'Hadia Dokumentu: {professor.nome}',
+        'form': form,
+        'professor': professor,
+        'document': document,
+    }
+    return render(request, 'professor/professor_document_form.html', context)
+
+@login_required
+def professor_document_delete(request, pk):
+    document = get_object_or_404(ProfessorDokumentu, pk=pk)
+    professor = document.professor
+
+    if request.method == 'POST':
+        document.delete()
+        messages.success(request, 'Dokumentu hamos ho suksesu!')
+        return redirect('professor_detail', pk=professor.id)
+
+    context = {
+        'page_title': f'Hamos Dokumentu: {professor.nome}',
+        'document': document,
+        'professor': professor,
+    }
+    return render(request, 'professor/professor_document_confirm_delete.html', context)
 

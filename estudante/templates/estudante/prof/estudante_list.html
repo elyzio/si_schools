@@ -1,0 +1,151 @@
+{% extends 'main/base.html' %}
+
+{% block contents %}
+
+
+{% if professor %}
+<div class="card">
+    <div class="card-header font-weight-bold h5">INFORMASUAN TURMA</div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-4 mb-2">
+                <strong>Professór:</strong> {{ professor.professor.nome }}
+            </div>
+            <div class="col-md-4 mb-2">
+                <strong>Departamentu:</strong> {{ professor.departamentu.sigla }}
+            </div>
+            <div class="col-md-4 mb-2">
+                <strong>Ano/Klase/Turma:</strong> {{ professor.ano.ano }} / 
+                {{ professor.classe.classe }} / 
+                {{professor.turma.turma }}
+            </div>
+        </div>
+
+        <div class="row">                
+            <div class="col-md-4 mb-2">
+                <strong>Total Estudante:</strong> {{ estCountSexu.total_students }}
+            </div>
+            <div class="col-md-4 mb-2">
+                <strong>Mane:</strong> {{ estCountSexu.total_male }}
+            </div>
+            <div class="col-md-4 mb-2">
+                <strong>Feto:</strong> {{ estCountSexu.total_female }}
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">{{ page_title }}</h3>
+    </div>
+    <div class="card-body">
+        <!-- Filter Section -->
+        <form method="get" id="filterForm" class="form-inline">
+            <div class="form-group mr-3 mb-3">
+                <label for="sexuFilter" class="mr-2" style="font-size: 0.9rem;">estudante:</label>
+                <select name="sexu" id="sexuFilter" class="form-control form-control-sm"
+                    onchange="this.form.submit()">
+                    <option value="">Hotu</option>
+                    <option value="M" {% if sexu_filter == 'M' %}selected{% endif %}>Mane</option>
+                    <option value="F" {% if sexu_filter == 'F' %}selected{% endif %}>Feto</option>
+                </select>
+            </div>
+            
+        </form>
+
+        <table id="estudante-table" class="table table-bordered table-striped datatable">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>EMIS</th>
+                    <th>Núm. Estudante</th>
+                    <th>Naran</th>
+                    <th>Seksu</th>
+                    <th>Estadu</th>
+                    <th>Asaun</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for estudante in estudantes %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ estudante.estudante.emis }}</td>
+                    <td>{{ estudante.estudante.numero_estudante|default:"-" }}</td>
+                    <td>{{ estudante.estudante.nome }}</td>
+                    <td>{{ estudante.estudante.get_sexu_display }}</td>
+                    <td>
+                        {% if estudante.estudante.is_active %}
+                        <span class="badge badge-success">Ativu</span>
+                        {% else %}
+                        <span class="badge badge-secondary">La Ativu</span>
+                        {% endif %}
+                        {% if estudante.estudante.is_transfer %}
+                        <span class="badge badge-warning">Transfere</span>
+                        {% endif %}
+                        {% if estudante.estudante.is_alumni %}
+                        <span class="badge badge-info">Alumni</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="btn-group btn-group-sm" role="group">
+                            <a href="{% url 'estudante_detail' estudante.estudante.pk %}" class="btn btn-success"
+                                title="Haree">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <a href="{% url 'valor_est_p_list2' estudante.estudante.pk %}" class="btn btn-info"
+                                title="Lista Valor">
+                                <i class="fas fa-list"></i>
+                            </a>
+                            <a href="{% url 'valor_est_p_list' estudante.estudante.pk %}" class="btn btn-info"
+                                title="grafiku Valor">
+                                <i class="fas fa-chart-bar"></i>
+                            </a>
+                            
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" class="text-center">Dadus la iha</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% else %}
+
+<div class="alert alert-default-warning">
+    Ita Boot Seidauk Iha Turma Atu Mangeja!!! <a href="{% url 'home' %}" class="text-primary">Fila Ba Home</a>
+</div>
+
+{% endif %}
+
+
+{% endblock contents %}
+
+{% block scripts %}
+<script>
+
+    $(document).ready(function () {
+        try {
+            $('.datatable').DataTable({
+                "responsive": true,
+                "lengthChange": false,
+                "autoWidth": false,
+                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+            }).buttons().container().appendTo('#estudante-table_wrapper .col-md-6:eq(0)');
+            console.log('DataTable initialized successfully');
+        } catch (error) {
+            console.error('DataTable initialization error:', error);
+        }
+
+        // Reinitialize sidebar treeview
+        // $('[data-widget="treeview"]').treeview('init');
+    });
+</script>
+{% endblock scripts %}

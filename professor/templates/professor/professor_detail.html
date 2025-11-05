@@ -160,11 +160,73 @@
             </div>
         </div>
         {% endif %}
+
+        <!-- Documents -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-file-alt"></i> Dokumentu sira
+                </h3>
+                <div class="card-tools">
+                    <a href="{% url 'professor_document_create' professor.pk %}" class="btn btn-success btn-sm">
+                        <i class="fas fa-plus"></i> Aumenta Dokumentu
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                {% if professor_documents %}
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th style="width: 5%">#</th>
+                            <th style="width: 20%">Tipu Dokumentu</th>
+                            <th style="width: 35%">Observasaun</th>
+                            <th style="width: 15%">Data Upload</th>
+                            <th style="width: 15%">Aksaun</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for doc in professor_documents %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>
+                                <span class="badge badge-info">{{ doc.get_tipo_dokumentu_display }}</span>
+                            </td>
+                            <td>{{ doc.obs|default:"-"|truncatewords:10 }}</td>
+                            <td>{{ doc.created_at|date:"d/m/Y H:i" }}</td>
+                            <td>
+                                {% if doc.file %}
+                                <a href="{{ doc.file.url }}" target="_blank" class="btn btn-primary btn-xs" title="Haree Dokumentu">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a href="{{ doc.file.url }}" download class="btn btn-success btn-xs" title="Download">
+                                    <i class="fas fa-download"></i>
+                                </a>
+                                {% endif %}
+                                <a href="{% url 'professor_document_update' doc.pk %}" class="btn btn-warning btn-xs" title="Hadia">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="{% url 'professor_document_delete' doc.pk %}" class="btn btn-danger btn-xs" title="Hamos">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <div class="alert alert-default-info">
+                    <i class="fas fa-info-circle"></i>
+                    Seidauk iha dokumentu ruma ba profesor ne'e.
+                </div>
+                {% endif %}
+            </div>
+        </div>
     </div>
 
     <!-- User Account Information -->
     <div class="col-md-4">
-        {% if user %}
+        {% if ownuser %}
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">
@@ -175,16 +237,16 @@
                 <table class="table table-sm">
                     <tr>
                         <td><strong>Naran Uzuariu:</strong></td>
-                        <td>{{ user.username }}</td>
+                        <td>{{ ownuser.username }}</td>
                     </tr>
                     <tr>
                         <td><strong>Email:</strong></td>
-                        <td>{{ user.email|default:"-" }}</td>
+                        <td>{{ ownuser.email|default:"-" }}</td>
                     </tr>
                     <tr>
                         <td><strong>Grupu:</strong></td>
                         <td>
-                            {% for group in user.groups.all %}
+                            {% for group in professor.professoruser.user.groups.all %}
                                 <span class="badge badge-primary">{{ group.name }}</span>
                             {% endfor %}
                         </td>
@@ -192,7 +254,7 @@
                     <tr>
                         <td><strong>Ativu:</strong></td>
                         <td>
-                            {% if user.is_active %}
+                            {% if professor.is_active %}
                                 <span class="badge badge-success">Loos</span>
                             {% else %}
                                 <span class="badge badge-danger">Lae</span>
@@ -205,7 +267,7 @@
                     </tr>
                     <tr>
                         <td><strong>Data Kria:</strong></td>
-                        <td>{{ user.date_joined|date:"d/m/Y" }}</td>
+                        <td>{{ ownuser.date_joined|date:"d/m/Y" }}</td>
                     </tr>
                 </table>
             </div>

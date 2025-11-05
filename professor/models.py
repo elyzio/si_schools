@@ -65,6 +65,7 @@ class ProfessorClasse(models.Model):
     ano = models.ForeignKey(Ano, on_delete=models.CASCADE)
     departamentu = models.ForeignKey(Departamentu, on_delete=models.CASCADE)
     classe = models.ForeignKey(Classe, on_delete=models.CASCADE)
+    turma = models.ForeignKey(Turma, on_delete=models.CASCADE, null=True, blank=True)
     is_class_teacher = models.BooleanField(default=False, help_text="Profesor ida-ne'e maka profesor prinsipal klase nian?")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

@@ -1,6 +1,10 @@
 from django import forms
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Fieldset, Row, Column, HTML, Div, Field
+from crispy_forms.bootstrap import InlineRadios
 from .models import Estudante, EstudanteUser, EstudanteClasse, EstudanteEncarregadu, EstudanteDokumentu, EstudanteTransfer
 from custom.models import Distrito, Subdistrito, Suco, Aldeia, Ano, Departamentu, Classe, Turma
+from django.utils import timezone
 
 class EstudanteForm(forms.ModelForm):
     class Meta:
@@ -85,6 +89,65 @@ class EstudanteForm(forms.ModelForm):
         # Set default values
         self.fields['nacionalidade'].initial = 'Timorense'
 
+        # Crispy forms helper
+        self.helper = FormHelper()
+        self.helper.form_method = 'post'
+        self.helper.form_enctype = 'multipart/form-data'
+        self.helper.layout = Layout(
+            Fieldset(
+                'Informasaun Estudante',
+                Row(
+                    Column(
+                        Field('emis', placeholder='EMIS Number'),
+                        HTML('<small class="text-muted">Sei uza hanesan username</small>'),
+                        css_class='col-md-6'
+                    ),
+                    Column('numero_estudante', css_class='col-md-6'),
+                ),
+            ),
+            Fieldset(
+                'Informasaun Pesoál',
+                Row(
+                    Column('nome', css_class='col-md-12'),
+                ),
+                Row(
+                    Column('sexu', css_class='col-md-4'),
+                    Column('data_moris', css_class='col-md-4'),
+                    Column('fatin_moris', css_class='col-md-4'),
+                ),
+                Row(
+                    Column('nacionalidade', css_class='col-md-6'),
+                    Column('kontatu', css_class='col-md-6'),
+                ),
+            ),
+            Fieldset(
+                'Informasaun Enderesu',
+                Row(
+                    Column('distrito', css_class='col-md-3'),
+                    Column('subdistrito', css_class='col-md-3'),
+                    Column('suco', css_class='col-md-3'),
+                    Column('aldeia', css_class='col-md-3'),
+                ),
+                Row(
+                    Column('hela_fatin', css_class='col-md-12'),
+                ),
+            ),
+            Fieldset(
+                'Informasaun Matríkula',
+                Row(
+                    Column('data_matricula', css_class='col-md-6'),
+                    Column('imagem', css_class='col-md-6'),
+                ),
+                Row(
+                    Column(
+                        Field('is_active', wrapper_class='form-check'),
+                        css_class='col-md-12'
+                    ),
+                ),
+            ),
+            HTML('<div class="form-group mt-4"><button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Rai</button> <a href="{% url \'estudante_list\' %}" class="btn btn-secondary"><i class="fas fa-times"></i> Kansela</a></div>'),
+        )
+
     def clean(self):
         cleaned_data = super().clean()
         distrito = cleaned_data.get('distrito')
@@ -110,26 +173,94 @@ class EstudanteForm(forms.ModelForm):
 class EstudanteClasseForm(forms.ModelForm):
     class Meta:
         model = EstudanteClasse
-        fields = ['departamentu', 'classe', 'turma', 'data_enrollment']
+        fields = ['departamentu', 'classe', 'turma', 'data_enrollment', 'is_mid_year_transfer', 'starting_period']
         widgets = {
             'departamentu': forms.Select(attrs={'class': 'form-control'}),
             'classe': forms.Select(attrs={'class': 'form-control'}),
             'turma': forms.Select(attrs={'class': 'form-control'}),
             'data_enrollment': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'is_mid_year_transfer': forms.CheckboxInput(attrs={'class': 'form-check-input', 'id': 'id_is_mid_year_transfer'}),
+            'starting_period': forms.Select(attrs={'class': 'form-control'}, choices=[(1, 'Período 1'), (2, 'Período 2'), (3, 'Período 3')]),
         }
         labels = {
             'departamentu': 'Departamentu',
             'classe': 'Klase',
             'turma': 'Turma',
             'data_enrollment': 'Data Inskrisaun',
+            'is_mid_year_transfer': 'Estudante Transfere iha Klaran Tinan?',
+            'starting_period': 'Hahu husi Período',
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # All fields are required
-        for field in self.fields:
+        # Basic fields are required
+        for field in ['departamentu', 'classe', 'turma', 'data_enrollment']:
             self.fields[field].required = True
+
+        # Transfer fields are optional
+        self.fields['is_mid_year_transfer'].required = False
+        self.fields['starting_period'].required = False
+
+        # Crispy forms helper
+        self.helper = FormHelper()
+        self.helper.form_method = 'post'
+        self.helper.layout = Layout(
+            Row(
+                Column('departamentu', css_class='col-md-4'),
+                Column('classe', css_class='col-md-4'),
+                Column('turma', css_class='col-md-4'),
+            ),
+            Row(
+                Column('data_enrollment', css_class='col-md-12'),
+            ),
+            HTML('<hr>'),
+            HTML('<h5><i class="fas fa-exchange-alt"></i> Informasaun Transfere (Opsionál)</h5>'),
+            HTML('''
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i>
+                    <strong>Nota:</strong> Se estudante ne\'e transfere iha klaran tinan akadémiku, favor seluk "Estudante Transfere iha Klaran Tinan?" no atu determina períodu ne\'ebé estudante hahu.
+                </div>
+            '''),
+            Row(
+                Column(
+                    Field('is_mid_year_transfer', wrapper_class='form-check'),
+                    css_class='col-md-6'
+                ),
+                Column(
+                    Field('starting_period', css_id='id_starting_period'),
+                    HTML('<small class="form-text text-muted" id="periodHelp">Períodu ne\'ebé estudante hahu iha eskola ne\'e</small>'),
+                    css_class='col-md-6',
+                    css_id='startingPeriodGroup'
+                ),
+            ),
+            HTML('''
+                <script>
+                    $(document).ready(function() {
+                        // Toggle starting_period visibility based on is_mid_year_transfer
+                        function togglePeriodField() {
+                            if ($('#id_is_mid_year_transfer').is(':checked')) {
+                                $('#startingPeriodGroup').show();
+                                $('#id_starting_period').prop('disabled', false);
+                            } else {
+                                $('#startingPeriodGroup').hide();
+                                $('#id_starting_period').val('1');
+                                $('#id_starting_period').prop('disabled', true);
+                            }
+                        }
+
+                        // Initial state
+                        togglePeriodField();
+
+                        // On change
+                        $('#id_is_mid_year_transfer').change(function() {
+                            togglePeriodField();
+                        });
+                    });
+                </script>
+            '''),
+            HTML('<div class="form-group mt-4"><button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Rai</button> <a href="{% url \'estudante_detail\' estudante.pk %}" class="btn btn-secondary"><i class="fas fa-times"></i> Kansela</a></div>'),
+        )
 
 class EstudanteEncarregaduForm(forms.ModelForm):
     class Meta:
@@ -155,6 +286,31 @@ class EstudanteEncarregaduForm(forms.ModelForm):
         # Email is optional
         self.fields['email'].required = False
 
+        # Crispy forms helper
+        self.helper = FormHelper()
+        self.helper.form_method = 'post'
+        self.helper.layout = Layout(
+            Row(
+                Column('encarregadu', css_class='col-md-6'),
+                Column('relasaun', css_class='col-md-6'),
+            ),
+            Row(
+                Column('no_kontatu', css_class='col-md-6'),
+                Column(
+                    Field('email', placeholder='email@example.com (Opsionál)'),
+                    css_class='col-md-6'
+                ),
+            ),
+            Row(
+                Column(
+                    Field('is_primary', wrapper_class='form-check'),
+                    HTML('<small class="form-text text-muted">Seluk ida-ne\'e se encaregadu ne\'e maka encaregadu prinsipál.</small>'),
+                    css_class='col-md-12'
+                ),
+            ),
+            HTML('<div class="form-group mt-4"><button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Rai</button> <a href="{% url \'estudante_detail\' estudante.pk %}" class="btn btn-secondary"><i class="fas fa-times"></i> Kansela</a></div>'),
+        )
+
 class EstudanteDokumentuForm(forms.ModelForm):
     class Meta:
         model = EstudanteDokumentu
@@ -174,6 +330,28 @@ class EstudanteDokumentuForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         # Obs is optional
         self.fields['obs'].required = False
+
+        # Crispy forms helper
+        self.helper = FormHelper()
+        self.helper.form_method = 'post'
+        self.helper.form_enctype = 'multipart/form-data'
+        self.helper.layout = Layout(
+            Row(
+                Column('tipo_dokumentu', css_class='col-md-6'),
+                Column(
+                    Field('file', accept='application/pdf'),
+                    HTML('<small class="form-text text-muted">Favor upload file PDF deit. Tamañu maksimum: 10MB</small>'),
+                    css_class='col-md-6'
+                ),
+            ),
+            Row(
+                Column(
+                    Field('obs', placeholder='Nota kona-ba dokumentu (opsionál)'),
+                    css_class='col-md-12'
+                ),
+            ),
+            HTML('<div class="form-group mt-4"><button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Rai</button> <a href="{% url \'estudante_detail\' estudante.pk %}" class="btn btn-secondary"><i class="fas fa-times"></i> Kansela</a></div>'),
+        )
 
 class EstudanteTransferForm(forms.ModelForm):
     TRANSFER_TYPE_CHOICES = [
@@ -221,6 +399,65 @@ class EstudanteTransferForm(forms.ModelForm):
         self.fields['obs'].required = False
         self.fields['data_aseita'].required = False
 
+        # Crispy forms helper
+        self.helper = FormHelper()
+        self.helper.form_method = 'post'
+        self.helper.form_id = 'transferForm'
+        self.helper.layout = Layout(
+            Fieldset(
+                '',
+                InlineRadios('transfer_type'),
+                HTML('''
+                    <small class="form-text text-muted">
+                        <strong>SAI:</strong> Estudante transfere SAI husi eskola ne\'e ba eskola seluk<br>
+                        <strong>TAMA:</strong> Estudante TAMA husi eskola seluk ba eskola ne\'e
+                    </small>
+                '''),
+            ),
+            HTML('<hr>'),
+            Row(
+                Column(
+                    Field('from_eskola', css_id='id_from_eskola'),
+                    HTML('<small class="form-text text-muted" id="fromEskolaHelp"></small>'),
+                    css_class='col-md-6',
+                    css_id='fromEskolaGroup'
+                ),
+                Column(
+                    Field('ba_eskola', css_id='id_ba_eskola'),
+                    HTML('<small class="form-text text-muted" id="baEskolaHelp"></small>'),
+                    css_class='col-md-6',
+                    css_id='baEskolaGroup'
+                ),
+            ),
+            Row(
+                Column('data_transfer', css_class='col-md-6'),
+                Column(
+                    Field('data_aseita'),
+                    HTML('<small class="form-text text-muted">Deit ba estudante TAMA</small>'),
+                    css_class='col-md-6',
+                    css_id='dataAseitaGroup'
+                ),
+            ),
+            Row(
+                Column(
+                    Field('obs', placeholder='Observasaun (opsionál)'),
+                    css_class='col-md-12'
+                ),
+            ),
+            HTML('''
+                <div class="alert alert-default-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <strong>Nota importante:</strong>
+                    <ul class="mb-0 mt-2">
+                        <li>Se ita seluk <strong>SAI</strong>, estudante sei marka hanesan "transfere" no SEI LA hatudu iha lista estudante ativu.</li>
+                        <li>Se ita seluk <strong>TAMA</strong>, estudante sei kontinua ativu iha lista estudante.</li>
+                        <li>Ita bele hamoos transferénsia depois atu ativa estudante fali se presiza.</li>
+                    </ul>
+                </div>
+            '''),
+            HTML('<div class="form-group mt-4"><button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Rai</button> <a href="{% url \'estudante_detail\' estudante.pk %}" class="btn btn-secondary"><i class="fas fa-times"></i> Kansela</a></div>'),
+        )
+
     def clean(self):
         cleaned_data = super().clean()
         transfer_type = cleaned_data.get('transfer_type')
@@ -238,3 +475,74 @@ class EstudanteTransferForm(forms.ModelForm):
                 self.add_error('from_eskola', 'Favor hatama naran eskola anterior.')
 
         return cleaned_data
+
+
+class EstudanteReassignForm(forms.ModelForm):
+    """Form for reassigning student to next grade/year"""
+
+    class Meta:
+        model = EstudanteClasse
+        fields = ['departamentu', 'classe', 'turma', 'data_enrollment']
+        widgets = {
+            'departamentu': forms.Select(attrs={'class': 'form-control'}),
+            'classe': forms.Select(attrs={'class': 'form-control'}),
+            'turma': forms.Select(attrs={'class': 'form-control'}),
+            'data_enrollment': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+        }
+        labels = {
+            'departamentu': 'Departamentu',
+            'classe': 'Klase Foun',
+            'turma': 'Turma',
+            'data_enrollment': 'Data Inskrisaun',
+        }
+
+    def __init__(self, *args, **kwargs):
+        self.next_grade_name = kwargs.pop('next_grade_name', None)
+        self.current_estudante_classe = kwargs.pop('current_estudante_classe', None)
+        self.back_url_name = kwargs.pop('back_url_name', 'estudante_list')
+        super().__init__(*args, **kwargs)
+
+        # Pre-select next grade if available
+        if self.next_grade_name:
+            try:
+                next_classe = Classe.objects.get(classe=self.next_grade_name)
+                self.fields['classe'].initial = next_classe
+                self.fields['classe'].widget.attrs['readonly'] = True
+            except Classe.DoesNotExist:
+                pass
+
+        # Pre-fill department and turma from current assignment
+        if self.current_estudante_classe:
+            self.fields['departamentu'].initial = self.current_estudante_classe.departamentu
+            self.fields['turma'].initial = self.current_estudante_classe.turma
+
+        # Set default enrollment date to today
+        self.fields['data_enrollment'].initial = timezone.now().date()
+
+        # All fields are required
+        for field in self.fields:
+            self.fields[field].required = True
+
+        # Crispy forms helper
+        self.helper = FormHelper()
+        self.helper.form_method = 'post'
+        self.helper.layout = Layout(
+            Row(
+                Column('departamentu', css_class='col-md-4'),
+                Column('classe', css_class='col-md-4'),
+                Column('turma', css_class='col-md-4'),
+            ),
+            Row(
+                Column('data_enrollment', css_class='col-md-12'),
+            ),
+            HTML(f'''
+                <div class="form-group mt-4">
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-check"></i> Konfirma Reasignasaun
+                    </button>
+                    <a href="{{% url '{self.back_url_name}' %}}" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Kansela
+                    </a>
+                </div>
+            '''),
+        )

@@ -1,0 +1,119 @@
+{% extends 'main/base.html' %}
+{% load user_tags %}
+
+
+{% block head_link %}
+  <style>
+  .custom-table {
+    border: 2px solid #3a9ddf;
+  }
+  .custom-table th,
+  .custom-table td {
+    border: 1px solid #3a9ddf;
+  }
+  .custom-table th {
+    background-color: #e8f8ee;
+    color: #000000;
+  }
+  .custom-table td {
+    background-color: #f9fffb;
+  }
+</style>
+
+{% endblock head_link %}
+  
+
+{% block contents %}
+
+<div class="card">
+    <div class="card-header">Informasaun Estudante no Turma</div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="row">
+                    <div class="col font-weight-bold">Estudante:</div>
+                    <div class="col">{{est_class.estudante.nome}}</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="row">
+                    <div class="col font-weight-bold">Departamentu:</div>
+                    <div class="col">{{est_class.departamentu.sigla}}</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="row">
+                    <div class="col font-weight-bold">Classe:</div>
+                    <div class="col">{{est_class.classe.classe}}</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="row">
+                    <div class="col font-weight-bold">Turma:</div>
+                    <div class="col">{{est_class.turma.turma}}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">Lista Valor</div>
+    <div class="card-body">
+        
+        {% for val in valores_list %}
+        <div class="mb-4">
+          <table class="table table-bordered text-center table-sm custom-table">
+            <tr>
+              <th rowspan="2" class="align-middle">Periodo</th>
+              <th rowspan="2" class="align-middle">Classe</th>
+              <th rowspan="2" class="align-middle">Ano</th>
+              <th colspan="3">Valor</th>
+            </tr>
+            <tr>
+              <th>Total</th>
+              <th>Media</th>
+              <th>Klassifikasaun</th>
+            </tr>
+            <tr>
+              <td>
+                {% if request.user|has_group:"estudante" %}
+                <a href="{% url 'valor_est_detail2' val.period_id val.classe_id val.ano_id %}">{{ val.periodo_nome }}</a>
+                {% elif request.user|has_group:"professor" %}
+                <a href="{% url 'valor_est_p_detail2' val.estudante_id val.period_id val.classe_id val.ano_id %}">{{ val.periodo_nome }}</a>
+                {% endif %} 
+              </td>
+              <td>{{ val.classe_nome }}</td>
+              <td>{{ val.ano_nome }}</td>
+              <td>{{ val.total_valor }}</td>
+              <td>{{ val.media_valor|floatformat:2 }}</td>
+              <td>
+                {% if val.has_klassifikasaun %}
+                  <span class="badge badge-success">{{ val.klassifikasaun_turma_roman }}</span>
+                  <small class="text-muted">(Finalizadu)</small>
+                {% elif val.ano_is_active %}
+                  <span class="badge badge-secondary">-</span>
+                  <small class="text-muted">(Real-time)</small>
+                {% else %}
+                  <span class="badge badge-secondary">-</span>
+                {% endif %}
+              </td>
+            </tr>
+          </table>
+        </div>
+        <hr>
+        {% empty %}
+        <div class="alert alert-default-info">Valor Seidauk Iha!</div>
+        {% endfor %}
+          
+        
+    </div>
+</div>
+
+{% endblock contents %}
+
+
+{% block scripts %}
+
+{% endblock scripts %}
+    

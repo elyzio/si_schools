@@ -1,0 +1,38 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Kona Ba - Hamos{% endblock %}
+
+{% block breadcrumb_item %}
+<li class="breadcrumb-item"><a href="{% url 'konaba:konaba_list' %}">Kona Ba</a></li>
+<li class="breadcrumb-item active">Hamos</li>
+{% endblock breadcrumb_item %}
+
+{% block contents %}
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-header bg-danger">
+            <h3 class="card-title">Konfirmasaun Hamos</h3>
+        </div>
+        <div class="card-body">
+            <p>Ita boot hakarak hamos Kona Ba ne'e?</p>
+            <ul>
+                <li><strong>Titulu:</strong> {{ konaba.titulu }}</li>
+                <li><strong>Orden:</strong> {{ konaba.orden }}</li>
+                <li><strong>Deskrisaun:</strong> {{ konaba.deskrisaun|truncatewords:30 }}</li>
+            </ul>
+        </div>
+        <div class="card-footer">
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> Sim, Hamos
+                </button>
+                <a href="{% url 'konaba:konaba_list' %}" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Kansela
+                </a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock contents %}

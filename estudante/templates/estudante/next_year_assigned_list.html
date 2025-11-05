@@ -1,0 +1,264 @@
+{% extends 'main/base.html' %}
+
+{% block contents %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">{{ page_title }}</h3>
+        <div class="card-tools">
+            <a href="{% url 'assigned_students_list' %}" class="btn btn-info btn-sm mr-2">
+                <i class="fas fa-list"></i> Tinan Ativu
+            </a>
+            <a href="{% url 'estudante_list' %}" class="btn btn-secondary btn-sm">
+                <i class="fas fa-arrow-left"></i> Fila Ba Lista
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <!-- Info Section -->
+        <div class="row mb-3">
+            <div class="col-md-12">
+                {% if next_ano %}
+                <div class="alert alert-default-success">
+                    <i class="fas fa-info-circle"></i>
+                    <strong>Tinan Akadémiku Ativu: {{ active_ano.ano }}</strong><br>
+                    <strong>Tinan Tuir Mai: {{ next_ano.ano }}</strong><br>
+                    <small>Lista estudante sira-ne'ebé reasignadu ona ba tinan akadémiku {{ next_ano.ano }}.</small>
+                </div>
+                {% else %}
+                <div class="alert alert-default-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <strong>Tinan Akadémiku Ativu: {{ active_ano.ano }}</strong><br>
+                    <strong>Tinan Tuir Mai: {{ active_ano.ano|add:1 }}</strong> - Seidauk kria iha sistema<br>
+                    <small>Seidauk iha estudante reasignadu ba tinan tuir mai tanba tinan akadémiku seidauk kria.</small>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        {% if next_ano and students_data %}
+        <!-- Filters -->
+        <div class="card card-outline card-primary mb-3">
+            <div class="card-header">
+                <h5 class="card-title"><i class="fas fa-filter"></i> Filtra</h5>
+            </div>
+            <div class="card-body">
+                <form method="get" id="filterForm" class="form-inline">
+                    <!-- Department Filter -->
+                    <div class="form-group mr-3 mb-2">
+                        <label for="deptFilter" class="mr-2">Departamentu:</label>
+                        <select name="dept" id="deptFilter" class="form-control form-control-sm" onchange="this.form.submit()">
+                            <option value="">Hotu ({{ total_count }})</option>
+                            {% for dept in departments %}
+                            <option value="{{ dept.departamentu__id }}"
+                                    {% if dept.departamentu__id|stringformat:'s' == dept_filter %}selected{% endif %}>
+                                {{ dept.departamentu__sigla }} ({{ dept.count }})
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Class Filter (only if department selected) -->
+                    {% if dept_filter %}
+                    <div class="form-group mr-3 mb-2">
+                        <label for="classeFilter" class="mr-2">Klase:</label>
+                        <select name="classe" id="classeFilter" class="form-control form-control-sm" onchange="this.form.submit()">
+                            <option value="">Hotu</option>
+                            {% for classe in classes %}
+                            <option value="{{ classe.classe__id }}"
+                                    {% if classe.classe__id|stringformat:'s' == classe_filter %}selected{% endif %}>
+                                {{ classe.classe__classe }} ({{ classe.count }})
+                            </option>
+                            {% endfor %}
+                        </select>
+                        <input type="hidden" name="dept" value="{{ dept_filter }}">
+                    </div>
+                    {% endif %}
+
+                    <!-- Turma Filter (only if class selected) -->
+                    {% if classe_filter and dept_filter %}
+                    <div class="form-group mr-3 mb-2">
+                        <label for="turmaFilter" class="mr-2">Turma:</label>
+                        <select name="turma" id="turmaFilter" class="form-control form-control-sm" onchange="this.form.submit()">
+                            <option value="">Hotu</option>
+                            {% for turma in turmas %}
+                            <option value="{{ turma.turma__id }}"
+                                    {% if turma.turma__id|stringformat:'s' == turma_filter %}selected{% endif %}>
+                                {{ turma.turma__turma }} ({{ turma.count }})
+                            </option>
+                            {% endfor %}
+                        </select>
+                        <input type="hidden" name="dept" value="{{ dept_filter }}">
+                        <input type="hidden" name="classe" value="{{ classe_filter }}">
+                    </div>
+                    {% endif %}
+
+                    <!-- Clear Filter Button -->
+                    {% if dept_filter or classe_filter or turma_filter %}
+                    <div class="form-group mb-2">
+                        <a href="{% url 'next_year_assigned_students_list' %}" class="btn btn-secondary btn-sm">
+                            <i class="fas fa-times"></i> Hamoos Filtru
+                        </a>
+                    </div>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+
+        <!-- Students Table -->
+        <div class="table-responsive">
+            <table id="nextYearStudentsTable" class="table table-bordered table-striped table-hover table-sm">
+                <thead class="thead-light">
+                    <tr>
+                        <th>No.</th>
+                        <th>EMIS</th>
+                        <th>Naran Estudante</th>
+                        <th>Klase Anterior</th>
+                        <th>Klase Foun ({{ next_ano.ano }})</th>
+                        <th>Departamentu</th>
+                        <th>Data Inskrisaun</th>
+                        <th>Status</th>
+                        <th>Aksaun</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for data in students_data %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ data.estudante_classe.estudante.emis }}</td>
+                        <td>
+                            <a href="{% url 'estudante_detail' data.estudante_classe.estudante.pk %}">
+                                {{ data.estudante_classe.estudante.nome }}
+                            </a>
+                        </td>
+                        <td>
+                            {% if data.current_assignment %}
+                                <span class="badge badge-secondary">
+                                    {{ data.current_assignment.classe.classe }}{{ data.current_assignment.turma.turma }}
+                                </span>
+                                {% if data.is_promoted %}
+                                    <span class="badge badge-success" title="Liu ona">
+                                        <i class="fas fa-check"></i>
+                                    </span>
+                                {% endif %}
+                            {% else %}
+                                <span class="badge badge-warning">La iha</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="badge badge-primary badge-lg">
+                                {{ data.estudante_classe.classe.classe }}{{ data.estudante_classe.turma.turma }}
+                            </span>
+                        </td>
+                        <td>{{ data.estudante_classe.departamentu.sigla }}</td>
+                        <td>{{ data.estudante_classe.data_enrollment|date:"d/m/Y" }}</td>
+                        <td>
+                            {% if data.is_promoted %}
+                                <span class="badge badge-success">
+                                    <i class="fas fa-arrow-up"></i> Promove
+                                </span>
+                            {% else %}
+                                <span class="badge badge-info">
+                                    <i class="fas fa-plus"></i> Foun
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'estudante_detail' data.estudante_classe.estudante.pk %}"
+                               class="btn btn-info btn-sm"
+                               title="Haree Detallu">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Summary -->
+        <div class="row mt-3">
+            <div class="col-md-12">
+                <div class="card card-outline card-success">
+                    <div class="card-body">
+                        <h5><i class="fas fa-chart-pie"></i> Sumariu ba Tinan {{ next_ano.ano }}:</h5>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="info-box bg-primary">
+                                    <span class="info-box-icon"><i class="fas fa-users"></i></span>
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">Total Estudante Reasignadu</span>
+                                        <span class="info-box-number">{{ total_count }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="info-box bg-success">
+                                    <span class="info-box-icon"><i class="fas fa-arrow-up"></i></span>
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">Promove husi Tinan {{ active_ano.ano }}</span>
+                                        <span class="info-box-number">{{ promoted_count }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="info-box bg-warning">
+                                    <span class="info-box-icon"><i class="fas fa-school"></i></span>
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">Departamentu</span>
+                                        <span class="info-box-number">{{ departments|length }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% elif next_ano %}
+        <div class="alert alert-default-info">
+            <i class="fas fa-info-circle"></i>
+            Seidauk iha estudante reasignadu ba tinan akadémiku {{ next_ano.ano }}.<br>
+            <small>Favor uza pájina reasignasaun atu atribui estudante sira ba tinan tuir mai.</small>
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function() {
+    $('#nextYearStudentsTable').DataTable({
+        "paging": true,
+        "lengthChange": true,
+        "searching": true,
+        "ordering": true,
+        "info": true,
+        "autoWidth": false,
+        "responsive": true,
+        "pageLength": 25,
+        "language": {
+            "search": "Buka:",
+            "lengthMenu": "Hatudu _MENU_ rejistru",
+            "info": "Hatudu _START_ to _END_ husi _TOTAL_ estudante",
+            "infoEmpty": "La iha estudante",
+            "infoFiltered": "(filtru husi _MAX_ total estudante)",
+            "paginate": {
+                "first": "Uluk",
+                "last": "Ikus",
+                "next": "Oinmai",
+                "previous": "Fila"
+            },
+            "zeroRecords": "La hetan estudante"
+        },
+        "order": [[2, 'asc']], // Sort by name
+        "columnDefs": [
+            { "orderable": false, "targets": [7, 8] }, // Disable sorting for status, action
+            { "searchable": false, "targets": [0, 7, 8] } // Disable search for no, status, action
+        ]
+    });
+});
+</script>
+{% endblock %}

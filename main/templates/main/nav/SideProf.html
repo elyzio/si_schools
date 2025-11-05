@@ -1,0 +1,30 @@
+<li class="nav-item">
+    <a href="{% url 'horariu_list_prof' %}" class="nav-link">
+        <i class="nav-icon fas fa-calendar-alt"></i>
+        <p>Horariu</p>
+    </a>
+</li>
+
+<li class="nav-item has-treeview">
+    <a href="#" class="nav-link">
+        <i class="nav-icon fas fa-users"></i>
+        <p>
+            Estudante
+            <i class="fas fa-angle-left right"></i>
+        </p>
+    </a>
+    <ul class="nav nav-treeview">
+        <li class="nav-item">
+            <a href="{% url 'est_prof_turma_list' %}" class="nav-link">
+                <i class="fas fa-door-open nav-icon"></i>
+                <p>Turma</p>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{% url 'est_prof_hanorin_list' %}" class="nav-link">
+                <i class="fas fa-chalkboard-teacher nav-icon"></i>
+                <p>Hanorin</p>
+            </a>
+        </li>
+    </ul>
+</li>

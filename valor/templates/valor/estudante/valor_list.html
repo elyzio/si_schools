@@ -1,0 +1,136 @@
+{% extends 'main/base.html' %}
+
+{% block contents %}
+
+<div class="card">
+    <div class="card-header">Informasaun Estudante no Turma</div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="row">
+                    <div class="col font-weight-bold">Estudante:</div>
+                    <div class="col">{{est_class.estudante.nome}}</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="row">
+                    <div class="col font-weight-bold">Departamentu:</div>
+                    <div class="col">{{est_class.departamentu.sigla}}</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="row">
+                    <div class="col font-weight-bold">Classe:</div>
+                    <div class="col">{{est_class.classe.classe}}</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="row">
+                    <div class="col font-weight-bold">Turma:</div>
+                    <div class="col">{{est_class.turma.turma}}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">Grafiku</div>
+    <div class="card-body">
+        <!-- Placeholder for graph -->
+        <!-- <p>Grafiku sei hala'o iha foun.</p> -->
+        <canvas id="valorChart" width="400" height="200"></canvas>
+    </div>
+</div>
+
+{% endblock contents %}
+
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const valoresData = JSON.parse('{{ valores|safe }}');
+//   const estudanteNome = Object.keys(valoresData)[0];
+//   const studentData = valoresData;
+  const estudanteNome = Object.keys(valoresData)[0];
+  const studentData = valoresData[estudanteNome];
+ 
+
+  // 1️⃣ Get all unique periods (e.g. Primeiru, Segundu)
+  const allPeriods = new Set();
+  for (const anoClasse in studentData) {
+    for (const periodo in studentData[anoClasse]) {
+      allPeriods.add(periodo);
+    }
+  }
+  const periods = Array.from(allPeriods);
+
+  // 2️⃣ X-axis labels = each "2025 - 10A"
+  const labels = Object.keys(studentData);
+
+  // 3️⃣ Build one dataset per period
+  const datasets = periods.map((periodo, idx) => {
+    const color = [
+      'rgba(255, 99, 132, 0.6)',
+      'rgba(54, 162, 235, 0.6)',
+      'rgba(255, 206, 86, 0.6)',
+      'rgba(75, 192, 192, 0.6)',
+      'rgba(153, 102, 255, 0.6)',
+      'rgba(255, 159, 64, 0.6)',
+    ][idx % 6];
+
+    const border = color.replace('0.6', '1');
+
+    return {
+      label: periodo,
+      data: labels.map(l => studentData[l][periodo] || 0),
+      backgroundColor: color,
+      borderColor: border,
+      borderWidth: 1
+    };
+  });
+
+  // 4️⃣ Build the chart
+  const ctx = document.getElementById('valorChart').getContext('2d');
+  const valorChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: datasets
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: {
+          beginAtZero: true,
+          max: 10,
+          title: {
+            display: true,
+            text: 'Média Valor'
+          }
+        },
+        x: {
+          title: {
+            display: true,
+            text: 'Klase'
+          }
+        }
+      },
+      plugins: {
+        title: {
+          display: true,
+          text: `Valores estudante nian`
+        },
+        tooltip: {
+          mode: 'index',
+          intersect: false
+        },
+        legend: {
+          position: 'top'
+        }
+      }
+    }
+  });
+</script>
+{% endblock scripts %}
+    
