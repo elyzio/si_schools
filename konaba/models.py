@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils import timezone
+from django_summernote.fields import SummernoteTextField
 
 # =============================================================================
 # CONTENT MANAGEMENT MODELS
@@ -10,7 +11,8 @@ from django.utils import timezone
 class KonaBa(models.Model):
     titulu = models.CharField(max_length=255)
     orden = models.IntegerField(default=0, help_text="Orden")
-    deskrisaun = models.TextField()
+    deskrisaun = SummernoteTextField()
+    # deskrisaun = models.TextField()
     obs = models.TextField(blank=True)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -32,7 +34,8 @@ class Informasaun(models.Model):
     ]
     
     titulo = models.CharField(max_length=255)
-    deskrisaun = models.TextField()
+    deskrisaun = SummernoteTextField()
+    # deskrisaun = models.TextField()
     image = models.ImageField(upload_to='informasaun/', blank=True, null=True)
     tipu_informasaun = models.CharField(max_length=20, choices=TIPU_CHOICES, default='INFORMASAUN')
     data_kria = models.DateTimeField(auto_now_add=True)

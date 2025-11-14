@@ -1,0 +1,269 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block head_link %}
+<style>
+    .section-header {
+        font-size: 1.1em;
+        font-weight: 600;
+        margin: 10px 0 8px 0;
+        color: #495057;
+        border-bottom: 2px solid #e9ecef;
+        padding-bottom: 3px;
+    }
+    .table-light-custom {
+        font-size: 0.9em;
+        background: white;
+    }
+    .table-light-custom thead th {
+        background: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+        font-weight: 600;
+        color: #495057;
+        padding: 8px;
+    }
+    .table-light-custom tbody tr {
+        border-bottom: 1px solid #dee2e6;
+    }
+    .table-light-custom tbody tr:hover {
+        background: #f1f3f5;
+    }
+    .table-light-custom td {
+        padding: 6px 8px;
+    }
+    .table-box {
+        background: white;
+        border: 1px solid #dee2e6;
+        padding: 12px;
+        margin-bottom: 15px;
+    }
+    .table-box h6 {
+        font-size: 0.95em;
+        margin: 0 0 10px 0;
+        color: #495057;
+        font-weight: 600;
+    }
+</style>
+{% endblock %}
+
+{% block contents %}
+<!-- Students Section -->
+<div class="row">
+    <div class="col-12">
+        <h5 class="section-header">
+            <i class="fas fa-user-graduate"></i> Students Count Tables
+            {% if current_year %}<span class="badge badge-sm badge-primary">{{ current_year.ano }}</span>{% endif %}
+        </h5>
+    </div>
+</div>
+
+<!-- Student Tables -->
+<div class="row">
+    <div class="col-md-6">
+        <div class="table-box">
+            <h6><i class="fas fa-building"></i> Students by Department & Class</h6>
+            <table class="table table-sm table-light-custom table-bordered">
+                <thead>
+                    <tr>
+                        <th>Department</th>
+                        <th>Class</th>
+                        <th class="text-center">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in students_dept_class %}
+                    <tr>
+                        <td>{{ item.departamentu__departamento }}</td>
+                        <td>{{ item.classe__classe }}</td>
+                        <td class="text-center">
+                            <a href="{% url 'student_dept_class_detail' %}?dept={{ item.departamentu__departamento }}&class={{ item.classe__classe }}">
+                                {{ item.total }}
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3" class="text-center text-muted">No data</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="table-box">
+            <h6><i class="fas fa-map-marker-alt"></i> Students by District</h6>
+            <table class="table table-sm table-light-custom table-bordered">
+                <thead>
+                    <tr>
+                        <th>District</th>
+                        <th class="text-center">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in students_by_district %}
+                    <tr>
+                        <td>{{ item.distrito__nome|default:"Unknown" }}</td>
+                        <td class="text-center">
+                            <a href="{% url 'student_district_detail' %}?district={{ item.distrito__nome }}">
+                                {{ item.total }}
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="2" class="text-center text-muted">No data</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Alumni Section -->
+<div class="row">
+    <div class="col-12">
+        <h5 class="section-header">
+            <i class="fas fa-graduation-cap"></i> Alumni Count Tables
+        </h5>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="table-box">
+            <h6><i class="fas fa-graduation-cap"></i> Alumni by Year & Department</h6>
+            <table class="table table-sm table-light-custom table-bordered">
+                <thead>
+                    <tr>
+                        <th>Year</th>
+                        <th>Department</th>
+                        <th class="text-center">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in alumni_by_year_dept %}
+                    <tr>
+                        <td>{{ item.ano__ano }}</td>
+                        <td>{{ item.estudante__estudanteclasse__departamentu__departamento|default:"Unknown" }}</td>
+                        <td class="text-center">
+                            <a href="{% url 'alumni_year_dept_detail' %}?year={{ item.ano__ano }}&dept={{ item.estudante__estudanteclasse__departamentu__departamento }}">
+                                {{ item.total }}
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3" class="text-center text-muted">No data</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Teachers Section -->
+<div class="row">
+    <div class="col-12">
+        <h5 class="section-header">
+            <i class="fas fa-chalkboard-teacher"></i> Teachers Count Tables
+        </h5>
+    </div>
+</div>
+
+<!-- Teacher Tables -->
+<div class="row">
+    <div class="col-md-4">
+        <div class="table-box">
+            <h6><i class="fas fa-map-marker-alt"></i> Teachers by District</h6>
+            <table class="table table-sm table-light-custom table-bordered">
+                <thead>
+                    <tr>
+                        <th>District</th>
+                        <th class="text-center">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in teachers_by_district %}
+                    <tr>
+                        <td>{{ item.distrito__nome|default:"Unknown" }}</td>
+                        <td class="text-center">
+                            <a href="{% url 'teacher_district_detail' %}?district={{ item.distrito__nome }}">
+                                {{ item.total }}
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="2" class="text-center text-muted">No data</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="table-box">
+            <h6><i class="fas fa-graduation-cap"></i> Teachers by Academic Level</h6>
+            <table class="table table-sm table-light-custom table-bordered">
+                <thead>
+                    <tr>
+                        <th>Level</th>
+                        <th class="text-center">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in teachers_by_level %}
+                    <tr>
+                        <td>{{ item.nivel_akademiku }}</td>
+                        <td class="text-center">
+                            <a href="{% url 'teacher_level_detail' %}?level={{ item.nivel_akademiku }}">
+                                {{ item.total }}
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="2" class="text-center text-muted">No data</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="table-box">
+            <h6><i class="fas fa-book"></i> Teachers by Subject</h6>
+            <table class="table table-sm table-light-custom table-bordered">
+                <thead>
+                    <tr>
+                        <th>Subject</th>
+                        <th class="text-center">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in teachers_by_subject %}
+                    <tr>
+                        <td>{{ item.materia__materia }}</td>
+                        <td class="text-center">
+                            <a href="{% url 'teacher_subject_detail' %}?subject={{ item.materia__materia }}">
+                                {{ item.total }}
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="2" class="text-center text-muted">No data</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

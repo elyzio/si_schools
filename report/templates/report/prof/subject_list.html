@@ -1,0 +1,43 @@
+{% extends 'main/base.html' %}
+
+{% block contents %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Teachers Teaching {{ subject }}</h3>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>No.</th>
+                            <th>Teacher Name</th>
+                            <th>Gender</th>
+                            <th>Class</th>
+                            <th>Academic Level</th>
+                            <th>Contact</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in teacher_materias %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td><a href="{% url 'professor_detail' item.professor.id %}">{{ item.professor.nome }}</td>
+                            <td>{{ item.professor.get_sexu_display }}</td>
+                            <td>{{ item.classe.classe }}</td>
+                            <td>{{ item.professor.get_nivel_akademiku_display }}</td>
+                            <td>{{ item.professor.kontatu|default:"-" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center">No teachers found</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

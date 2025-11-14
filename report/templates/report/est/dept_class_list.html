@@ -1,0 +1,43 @@
+{% extends 'main/base.html' %}
+
+{% block contents %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">{{ dept }} - {{ classe }} ({{ current_year.ano }})</h3>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>No.</th>
+                            <th>EMIS</th>
+                            <th>Name</th>
+                            <th>Gender</th>
+                            <th>Turma</th>
+                            <th>Average</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in students %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>estudante_detail{{ student.estudante.emis }}</td>
+                            <td><a href="{% url 'estudante_detail' student.estudante.id %}">{{ student.estudante.nome }}</a></td>
+                            <td>{{ student.estudante.get_sexu_display }}</td>
+                            <td>{{ student.turma.turma }}</td>
+                            <td>{{ student.average_score|default:"-" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center">No students found</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

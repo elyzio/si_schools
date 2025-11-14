@@ -1,18 +1,20 @@
 from django.contrib import admin
 from .models import *
+from django_summernote.admin import SummernoteModelAdmin
 # Register your models here.
 
 @admin.register(KonaBa)
-class KonaBaAdmin(admin.ModelAdmin):
+class KonaBaAdmin(SummernoteModelAdmin):
     list_display = ('titulu', 'orden', 'is_active', 'created_at', 'updated_at')
     list_filter = ('is_active', 'created_at')
     search_fields = ('titulu', 'deskrisaun', 'obs')
     ordering = ('orden', 'titulu')
     list_editable = ('orden', 'is_active')
     readonly_fields = ('created_at', 'updated_at')
+    summernote_fields = ('deskrisaun',)
 
 @admin.register(Informasaun)
-class InformasaunAdmin(admin.ModelAdmin):
+class InformasaunAdmin(SummernoteModelAdmin):
     list_display = ('titulo', 'tipu_informasaun', 'is_published', 'data_publiku', 'get_author', 'data_kria')
     list_filter = ('tipu_informasaun', 'is_published', 'data_publiku', 'data_kria', 'author')
     search_fields = ('titulo', 'deskrisaun', 'obs')
@@ -20,6 +22,7 @@ class InformasaunAdmin(admin.ModelAdmin):
     list_editable = ('is_published',)
     readonly_fields = ('data_kria',)
     date_hierarchy = 'data_publiku'
+    summernote_fields = ('deskrisaun',)
 
     def get_author(self, obj):
         return obj.author.username if obj.author else 'No Author'

@@ -1,0 +1,43 @@
+{% extends 'main/base.html' %}
+
+{% block contents %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Alumni {{ year }} - {{ dept }}</h3>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>No.</th>
+                            <th>EMIS</th>
+                            <th>Name</th>
+                            <th>Gender</th>
+                            <th>Department</th>
+                            <th>Graduation Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in alumni_list %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ item.estudante.emis }}</td>
+                            <td><a href="{% url 'estudante_detail' item.estudante.id %}">{{ item.estudante.nome }}</td>
+                            <td>{{ item.estudante.get_sexu_display }}</td>
+                            <td>{{ item.department }}</td>
+                            <td>{{ item.alumni.data_alumni|date:"d/m/Y" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center">No alumni found</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

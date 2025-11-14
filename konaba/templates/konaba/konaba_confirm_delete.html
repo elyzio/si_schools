@@ -4,7 +4,7 @@
 {% block title %}Kona Ba - Hamos{% endblock %}
 
 {% block breadcrumb_item %}
-<li class="breadcrumb-item"><a href="{% url 'konaba:konaba_list' %}">Kona Ba</a></li>
+<li class="breadcrumb-item"><a href="{% url 'konaba_list' %}">Kona Ba</a></li>
 <li class="breadcrumb-item active">Hamos</li>
 {% endblock breadcrumb_item %}
 
@@ -28,7 +28,7 @@
                 <button type="submit" class="btn btn-danger">
                     <i class="fas fa-trash"></i> Sim, Hamos
                 </button>
-                <a href="{% url 'konaba:konaba_list' %}" class="btn btn-secondary">
+                <a href="{% url 'konaba_list' %}" class="btn btn-secondary">
                     <i class="fas fa-times"></i> Kansela
                 </a>
             </form>

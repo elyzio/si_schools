@@ -1,0 +1,318 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block head_link %}
+<style>
+    .stats-card {
+        background: #f8f9fa;
+        border-left: 3px solid #007bff;
+        padding: 8px 12px;
+        margin-bottom: 10px;
+    }
+    .stats-number {
+        font-size: 1.5em;
+        font-weight: 600;
+        color: #343a40;
+        margin: 0;
+    }
+    .stats-label {
+        font-size: 0.85em;
+        color: #6c757d;
+        margin: 0;
+    }
+    .chart-box {
+        background: white;
+        border: 1px solid #dee2e6;
+        padding: 12px;
+        margin-bottom: 15px;
+    }
+    .chart-box h6 {
+        font-size: 0.95em;
+        margin: 0 0 8px 0;
+        color: #495057;
+        font-weight: 600;
+    }
+    .chart-wrapper {
+        height: 200px;
+        position: relative;
+    }
+    .section-header {
+        font-size: 1.1em;
+        font-weight: 600;
+        margin: 10px 0 8px 0;
+        color: #495057;
+        border-bottom: 2px solid #e9ecef;
+        padding-bottom: 3px;
+    }
+    .table-light-custom {
+        font-size: 0.9em;
+        background: white;
+    }
+    .table-light-custom thead th {
+        background: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+        font-weight: 600;
+        color: #495057;
+        padding: 8px;
+    }
+    .table-light-custom tbody tr {
+        border-bottom: 1px solid #dee2e6;
+    }
+    .table-light-custom tbody tr:hover {
+        background: #f1f3f5;
+    }
+    .table-light-custom td {
+        padding: 6px 8px;
+    }
+    .table-box {
+        background: white;
+        border: 1px solid #dee2e6;
+        padding: 12px;
+        margin-bottom: 15px;
+    }
+    .table-box h6 {
+        font-size: 0.95em;
+        margin: 0 0 10px 0;
+        color: #495057;
+        font-weight: 600;
+    }
+</style>
+{% endblock %}
+
+{% block contents %}
+<!-- Students Section -->
+<div class="row">
+    <div class="col-12">
+        <h5 class="section-header">
+            <i class="fas fa-user-graduate"></i> Students
+            {% if current_year %}<span class="badge badge-sm badge-primary">{{ current_year.ano }}</span>{% endif %}
+        </h5>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-3 col-6">
+        <div class="stats-card">
+            <div class="stats-number">{{ total_students }}</div>
+            <div class="stats-label">Total</div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-6">
+        <div class="stats-card" style="border-left-color: #28a745;">
+            <div class="stats-number">{{ active_enrollments }}</div>
+            <div class="stats-label">Active</div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-6">
+        <div class="stats-card" style="border-left-color: #ffc107;">
+            <div class="stats-number">{{ transferred_students }}</div>
+            <div class="stats-label">Transferred</div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-6">
+        <div class="stats-card" style="border-left-color: #17a2b8;">
+            <div class="stats-number">{{ alumni_students }}</div>
+            <div class="stats-label">Alumni</div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="chart-box">
+            <h6>By Gender</h6>
+            <div class="chart-wrapper">
+                <canvas id="studentGenderChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="chart-box">
+            <h6>By Department</h6>
+            <div class="chart-wrapper">
+                <canvas id="studentDeptChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="chart-box">
+            <h6>By Class</h6>
+            <div class="chart-wrapper">
+                <canvas id="studentClassChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Teachers Section -->
+<div class="row">
+    <div class="col-12">
+        <h5 class="section-header"><i class="fas fa-chalkboard-teacher"></i> Teachers</h5>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-3 col-6">
+        <div class="stats-card" style="border-left-color: #28a745;">
+            <div class="stats-number">{{ total_teachers }}</div>
+            <div class="stats-label">Total</div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-6">
+        <div class="stats-card" style="border-left-color: #007bff;">
+            <div class="stats-number">{{ teachers_assigned }}</div>
+            <div class="stats-label">Assigned</div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="chart-box">
+            <h6>By Gender</h6>
+            <div class="chart-wrapper">
+                <canvas id="teacherGenderChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="chart-box">
+            <h6>By Status</h6>
+            <div class="chart-wrapper">
+                <canvas id="teacherStatusChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="chart-box">
+            <h6>By Academic Level</h6>
+            <div class="chart-wrapper">
+                <canvas id="teacherLevelChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'plugins/chart.js/Chart.min.js' %}"></script>
+<script>
+    const chartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'bottom',
+                labels: {
+                    font: { size: 10 },
+                    padding: 8
+                }
+            }
+        }
+    };
+
+    // Student Gender
+    new Chart(document.getElementById('studentGenderChart'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Male', 'Female'],
+            datasets: [{
+                data: [{{ male_students }}, {{ female_students }}],
+                backgroundColor: ['#007bff', '#dc3545']
+            }]
+        },
+        options: chartOptions
+    });
+
+    // Student Department
+    new Chart(document.getElementById('studentDeptChart'), {
+        type: 'pie',
+        data: {
+            labels: [{% for item in students_by_dept %}'{{ item.departamentu__sigla }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
+            datasets: [{
+                data: [{% for item in students_by_dept %}{{ item.total }}{% if not forloop.last %}, {% endif %}{% endfor %}],
+                backgroundColor: ['#28a745', '#ffc107', '#17a2b8', '#6f42c1', '#fd7e14']
+            }]
+        },
+        options: chartOptions
+    });
+
+    // Student Class
+    new Chart(document.getElementById('studentClassChart'), {
+        type: 'bar',
+        data: {
+            labels: [{% for item in students_by_class %}'{{ item.classe__classe }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
+            datasets: [{
+                label: 'Students',
+                data: [{% for item in students_by_class %}{{ item.total }}{% if not forloop.last %}, {% endif %}{% endfor %}],
+                backgroundColor: '#007bff'
+            }]
+        },
+        options: {
+            ...chartOptions,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { font: { size: 10 } }
+                },
+                x: {
+                    ticks: { font: { size: 10 } }
+                }
+            }
+        }
+    });
+
+    // Teacher Gender
+    new Chart(document.getElementById('teacherGenderChart'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Male', 'Female'],
+            datasets: [{
+                data: [{{ male_teachers }}, {{ female_teachers }}],
+                backgroundColor: ['#28a745', '#e83e8c']
+            }]
+        },
+        options: chartOptions
+    });
+
+    // Teacher Status
+    new Chart(document.getElementById('teacherStatusChart'), {
+        type: 'pie',
+        data: {
+            labels: [{% for item in teachers_by_status %}'{{ item.estadu }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
+            datasets: [{
+                data: [{% for item in teachers_by_status %}{{ item.total }}{% if not forloop.last %}, {% endif %}{% endfor %}],
+                backgroundColor: ['#28a745', '#ffc107', '#17a2b8']
+            }]
+        },
+        options: chartOptions
+    });
+
+    // Teacher Level
+    new Chart(document.getElementById('teacherLevelChart'), {
+        type: 'bar',
+        data: {
+            labels: [{% for item in teachers_by_level %}'{{ item.nivel_akademiku }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
+            datasets: [{
+                label: 'Teachers',
+                data: [{% for item in teachers_by_level %}{{ item.total }}{% if not forloop.last %}, {% endif %}{% endfor %}],
+                backgroundColor: '#28a745'
+            }]
+        },
+        options: {
+            ...chartOptions,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { font: { size: 10 } }
+                },
+                x: {
+                    ticks: { font: { size: 10 } }
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

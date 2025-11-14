@@ -1,0 +1,63 @@
+SUMMERNOTE_CONFIG = {
+    # -----------------------
+    # Editor behavior
+    # -----------------------
+    'iframe': False,  # Use inline editor (False) or iframe (True)
+    'lazy': True,     # Load the editor JS/CSS lazily (faster admin load)
+    
+    # -----------------------
+    # Editor size
+    # -----------------------
+    'width': '800px',    # Width of the editor
+    'height': '500px',   # Height of the editor
+    'minHeight': None,   # Minimum height
+    'maxHeight': None,   # Maximum height
+
+    # -----------------------
+    # Toolbar customization
+    # -----------------------
+    'toolbar': [
+        ['style', ['bold', 'italic', 'underline', 'clear']],
+        ['font', ['strikethrough', 'superscript', 'subscript']],
+        ['fontsize', ['fontsize']],
+        ['color', ['color']],
+        ['para', ['ul', 'ol', 'paragraph']],
+        ['height', ['height']],
+        ['insert', ['link', 'picture', 'video', 'table', 'hr']],
+        ['view', ['fullscreen', 'codeview', 'help']],
+    ],
+
+    # -----------------------
+    # Code/HTML behavior
+    # -----------------------
+    'codeview_filter': True,        # Filter HTML code in code view
+    'codeview_filter_mode': 'escape',  # 'escape' or 'purify'
+    'cleaner': True,                # Remove unwanted HTML tags on save
+    'disable_attachment': False,    # Disable file attachments (True = disable)
+    'toolbar_position': 'top',      # Toolbar position: 'top' or 'bottom'
+
+    # -----------------------
+    # Callbacks & events (optional)
+    # -----------------------
+    'onInit': 'function() { console.log("Summernote initialized"); }',
+    'onChange': 'function(contents, $editable) { console.log("Content changed"); }',
+
+    # -----------------------
+    # Language & localization
+    # -----------------------
+    'lang': 'en-US',   # Change to 'pt-BR', 'tl', etc. if needed
+
+    # -----------------------
+    # File upload options
+    # -----------------------
+    'attachment_filesize_limit': 1024 * 1024 * 5,  # 5MB max per file
+    'attachment_upload_to': 'summernote_uploads/',  # Upload folder inside MEDIA_ROOT
+
+    # -----------------------
+    # Callbacks / custom JS (optional)
+    # -----------------------
+    # Example: limit file types
+    'callbacks': {
+        'onImageUpload': 'function(files) { console.log(files); }',
+    },
+}

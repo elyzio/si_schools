@@ -1,0 +1,125 @@
+{% extends 'landing/visitor_base.html' %}
+
+{% block title %}{{ info.titulo }} - SI Schools{% endblock %}
+
+{% block content %}
+    <!-- Main Information Detail -->
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card mb-4">
+                {% if info.image %}
+                <img src="{{ info.image.url }}" class="card-img-top" alt="{{ info.titulo }}" style="max-height: 400px; object-fit: cover;">
+                {% endif %}
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="badge
+                            {% if info.tipu_informasaun == 'Informasaun' %}badge-primary
+                            {% elif info.tipu_informasaun == 'Ajenda' %}badge-success
+                            {% else %}badge-warning{% endif %}">
+                            {{ info.tipu_informasaun }}
+                        </span>
+                        <small class="text-muted">
+                            <i class="far fa-calendar"></i> {{ info.data_publiku|date:"d F Y" }}
+                        </small>
+                    </div>
+
+                    <h2 class="card-title mb-3">{{ info.titulo }}</h2>
+
+                    <div class="card-text">
+                        {{ info.deskrisaun|safe }}
+                    </div>
+
+                    {% if info.author %}
+                    <hr>
+                    <div class="text-muted">
+                        <small><i class="fas fa-user"></i> Hakerek husi: {{ info.author.username }}</small>
+                    </div>
+                    {% endif %}
+
+                    {% if info.obs %}
+                    <div class="alert alert-info mt-3">
+                        <strong>Observasaun:</strong> {{ info.obs }}
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="card-footer">
+                    <a {% if info.tipu_informasaun == 'Informasaun' %}href="{% url 'information_page' %}"{% elif info.tipu_informasaun == 'Ajenda' %}href="{% url 'agenda_page' %}"{% elif info.tipu_informasaun == 'Atividade' %}href="{% url 'activity_page' %}"{% endif %} class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Fila Ba Lista
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar with Recent Posts -->
+        <div class="col-lg-4">
+            <!-- Recent Informasaun -->
+            {% if recent_news %}
+            <div class="card mb-3">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-bullhorn"></i> Informasaun Foun</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    {% for item in recent_news %}
+                    <a href="{% url 'information_detail' item.pk %}" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">{{ item.titulo|truncatewords:8 }}</h6>
+                            <small class="text-muted">{{ item.data_publiku|date:"d/m/Y" }}</small>
+                        </div>
+                        <p class="mb-1 small text-muted">{{ item.deskrisaun|truncatewords:15|striptags }}</p>
+                    </a>
+                    {% endfor %}
+                </div>
+                <div class="card-footer text-center">
+                    <a href="{% url 'information_page' %}" class="btn btn-sm btn-outline-primary">Haree Hotu</a>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Recent Agenda -->
+            {% if recent_events %}
+            <div class="card mb-3">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="fas fa-calendar-alt"></i> Agenda Foun</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    {% for item in recent_events %}
+                    <a href="{% url 'information_detail' item.pk %}" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">{{ item.titulo|truncatewords:8 }}</h6>
+                            <small class="text-muted">{{ item.data_publiku|date:"d/m/Y" }}</small>
+                        </div>
+                        <p class="mb-1 small text-muted">{{ item.deskrisaun|truncatewords:15|striptags }}</p>
+                    </a>
+                    {% endfor %}
+                </div>
+                <div class="card-footer text-center">
+                    <a href="{% url 'agenda_page' %}" class="btn btn-sm btn-outline-success">Haree Hotu</a>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Recent Atividade -->
+            {% if recent_activities %}
+            <div class="card mb-3">
+                <div class="card-header bg-warning text-white">
+                    <h5 class="mb-0"><i class="fas fa-running"></i> Atividade Foun</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    {% for item in recent_activities %}
+                    <a href="{% url 'information_detail' item.pk %}" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">{{ item.titulo|truncatewords:8 }}</h6>
+                            <small class="text-muted">{{ item.data_publiku|date:"d/m/Y" }}</small>
+                        </div>
+                        <p class="mb-1 small text-muted">{{ item.deskrisaun|truncatewords:15|striptags }}</p>
+                    </a>
+                    {% endfor %}
+                </div>
+                <div class="card-footer text-center">
+                    <a href="{% url 'activity_page' %}" class="btn btn-sm btn-outline-warning">Haree Hotu</a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

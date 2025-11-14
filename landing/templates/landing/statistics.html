@@ -1,0 +1,231 @@
+{% extends 'landing/visitor_base.html' %}
+{% load static %}
+
+{% block title %}Statistics - SI Schools{% endblock %}
+
+{% block extra_css %}
+<style>
+    .stat-card {
+        background: white;
+        border: 1px solid #dee2e6;
+        border-radius: 5px;
+        padding: 15px;
+        margin-bottom: 15px;
+        text-align: center;
+        transition: all 0.3s;
+    }
+    .stat-card:hover {
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        transform: translateY(-2px);
+    }
+    .stat-card .icon {
+        font-size: 1.5rem;
+        color: #6ec1ff;
+        margin-bottom: 5px;
+    }
+    .stat-number {
+        font-size: 1.5em;
+        font-weight: bold;
+        margin: 5px 0;
+        color: #003366;
+    }
+    .stat-label {
+        font-size: 0.85em;
+        color: #6c757d;
+    }
+    .chart-container {
+        background: white;
+        border: 1px solid #dee2e6;
+        border-radius: 5px;
+        padding: 15px;
+        margin-bottom: 15px;
+    }
+    .chart-container h5 {
+        font-size: 1rem;
+        color: #003366;
+        margin-bottom: 10px;
+        font-weight: 600;
+    }
+    .chart-wrapper {
+        height: 180px;
+        position: relative;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-12">
+            <h2 class="mb-4"><i class="fas fa-chart-bar"></i> Estatistika Eskola
+                {% if current_year %}
+                <span class="badge badge-primary">{{ current_year.ano }}</span>
+                {% endif %}
+            </h2>
+        </div>
+    </div>
+
+    <!-- Overview Cards -->
+    <div class="row">
+        <div class="col-lg-4 col-md-4">
+            <div class="stat-card">
+                <div class="icon"><i class="fas fa-user-graduate"></i></div>
+                <div class="stat-number">{{ total_students }}</div>
+                <div class="stat-label">Estudante Ativu</div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-4">
+            <div class="stat-card">
+                <div class="icon"><i class="fas fa-chalkboard-teacher"></i></div>
+                <div class="stat-number">{{ total_teachers }}</div>
+                <div class="stat-label">Profesor</div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-4">
+            <div class="stat-card">
+                <div class="icon"><i class="fas fa-user-check"></i></div>
+                <div class="stat-number">{{ total_alumni }}</div>
+                <div class="stat-label">Alumni</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="row mt-4">
+        <!-- Student Gender Chart -->
+        <div class="col-md-4 mb-3">
+            <div class="chart-container">
+                <h5><i class="fas fa-user-graduate"></i> Estudante Tuir Seksu</h5>
+                <div class="chart-wrapper">
+                    <canvas id="studentGenderChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Teacher Gender Chart -->
+        <div class="col-md-4 mb-3">
+            <div class="chart-container">
+                <h5><i class="fas fa-chalkboard-teacher"></i> Profesor Tuir Seksu</h5>
+                <div class="chart-wrapper">
+                    <canvas id="teacherGenderChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alumni by Department Chart -->
+        <div class="col-md-4 mb-3">
+            <div class="chart-container">
+                <h5><i class="fas fa-user-check"></i> Alumni Tuir Departamentu</h5>
+                <div class="chart-wrapper">
+                    <canvas id="alumniDeptChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-6 mx-auto">
+            <div class="">
+                <div class="chart-container">
+                    <div class="">
+                        <h5><i class="fas fa-users"></i> Estudante Activu Tuir Departamentu & Classe</h5>
+                    </div>
+                    <table class="table table-bordered table-hover table-sm text-center align-middle">
+                        <thead>
+                            <th>#</th>
+                            {% for cl in classe %}
+                                <th>{{cl.classe}}</th>
+                            {% endfor %}   
+                        </thead>
+                        <tbody>
+                            {% for st in st_dept_data %}
+                                <tr>
+                                    <th>{{st.dep.sigla}}</th>
+                                    {% for cs in st.clas %}
+                                        <td>{{cs.cl_tot}}</td>
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %} 
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'plugins/chart.js/Chart.min.js' %}"></script>
+<script>
+    // Student Gender Chart
+    new Chart(document.getElementById('studentGenderChart'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Mane', 'Feto'],
+            datasets: [{
+                data: [{{ male_students }}, {{ female_students }}],
+                backgroundColor: ['#4facfe', '#f093fb']
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+
+    // Teacher Gender Chart
+    new Chart(document.getElementById('teacherGenderChart'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Mane', 'Feto'],
+            datasets: [{
+                data: [{{ male_teachers }}, {{ female_teachers }}],
+                backgroundColor: ['#11998e', '#f5576c']
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+
+    // Alumni by Department Chart
+    new Chart(document.getElementById('alumniDeptChart'), {
+        type: 'pie',
+        data: {
+            labels: [{% for item in alumni_by_dept %}'{{ item.departamentu__sigla }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
+            datasets: [{
+                data: [{% for item in alumni_by_dept %}{{ item.total }}{% if not forloop.last %}, {% endif %}{% endfor %}],
+                backgroundColor: [
+                    '#667eea',
+                    '#ffa726',
+                    '#66bb6a',
+                    '#ef5350',
+                    '#42a5f5',
+                    '#ab47bc',
+                    '#26c6da',
+                    '#ffee58'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

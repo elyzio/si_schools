@@ -24,6 +24,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("main.urls")),
+    path("v/", include("landing.urls")),
     path("custom/", include("custom.urls")),
     path("professor/", include("professor.urls")),
     path("horariu/", include("horariu.urls")),
@@ -31,6 +32,8 @@ urlpatterns = [
     path("valor/", include("valor.urls")),
     path("inf/", include("konaba.urls")),
     path("users/", include("users.urls")),
+    path("rep/", include("report.urls")),
+    path("summernote/", include('django_summernote.urls'))
 ]
 
 if settings.DEBUG:

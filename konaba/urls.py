@@ -13,4 +13,5 @@ urlpatterns = [
     path('informasaun/create/', informasaun_create, name='informasaun_create'),
     path('informasaun/<int:pk>/update/', informasaun_update, name='informasaun_update'),
     path('informasaun/<int:pk>/delete/', informasaun_delete, name='informasaun_delete'),
+    path('informasaun/<int:pk>/toggle-publish/', informasaun_toggle_publish, name='informasaun_toggle_publish'),
 ]

@@ -45,9 +45,11 @@ INSTALLED_APPS = [
     "valor",
     "main",
     "landing",
+    "report",
     "konaba",
     "crispy_forms",
     "crispy_bootstrap4",
+    "django_summernote"
 ]
 
 MIDDLEWARE = [
@@ -115,7 +117,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "Asia/Dili"
 
 USE_I18N = True
 
@@ -143,4 +145,27 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 LOGIN_REDIRECT_URL = 'home'
 LOGIN_URL = 'login'
 LOGOUT_REDIRECT_URL = 'home'
+
+SUMMERNOTE_CONFIG = {
+    'iframe': False,
+    'summernote': {
+        'width': '800px',
+        'height': '500px',
+        'toolbar': [
+            ['style', ['bold', 'italic', 'underline', 'clear']],
+            ['font', ['strikethrough', 'superscript', 'subscript']],
+            ['fontsize', ['fontsize']],
+            ['color', ['color']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['height', ['height']],
+            ['insert', ['link', 'picture', 'table', 'hr']],
+            ['view', ['fullscreen', 'codeview', 'help']],
+        ],
+    },
+    # ADD THIS to fix the styles error:
+    'disable_attachment': False,  # or True if you don't want file uploads
+    'lazy': True,
+}
+
+
 

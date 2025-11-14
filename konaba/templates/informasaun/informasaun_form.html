@@ -1,10 +1,11 @@
 {% extends 'main/base.html' %}
 {% load static %}
+{% load crispy_forms_tags %}
 
 {% block title %}Informasaun - {% if informasaun %}Hadia{% else %}Aumenta{% endif %}{% endblock %}
 
 {% block breadcrumb_item %}
-<li class="breadcrumb-item"><a href="{% url 'konaba:informasaun_list' %}">Informasaun</a></li>
+<li class="breadcrumb-item"><a href="{% url 'informasaun_list' %}">Informasaun</a></li>
 <li class="breadcrumb-item active">{% if informasaun %}Hadia{% else %}Aumenta{% endif %}</li>
 {% endblock breadcrumb_item %}
 
@@ -17,64 +18,24 @@
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="card-body">
-                <div class="form-group">
-                    <label for="titulo">Titulo <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="titulo" name="titulo"
-                           value="{{ informasaun.titulo|default:'' }}" required>
-                </div>
+                {% crispy form %}
 
-                <div class="form-group">
-                    <label for="tipu_informasaun">Tipu Informasaun <span class="text-danger">*</span></label>
-                    <select class="form-control" id="tipu_informasaun" name="tipu_informasaun" required>
-                        <option value="Informasaun" {% if informasaun.tipu_informasaun == 'Informasaun' %}selected{% endif %}>Informasaun</option>
-                        <option value="Ajenda" {% if informasaun.tipu_informasaun == 'Ajenda' %}selected{% endif %}>Ajenda</option>
-                        <option value="Atividade" {% if informasaun.tipu_informasaun == 'Atividade' %}selected{% endif %}>Atividade</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="deskrisaun">Deskrisaun <span class="text-danger">*</span></label>
-                    <textarea class="form-control" id="deskrisaun" name="deskrisaun"
-                              rows="5" required>{{ informasaun.deskrisaun|default:'' }}</textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="data_publiku">Data Publiku <span class="text-danger">*</span></label>
-                    <input type="datetime-local" class="form-control" id="data_publiku" name="data_publiku"
-                           value="{% if informasaun.data_publiku %}{{ informasaun.data_publiku|date:'Y-m-d\TH:i' }}{% endif %}" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="image">Imajen</label>
-                    <input type="file" class="form-control-file" id="image" name="image" accept="image/*">
-                    {% if informasaun.image %}
+                {% if informasaun.image %}
+                    <div class="form-group">
+                        <label>Imajen Atual</label>
                         <div class="mt-2">
-                            <img src="{{ informasaun.image.url }}" alt="Current Image" style="max-width: 200px;">
-                            <p class="text-muted">Imajen atual</p>
+                            <img src="{{ informasaun.image.url }}" alt="Current Image" style="max-width: 200px;" class="img-thumbnail">
+                            <p class="text-muted small">Imajen atual</p>
                         </div>
-                    {% endif %}
-                </div>
-
-                <div class="form-group">
-                    <label for="obs">Observasaun</label>
-                    <textarea class="form-control" id="obs" name="obs"
-                              rows="3">{{ informasaun.obs|default:'' }}</textarea>
-                </div>
-
-                <div class="form-group">
-                    <div class="custom-control custom-switch">
-                        <input type="checkbox" class="custom-control-input" id="is_published" name="is_published"
-                               {% if informasaun.is_published %}checked{% endif %}>
-                        <label class="custom-control-label" for="is_published">Publiku</label>
                     </div>
-                </div>
+                {% endif %}
             </div>
 
             <div class="card-footer">
                 <button type="submit" class="btn btn-primary">
                     <i class="fas fa-save"></i> Rai
                 </button>
-                <a href="{% url 'konaba:informasaun_list' %}" class="btn btn-secondary">
+                <a href="{% url 'informasaun_list' %}" class="btn btn-secondary">
                     <i class="fas fa-times"></i> Kansela
                 </a>
             </div>

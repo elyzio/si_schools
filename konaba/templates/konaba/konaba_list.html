@@ -3,6 +3,11 @@
 
 {% block title %}Kona Ba - Lista{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+{% endblock %}
+
 {% block breadcrumb_item %}
 <li class="breadcrumb-item active">Kona Ba</li>
 {% endblock breadcrumb_item %}
@@ -13,19 +18,20 @@
         <div class="card-header">
             <h3 class="card-title">Lista Kona Ba</h3>
             <div class="card-tools">
-                <a href="{% url 'konaba:konaba_create' %}" class="btn btn-primary btn-sm">
+                <a href="{% url 'konaba_create' %}" class="btn btn-primary btn-sm">
                     <i class="fas fa-plus"></i> Aumenta Foun
                 </a>
             </div>
         </div>
         <div class="card-body">
-            <table class="table table-bordered table-striped">
+            <table id="konabaTable" class="table table-bordered table-striped">
                 <thead>
                     <tr>
                         <th>Orden</th>
                         <th>Titulu</th>
                         <th>Deskrisaun</th>
                         <th>Status</th>
+                        <th>Orden</th>
                         <th>Opsaun</th>
                     </tr>
                 </thead>
@@ -42,11 +48,12 @@
                                 <span class="badge badge-danger">La Ativu</span>
                             {% endif %}
                         </td>
+                        <td>{{ konaba.orden }}</td>
                         <td>
-                            <a href="{% url 'konaba:konaba_update' konaba.pk %}" class="btn btn-info btn-sm">
+                            <a href="{% url 'konaba_update' konaba.pk %}" class="btn btn-info btn-sm">
                                 <i class="fas fa-edit"></i> Hadia
                             </a>
-                            <a href="{% url 'konaba:konaba_delete' konaba.pk %}" class="btn btn-danger btn-sm">
+                            <a href="{% url 'konaba_delete' konaba.pk %}" class="btn btn-danger btn-sm">
                                 <i class="fas fa-trash"></i> Hamos
                             </a>
                         </td>
@@ -62,3 +69,35 @@
     </div>
 </div>
 {% endblock contents %}
+
+{% block scripts %}
+<script src="{% static 'plugins/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+<script>
+$(function () {
+    $("#konabaTable").DataTable({
+        "responsive": true,
+        "lengthChange": true,
+        "autoWidth": false,
+        "order": [[0, "asc"]],
+        "language": {
+            "search": "Buka:",
+            "lengthMenu": "Hatudu _MENU_ dadus kada pajina",
+            "info": "Hatudu _START_ to _END_ husi _TOTAL_ dadus",
+            "infoEmpty": "Hatudu 0 to 0 husi 0 dadus",
+            "infoFiltered": "(filtrado husi _MAX_ total dadus)",
+            "zeroRecords": "Laiha dadus",
+            "emptyTable": "Seidauk iha dadus iha tabela",
+            "paginate": {
+                "first": "Dahuluk",
+                "last": "Ikus",
+                "next": "Tuirmai",
+                "previous": "Antes"
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

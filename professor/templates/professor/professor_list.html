@@ -9,6 +9,9 @@
             <a href="{% url 'professor_create' %}" class="btn btn-primary btn-sm">
                 <i class="fas fa-plus"></i> Aumenta Profesor
             </a>
+            <a href="{% url 'professor_excel_report' %}" class="btn btn-success btn-sm">.xlsx</a>
+            <a href="{% url 'professor_pdf_report' 'pdf' %}" class="btn btn-secondary btn-sm">.pdf</a>
+            <a href="{% url 'professor_pdf_report' 'print' %}" class="btn btn-secondary btn-sm" target="_blank">print</a>
         </div>
     </div>
     <div class="card-body">
@@ -50,13 +53,16 @@
                     <td>
                         <div class="btn-group btn-group-sm" role="group">
                             <a href="{% url 'professor_detail' professor.pk %}" class="btn btn-info">
-                                <i class="fas fa-eye"></i> Haree
+                                <i class="fas fa-eye"></i>
                             </a>
                             <a href="{% url 'professor_update' professor.pk %}" class="btn btn-warning">
-                                <i class="fas fa-edit"></i> Hadia
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="{% url 'professor_pdf_detail_report' professor.pk %}" target="_blank" class="btn btn-secondary">
+                                <i class="fas fa-print"></i>
                             </a>
                             <a href="{% url 'professor_delete' professor.pk %}" class="btn btn-danger">
-                                <i class="fas fa-trash"></i> Hamos
+                                <i class="fas fa-trash"></i>
                             </a>
                         </div>
                     </td>
