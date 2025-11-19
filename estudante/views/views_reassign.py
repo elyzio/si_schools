@@ -30,7 +30,7 @@ def assigned_students_list(request):
     # Base queryset - all assigned students in active year
     estudante_classes = EstudanteClasse.objects.filter(
         ano=active_ano
-    ).select_related('estudante', 'departamentu', 'classe', 'turma').order_by('classe__classe', 'turma__turma', 'estudante__nome')
+    ).select_related('estudante', 'departamentu', 'classe', 'turma').order_by('-departamentu__sigla' ,'classe__classe', 'turma__turma', 'estudante__nome')
 
     # Apply filters
     if dept_filter:

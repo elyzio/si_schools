@@ -8,6 +8,9 @@
             <a href="{% url 'estudante_create' %}" class="btn btn-primary btn-sm">
                 <i class="fas fa-plus"></i> Aumenta Foun
             </a>
+            <a href="{% url 'export_est_list' 'print' %}" target="_blank" class="btn btn-success btn-sm" id="printBtn">
+                <i class="fas fa-print"></i> Print
+            </a>
         </div>
     </div>
     <div class="card-body">
@@ -205,12 +208,22 @@ $(document).ready(function() {
             "responsive": true,
             "lengthChange": false,
             "autoWidth": false,
+            "ordering": false, // Disable ordering to use ORM query order
             "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
         }).buttons().container().appendTo('#estudante-table_wrapper .col-md-6:eq(0)');
         console.log('DataTable initialized successfully');
     } catch(error) {
         console.error('DataTable initialization error:', error);
     }
+
+    // Add current filter parameters to print button
+    $('#printBtn').on('click', function(e) {
+        e.preventDefault();
+        var baseUrl = $(this).attr('href');
+        var params = window.location.search; // Get current URL parameters
+        var printUrl = baseUrl + params;
+        window.open(printUrl, '_blank');
+    });
 
     // Reinitialize sidebar treeview
     // $('[data-widget="treeview"]').treeview('init');

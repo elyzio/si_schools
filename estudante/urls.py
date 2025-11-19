@@ -46,4 +46,7 @@ urlpatterns = [
     # Alumni
     path('alumni/', alumni_list, name='alumni_list'),
     path('alumni/<int:pk>/', alumni_detail, name='alumni_detail'),
+
+    # Export
+    path('export/<str:content>', EstudanteListPDF, name='export_est_list')
 ]

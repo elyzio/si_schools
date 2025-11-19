@@ -253,9 +253,10 @@ $(document).ready(function() {
             },
             "zeroRecords": "La hetan estudante"
         },
-        "order": [[2, 'asc']], // Sort by name
+        "ordering": false, // Disable ordering to use ORM query order
+        // "order": [[2, 'asc']], // Sort by name
         "columnDefs": [
-            { "orderable": false, "targets": [7, 8] }, // Disable sorting for status, action
+            // { "orderable": false, "targets": [7, 8] }, // Disable sorting for status, action
             { "searchable": false, "targets": [0, 7, 8] } // Disable search for no, status, action
         ]
     });

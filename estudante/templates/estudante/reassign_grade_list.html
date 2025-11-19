@@ -230,9 +230,10 @@ $(document).ready(function() {
             },
             "zeroRecords": "La hetan estudante"
         },
-        "order": [[2, 'asc']], // Sort by name
+        "ordering": false, // Disable ordering to use ORM query order
+        // "order": [[2, 'asc']], // Sort by name
         "columnDefs": [
-            { "orderable": false, "targets": [6, 7, 8, 9] }, // Disable sorting for status valor, progress, status, action
+            // { "orderable": false, "targets": [6, 7, 8, 9] }, // Disable sorting for status valor, progress, status, action
             { "searchable": false, "targets": [0, 6, 7, 8, 9] }, // Disable search for no, status valor, progress, status, action
             { "className": "text-center", "targets": [0, 3, 4, 5, 8, 9] } // Center align specific columns
         ]
