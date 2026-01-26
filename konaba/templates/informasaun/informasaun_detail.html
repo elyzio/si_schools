@@ -1,0 +1,77 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% load user_tags %}
+
+{% block title %}Informasaun - Lista{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+{% endblock %}
+
+{% block breadcrumb_item %}
+<li class="breadcrumb-item"><a href="{% url 'informasaun_list' %}">Informasaun</a></li>
+<li class="breadcrumb-item active">Detallu</li>
+<!-- <li class="breadcrumb-item active">Detallu - {{info.titulo}}</li> -->
+{% endblock breadcrumb_item %}
+
+{% block contents %}
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">{{info.titulo}}</h3>
+            {% if request.user|has_group:"admin" %}
+            <div class="card-tools">
+                <a href="{% url 'informasaun_update' info.pk %}" class="btn btn-success btn-sm">
+                    <i class="fas fa-plus"></i> Hadia
+                </a>
+            </div>
+            {% endif %}
+        </div>
+        <div class="card-body">
+            <div class="col-lg-3 col-md-4 mx-auto">
+            {% if info.image %}
+                <div><img src="{{ info.image.url }}" alt="{{ info.titulo }}" class="img-fluid"></div>
+            {% endif %}
+            </div>
+            <div>
+                {{info.deskrisaun|safe}}
+            </div>
+                
+        </div>
+    </div>
+</div>
+{% endblock contents %}
+
+{% block scripts %}
+<script src="{% static 'plugins/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+<script>
+$(function () {
+    $("#informasaunTable").DataTable({
+        "responsive": true,
+        "lengthChange": true,
+        "autoWidth": false,
+        "ordering": false, // Disable ordering to use ORM query order
+        // "order": [[2, "desc"]],
+        "language": {
+            "search": "Buka:",
+            "lengthMenu": "Hatudu _MENU_ dadus kada pajina",
+            "info": "Hatudu _START_ to _END_ husi _TOTAL_ dadus",
+            "infoEmpty": "Hatudu 0 to 0 husi 0 dadus",
+            "infoFiltered": "(filtrado husi _MAX_ total dadus)",
+            "zeroRecords": "Laiha dadus",
+            "emptyTable": "Seidauk iha dadus iha tabela",
+            "paginate": {
+                "first": "Dahuluk",
+                "last": "Ikus",
+                "next": "Tuirmai",
+                "previous": "Antes"
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

@@ -1,15 +1,18 @@
 {% extends 'main/base.html' %}
 {% load static %}
+{% load user_tags %}
 
 {% block contents %}
 <div class="card">
     <div class="card-header">
         <h3 class="card-title">{{ page_title }}</h3>
+        {% if request.user|has_any_group:"admin,secretaria" %}
         <div class="card-tools">
             <a href="{% url 'professordokumentu_create' %}" class="btn btn-primary btn-sm">
                 <i class="fas fa-plus"></i> Aumenta Dokumentu
             </a>
         </div>
+        {% endif %}
     </div>
     <div class="card-body">
         <table id="professordokumentu-table" class="table table-bordered table-striped datatable">
@@ -52,12 +55,14 @@
                             <a href="{% url 'professordokumentu_detail' pd.pk %}" class="btn btn-info">
                                 <i class="fas fa-eye"></i> Haree
                             </a>
+                            {% if request.user|has_any_group:"admin,secretaria" %}
                             <a href="{% url 'professordokumentu_update' pd.pk %}" class="btn btn-warning">
                                 <i class="fas fa-edit"></i> Hadia
                             </a>
                             <a href="{% url 'professordokumentu_delete' pd.pk %}" class="btn btn-danger">
                                 <i class="fas fa-trash"></i> Hamos
                             </a>
+                            {% endif %}
                         </div>
                     </td>
                 </tr>

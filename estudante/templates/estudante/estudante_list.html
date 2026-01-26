@@ -1,16 +1,26 @@
 {% extends 'main/base.html' %}
+{% load user_tags %}
 
 {% block contents %}
 <div class="card">
     <div class="card-header">
         <h3 class="card-title">{{ page_title }}</h3>
         <div class="card-tools">
+            {% if request.user|has_any_group:"admin,secretaria" %}
             <a href="{% url 'estudante_create' %}" class="btn btn-primary btn-sm">
                 <i class="fas fa-plus"></i> Aumenta Foun
             </a>
-            <a href="{% url 'export_est_list' 'print' %}" target="_blank" class="btn btn-success btn-sm" id="printBtn">
+            {% endif %}
+            <a href="{% url 'export_est_list' 'print' %}" target="_blank" class="btn btn-success btn-sm printBtn">
                 <i class="fas fa-print"></i> Print
             </a>
+            <a href="{% url 'export_est_list' 'pdf' %}" target="_blank" class="btn btn-success btn-sm printBtn">
+                <i class="fas fa-file"></i> PDF
+            </a>
+            <a href="{% url 'export_est_list_excel' %}" target="_blank" class="btn btn-success btn-sm printBtn">
+                <i class="fas fa-file-excel"></i> Excel
+            </a>
+            
         </div>
     </div>
     <div class="card-body">
@@ -143,11 +153,12 @@
                     </td>
                     <td>
                         <div class="btn-group btn-group-sm" role="group">
-                            <a href="{% url 'estudante_assign_classe' estudante.pk %}" class="btn btn-warning" title="Rejista ba Klase">
-                                <i class="fas fa-user-plus"></i>
-                            </a>
                             <a href="{% url 'estudante_detail' estudante.pk %}" class="btn btn-success" title="Haree">
                                 <i class="fas fa-eye"></i>
+                            </a>
+                            {% if request.user|has_any_group:"admin,secretaria" %}
+                            <a href="{% url 'estudante_assign_classe' estudante.pk %}" class="btn btn-warning" title="Rejista ba Klase">
+                                <i class="fas fa-user-plus"></i>
                             </a>
                             <a href="{% url 'estudante_update' estudante.pk %}" class="btn btn-info" title="Hadia">
                                 <i class="fas fa-edit"></i>
@@ -155,6 +166,7 @@
                             <button type="button" class="btn btn-danger" onclick="confirmDelete({{ estudante.pk }}, '{{ estudante.nome }}')" title="Hamos">
                                 <i class="fas fa-trash"></i>
                             </button>
+                            {% endif %}
                         </div>
                     </td>
                 </tr>
@@ -216,8 +228,8 @@ $(document).ready(function() {
         console.error('DataTable initialization error:', error);
     }
 
-    // Add current filter parameters to print button
-    $('#printBtn').on('click', function(e) {
+    // Add current filter parameters to print/pdf/excel buttons
+    $('.printBtn').on('click', function(e) {
         e.preventDefault();
         var baseUrl = $(this).attr('href');
         var params = window.location.search; // Get current URL parameters

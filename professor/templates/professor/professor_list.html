@@ -1,14 +1,17 @@
 {% extends 'main/base.html' %}
 {% load static %}
+{% load user_tags %}
 
 {% block contents %}
 <div class="card">
     <div class="card-header">
         <h3 class="card-title">{{ page_title }}</h3>
         <div class="card-tools">
+            {% if request.user|has_any_group:"admin,secretaria" %}
             <a href="{% url 'professor_create' %}" class="btn btn-primary btn-sm">
                 <i class="fas fa-plus"></i> Aumenta Profesor
             </a>
+            {% endif %}
             <a href="{% url 'professor_excel_report' %}" class="btn btn-success btn-sm">.xlsx</a>
             <a href="{% url 'professor_pdf_report' 'pdf' %}" class="btn btn-secondary btn-sm">.pdf</a>
             <a href="{% url 'professor_pdf_report' 'print' %}" class="btn btn-secondary btn-sm" target="_blank">print</a>
@@ -55,15 +58,17 @@
                             <a href="{% url 'professor_detail' professor.pk %}" class="btn btn-info">
                                 <i class="fas fa-eye"></i>
                             </a>
-                            <a href="{% url 'professor_update' professor.pk %}" class="btn btn-warning">
-                                <i class="fas fa-edit"></i>
-                            </a>
                             <a href="{% url 'professor_pdf_detail_report' professor.pk %}" target="_blank" class="btn btn-secondary">
                                 <i class="fas fa-print"></i>
+                            </a>
+                            {% if request.user|has_any_group:"admin,secretaria" %}
+                            <a href="{% url 'professor_update' professor.pk %}" class="btn btn-warning">
+                                <i class="fas fa-edit"></i>
                             </a>
                             <a href="{% url 'professor_delete' professor.pk %}" class="btn btn-danger">
                                 <i class="fas fa-trash"></i>
                             </a>
+                            {% endif %}
                         </div>
                     </td>
                 </tr>

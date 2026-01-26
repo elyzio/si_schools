@@ -1,5 +1,5 @@
 {% extends 'main/base.html' %}
-
+{% load user_tags %}
 {% block contents %}
 
 <div class="card">
@@ -46,7 +46,7 @@
       <div class="col-md-3 mb-2">
         <div class="row">
           <div class="col font-weight-bold">Periodo:</div>
-          <div class="col">{{period}}</div>
+          <div class="col">{{period.period}}</div>
         </div>
       </div>
     </div>
@@ -54,7 +54,17 @@
 </div>
 
 <div class="card">
-  <div class="card-header">Lista Valor</div>
+  <div class="card-header">Lista Valor
+    <div class="card-tools">
+      {% if request.user|has_group:"estudante" %}
+      <a href="{% url 'export_student_valor_pdf' est_class.estudante.pk period.pk est_class.classe.id est_class.ano.id 'print' %}" class="btn btn-sm btn-primary">Print</a>
+      <a href="{% url 'export_student_valor_pdf' est_class.estudante.pk period.pk est_class.classe.id est_class.ano.id 'pdf' %}" class="btn btn-sm btn-primary">PDF</a>
+      {% elif request.user|has_group:"professor" %}
+      <a href="{% url 'export_student_valor_pdf' est_class.estudante.pk period.pk est_class.classe.id est_class.ano.id 'print' %}" class="btn btn-sm btn-primary">Print</a>
+      <a href="{% url 'export_student_valor_pdf' est_class.estudante.pk period.pk est_class.classe.id est_class.ano.id 'pdf' %}" class="btn btn-sm btn-primary">PDF</a>
+      {% endif %}
+    </div>
+  </div>
   <div class="card-body">
     <table class="table table-hover table-bordered mb-3 text-center align-middle">
       <thead>

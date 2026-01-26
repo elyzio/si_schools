@@ -68,6 +68,9 @@
                     <a href="{% url 'valor_create' estudante_classe.pk %}" class="btn btn-primary btn-sm">
                         <i class="fas fa-plus"></i> Aumenta Valór
                     </a>
+                    <a href="{% url 'export_student_valor_pdf' estudante_classe.pk selected_periodo.id %}" class="btn btn-primary btn-sm">
+                        <i class="fas fa-plus"></i> Print Valor
+                    </a>
                 </div>
             </div>
             <div class="card-body">

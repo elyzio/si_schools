@@ -11,7 +11,7 @@ from main.decorators import group_required
 # =============================================================================
 
 @login_required
-@group_required('admin')
+@group_required('admin', 'director')
 def informasaun_list(request):
     informasaun_list = Informasaun.objects.all()
     context = {
@@ -21,7 +21,7 @@ def informasaun_list(request):
     return render(request, 'informasaun/informasaun_list.html', context)
 
 @login_required
-@group_required('admin')
+@group_required('admin', 'director')
 def informasaun_create(request):
     if request.method == 'POST':
         form = InformasaunForm(request.POST, request.FILES)
@@ -34,10 +34,37 @@ def informasaun_create(request):
     else:
         form = InformasaunForm()
 
-    return render(request, 'informasaun/informasaun_form.html', {'form': form})
+    context = {
+        "page_title": "Aumenta Informasaun",
+        "form": form,
+    }
+
+    return render(request, 'informasaun/informasaun_form.html', context)
+    
+@login_required
+@group_required('admin', 'director')
+def informasaun_detail(request, pk):
+    informasaun = get_object_or_404(Informasaun, pk=pk)
+
+    if request.method == 'POST':
+        form = InformasaunForm(request.POST, request.FILES, instance=informasaun)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Informasaun atualiza ho susesu!')
+            return redirect('informasaun_list')
+    else:
+        form = InformasaunForm(instance=informasaun)
+
+    context = {
+        "page_title": "Detallu Informasaun",
+        "form": form,
+        "info": informasaun,
+    }
+
+    return render(request, 'informasaun/informasaun_detail.html', context)
 
 @login_required
-@group_required('admin')
+@group_required('admin', 'director')
 def informasaun_update(request, pk):
     informasaun = get_object_or_404(Informasaun, pk=pk)
 
@@ -50,10 +77,15 @@ def informasaun_update(request, pk):
     else:
         form = InformasaunForm(instance=informasaun)
 
-    return render(request, 'informasaun/informasaun_form.html', {'form': form, 'informasaun': informasaun})
+    context = {
+        "page_title": "Hadia Informasaun",
+        "form": form,
+    }
+
+    return render(request, 'informasaun/informasaun_form.html', context)
 
 @login_required
-@group_required('admin')
+@group_required('admin', 'director')
 def informasaun_delete(request, pk):
     informasaun = get_object_or_404(Informasaun, pk=pk)
 
@@ -65,7 +97,7 @@ def informasaun_delete(request, pk):
     return render(request, 'informasaun/informasaun_confirm_delete.html', {'informasaun': informasaun})
 
 @login_required
-@group_required('admin')
+@group_required('admin', 'director')
 def informasaun_toggle_publish(request, pk):
     informasaun = get_object_or_404(Informasaun, pk=pk)
     informasaun.is_published = not informasaun.is_published

@@ -1,0 +1,17 @@
+
+request.resolver_match Attributes:
+1. url_name - The name of the URL pattern
+request.resolver_match.url_name  # 'students_list'
+2. view_name - Full path to the view (including app namespace)
+request.resolver_match.view_name  # 'estudante:students_list' (with namespace)
+3. app_name - The application namespace
+request.resolver_match.app_name  # 'estudante'
+4. namespace - The full namespace (can include nested namespaces)
+request.resolver_match.namespace  # 'estudante' or 'estudante:admin'
+5. kwargs - URL parameters passed to the view
+# URL: /students/123/edit/
+request.resolver_match.kwargs  # {'id': '123'}
+6. args - Positional arguments from URL
+request.resolver_match.args  # Tuple of positional args
+7. route - The actual URL pattern that matched
+request.resolver_match.route  # 'students/<int:id>/edit/'

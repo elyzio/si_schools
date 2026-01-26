@@ -10,7 +10,7 @@ from main.decorators import group_required
 # =============================================================================
 
 @login_required
-@group_required('admin')
+@group_required('admin', 'director')
 def konaba_list(request):
     konaba_list = KonaBa.objects.all()
     context = {
@@ -20,7 +20,7 @@ def konaba_list(request):
     return render(request, 'konaba/konaba_list.html', context)
 
 @login_required
-@group_required('admin')
+@group_required('admin', 'director')
 def konaba_create(request):
     if request.method == 'POST':
         form = KonaBaForm(request.POST)
@@ -34,7 +34,7 @@ def konaba_create(request):
     return render(request, 'konaba/konaba_form.html', {'form': form})
 
 @login_required
-@group_required('admin')
+@group_required('admin', 'director')
 def konaba_update(request, pk):
     konaba = get_object_or_404(KonaBa, pk=pk)
 
@@ -50,7 +50,7 @@ def konaba_update(request, pk):
     return render(request, 'konaba/konaba_form.html', {'form': form, 'konaba': konaba})
 
 @login_required
-@group_required('admin')
+@group_required('admin', 'director')
 def konaba_delete(request, pk):
     konaba = get_object_or_404(KonaBa, pk=pk)
 

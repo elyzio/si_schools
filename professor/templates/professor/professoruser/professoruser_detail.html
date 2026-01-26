@@ -1,17 +1,20 @@
 {% extends 'main/base.html' %}
 {% load static %}
+{% load user_tags %}{% load user_tags %}
 
 {% block contents %}
 <div class="card">
     <div class="card-header">
         <h3 class="card-title">{{ page_title }}</h3>
         <div class="card-tools">
+            {% if request.user|has_any_group:"admin,secretaria" %}
             <a href="{% url 'professoruser_update' professoruser.pk %}" class="btn btn-warning btn-sm">
                 <i class="fas fa-edit"></i> Hadia
             </a>
             <a href="{% url 'professoruser_delete' professoruser.pk %}" class="btn btn-danger btn-sm">
                 <i class="fas fa-trash"></i> Hamos
             </a>
+            {% endif %}
             <a href="{% url 'professoruser_list' %}" class="btn btn-secondary btn-sm">
                 <i class="fas fa-arrow-left"></i> Fila
             </a>

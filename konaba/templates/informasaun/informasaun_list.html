@@ -1,5 +1,6 @@
 {% extends 'main/base.html' %}
 {% load static %}
+{% load user_tags %}
 
 {% block title %}Informasaun - Lista{% endblock %}
 
@@ -17,11 +18,13 @@
     <div class="card">
         <div class="card-header">
             <h3 class="card-title">Lista Informasaun</h3>
+            {% if request.user|has_group:"admin" %}
             <div class="card-tools">
                 <a href="{% url 'informasaun_create' %}" class="btn btn-primary btn-sm">
                     <i class="fas fa-plus"></i> Aumenta Foun
                 </a>
             </div>
+            {% endif %}
         </div>
         <div class="card-body">
             <table id="informasaunTable" class="table table-bordered table-striped">
@@ -32,13 +35,15 @@
                         <th>Data Publiku</th>
                         <th>Author</th>
                         <th>Status</th>
+                        {% if request.user|has_group:"admin" %}
                         <th>Opsaun</th>
+                        {% endif %}
                     </tr>
                 </thead>
                 <tbody>
                     {% for info in informasaun_list %}
                     <tr>
-                        <td>{{ info.titulo }}</td>
+                        <td><a href="{% url 'informasaun_detail' info.pk %}">{{ info.titulo }}</a></td>
                         <td>
                             <span class="badge badge-info">{{ info.tipu_informasaun }}</span>
                         </td>
@@ -51,6 +56,7 @@
                                 <span class="badge badge-warning">Draft</span>
                             {% endif %}
                         </td>
+                        {% if request.user|has_group:"admin" %}
                         <td>
                             {% if info.is_published %}
                                 <a href="{% url 'informasaun_toggle_publish' info.pk %}" class="btn btn-warning btn-sm" title="Muda ba Draft">
@@ -68,6 +74,7 @@
                                 <i class="fas fa-trash"></i> Hamos
                             </a>
                         </td>
+                        {% endif %}
                     </tr>
                     {% empty %}
                     <tr>

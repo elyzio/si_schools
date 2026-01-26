@@ -1,0 +1,41 @@
+{# Single URL #}
+<a class="{% active_menu 'home' %}">Home</a>
+
+{# Multiple URLs #}
+<a class="{% active_menu 'students_list' 'students_add' 'students_edit' %}">Students</a>
+
+{# Custom CSS class #}
+<a class="{% active_menu 'profile' 'custom-active' %}">Profile</a>
+
+
+{% is_active 'home' 'dashboard' as is_home %}
+{% if is_home %}...{% endif %}
+
+
+
+New Tags for Dropdown Menus:
+1. active_app - For dropdown menu styling:
+{# Single app - keeps dropdown open when in 'estudante' app #}
+<li class="nav-item dropdown {% active_app 'estudante' 'menu-open' %}">
+  
+{# Multiple apps - activate for multiple related apps #}
+<li class="{% active_app 'estudante' 'professor' 'turma' %}">
+2. is_active_app - For conditional logic:
+{% is_active_app 'estudante' as in_student_section %}
+{% if in_student_section %}
+  <ul class="dropdown-menu show">
+    <!-- Show dropdown when in estudante app -->
+  </ul>
+{% endif %}
+Example Dropdown Usage:
+{% load active_menu %}
+
+<li class="nav-item dropdown {% active_app 'estudante' 'menu-open' %}">
+  <a class="nav-link dropdown-toggle" href="#">
+    Students
+  </a>
+  <ul class="dropdown-menu">
+    <li><a class="{% active_menu 'students_list' %}" href="...">List</a></li>
+    <li><a class="{% active_menu 'students_add' %}" href="...">Add</a></li>
+  </ul>
+</li>

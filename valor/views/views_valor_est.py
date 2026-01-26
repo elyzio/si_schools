@@ -11,6 +11,7 @@ from collections import defaultdict
 import json
 from django.core.serializers.json import DjangoJSONEncoder
 from main.utils import InttoRoman
+from valor.models import Klassifikasaun
 
 def ValorEstList(request):
     """List Valor records for estudantes with graphed data"""
@@ -60,7 +61,6 @@ def ValorEstList(request):
 
 def ValorEstList2(request):
     """List Valor records for estudantes data with klassifikasaun"""
-    from valor.models import Klassifikasaun
 
     userest = request.user.estudanteuser.estudante
     estudante = userest
@@ -77,7 +77,7 @@ def ValorEstList2(request):
             ano_id=F('estudante_classe__ano__id'),
             classe_id=F('estudante_classe__classe__id'),
             period_id=F('periodo__id'),
-            estudante_classe_id=F('estudante_classe__id'),
+            est_classe_id=F('estudante_classe__id'),
             ano_is_active=F('estudante_classe__ano__is_active'),
         )
         .annotate(media_valor=Avg('valor'))
@@ -94,7 +94,7 @@ def ValorEstList2(request):
         if not val['ano_is_active']:
             try:
                 klass = Klassifikasaun.objects.get(
-                    estudante_classe_id=val['estudante_classe_id'],
+                    estudante_classe_id=val['est_classe_id'],
                     periodo_id=val['period_id'],
                     ano_id=val['ano_id']
                 )
@@ -236,7 +236,7 @@ def ValorEstDetail2(request, period_id, classe_id, ano_id):
         'media_valor': media_valor,
         'ranking': ranking,
         'apr_valor': apr_valor_med if period_est.period == '3 Periodo' else None,
-        'period': period_est.period,
+        'period': period_est,
         'is_historical': is_historical,  # NEW: Tell template
         'ano_est': ano_est,  # NEW: For display
     }

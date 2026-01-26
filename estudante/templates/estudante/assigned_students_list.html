@@ -5,8 +5,18 @@
     <div class="card-header">
         <h3 class="card-title">{{ page_title }}</h3>
         <div class="card-tools">
-            <a href="{% url 'estudante_list' %}" class="btn btn-secondary btn-sm">
-                <i class="fas fa-arrow-left"></i> Fila Ba Lista Estudante
+            Inskrisaun
+            <a href="{% url 'reassign_grade_10_list' %}" class="btn btn-secondary btn-sm">
+                <i class="fas fa-arrow-up"></i> 10 Ano
+            </a>
+            <a href="{% url 'reassign_grade_11_list' %}" class="btn btn-secondary btn-sm">
+                <i class="fas fa-arrow-up"></i> 11 Ano
+            </a>
+            <a href="{% url 'reassign_grade_12_list' %}" class="btn btn-secondary btn-sm">
+                <i class="fas fa-arrow-up"></i> 12 Ano
+            </a>
+            <a href="{% url 'next_year_assigned_students_list' %}" class="btn btn-secondary btn-sm">
+                <i class="fas fa-arrow-up">Novo Ano</i> 
             </a>
         </div>
     </div>

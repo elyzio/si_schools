@@ -1,6 +1,16 @@
 {% extends 'main/base.html' %}
 {% load crispy_forms_tags %}
 
+{% block extra_css %}
+<style>
+@media print {
+    .no-print {
+        display: none !important;
+    }
+}
+</style>
+{% endblock extra_css %}
+
 {% block contents %}
 
 {% if page == 'list' %}
@@ -101,7 +111,7 @@
                 </div>
             </div>
 
-            <table id="estudante-table" class="table table-bordered table-striped datatable">
+            <table id="estudante-table" class="table table-bordered table-striped table-sm table-hover datatable">
                 <thead>
                     <tr>
                         <th>#</th>
@@ -231,7 +241,47 @@ $(document).ready(function() {
             "responsive": true,
             "lengthChange": false,
             "autoWidth": false,
-            "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+            "buttons": [
+                {
+                    extend: 'excel',
+                    exportOptions: {
+                        columns: ':not(:last-child)' // Exclude last column (Asaun)
+                    },
+                    title: 'Lista Estudante - {{ profMateria.materia.materia }} - {{ profMateria.classe.classe }}',
+                    messageTop: function() {
+                        return '<div style="text-align:center; font-size:14px; font-weight:bold;">Lista Estudante - {{ profMateria.materia.materia }} - {{ profMateria.classe.classe }}</div>';
+                    }
+                },
+                {
+                    extend: 'pdf',
+                    exportOptions: {
+                        columns: ':not(:last-child)' // Exclude last column (Asaun)
+                    },
+                    title: 'Lista Estudante - {{ profMateria.materia.materia }} - {{ profMateria.classe.classe }}',
+                    customize: function(doc) {
+                        // Set title style
+                        doc.content[0].text = 'Lista Estudante - {{ profMateria.materia.materia }} - {{ profMateria.classe.classe }}';
+                        doc.content[0].fontSize = 14;
+                        doc.content[0].bold = true;
+                        doc.content[0].alignment = 'center';
+                        doc.content[1].table.widths = Array(doc.content[1].table.body[0].length + 1).join('*').split('');
+                    }
+                },
+                {
+                    extend: 'print',
+                    exportOptions: {
+                        columns: ':not(:last-child)' // Exclude last column (Asaun)
+                    },
+                    title: '<div style="text-align:center; font-size:14px; font-weight:bold;">Lista Estudante - {{ profMateria.materia.materia }} - {{ profMateria.classe.classe }}</div>'
+                },
+                "colvis"
+            ],
+            "columnDefs": [
+                {
+                    "targets": -1, // Last column (Asaun)
+                    "className": "no-print"
+                }
+            ]
         }).buttons().container().appendTo('#estudante-table_wrapper .col-md-6:eq(0)');
         console.log('DataTable initialized successfully');
     } catch(error) {

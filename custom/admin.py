@@ -3,6 +3,12 @@ from custom.models import *
 
 # Register your models here.
 
+class CustomAdmin(admin.ModelAdmin):
+    class Media:
+        css = {
+            'all': ('admin/css/custom_admin.css',)
+        }
+
 @admin.register(Distrito)
 class DistritoAdmin(admin.ModelAdmin):
     list_display = ('nome',)

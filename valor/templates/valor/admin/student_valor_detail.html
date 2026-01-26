@@ -1,0 +1,171 @@
+{% extends 'main/base.html' %}
+
+{% block contents %}
+
+<div class="card">
+  <div class="card-header">
+    Informasaun Estudante no Turma
+    <span class="float-right">
+      <a href="{% url 'student_valor_summary' estudante.pk %}" class="btn btn-sm btn-secondary mr-2">
+        <i class="fas fa-arrow-left"></i> Fila ba Summary
+      </a>
+      {% if is_historical %}
+        <span class="badge badge-success">
+          <i class="fas fa-lock"></i> Rankings Finalizadu ({{ ano_est.ano }})
+        </span>
+      {% else %}
+        <span class="badge badge-warning">
+          <i class="fas fa-sync-alt"></i> Rankings Real-Time
+        </span>
+      {% endif %}
+    </span>
+  </div>
+  <div class="card-body">
+    <div class="row">
+      <div class="col-md-3 mb-2">
+        <div class="row">
+          <div class="col font-weight-bold">Estudante:</div>
+          <div class="col">{{estudante.nome}}</div>
+        </div>
+      </div>
+      <div class="col-md-3 mb-2">
+        <div class="row">
+          <div class="col font-weight-bold">EMIS:</div>
+          <div class="col">{{estudante.emis}}</div>
+        </div>
+      </div>
+      <div class="col-md-3 mb-2">
+        <div class="row">
+          <div class="col font-weight-bold">Departamentu:</div>
+          <div class="col">{{est_class.departamentu.sigla}}</div>
+        </div>
+      </div>
+      <div class="col-md-3 mb-2">
+        <div class="row">
+          <div class="col font-weight-bold">Classe:</div>
+          <div class="col">{{est_class.classe.classe}}</div>
+        </div>
+      </div>
+      <div class="col-md-3 mb-2">
+        <div class="row">
+          <div class="col font-weight-bold">Turma:</div>
+          <div class="col">{{est_class.turma.turma}}</div>
+        </div>
+      </div>
+      <div class="col-md-3 mb-2">
+        <div class="row">
+          <div class="col font-weight-bold">Periodo:</div>
+          <div class="col">{{period}}</div>
+        </div>
+      </div>
+      <div class="col-md-3 mb-2">
+        <div class="row">
+          <div class="col font-weight-bold">Ano:</div>
+          <div class="col">{{ano_est.ano}}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">Lista Valor
+    <div class="card-tools">
+      <a href="{% url 'export_student_valor_pdf' estudante.pk period_est.id classe_est.id ano_est.id 'pdf' %}" target="_blank" class="btn btn-sm btn-danger">
+        <i class="fas fa-file-pdf"></i> PDF
+      </a>
+      <a href="{% url 'export_student_valor_pdf' estudante.pk period_est.id classe_est.id ano_est.id 'print' %}" target="_blank" class="btn btn-sm btn-danger">
+        <i class="fas fa-print"></i> Print
+      </a>
+      <a href="{% url 'export_student_valor_excel' estudante.pk period_est.id classe_est.id ano_est.id %}" class="btn btn-sm btn-success">
+        <i class="fas fa-file-excel"></i> Excel
+      </a>
+    </div>
+  </div>
+  <div class="card-body">
+    <table class="table table-hover table-bordered mb-3 text-center align-middle">
+      <thead>
+        <th>#</th>
+        <th>Materia</th>
+        <!-- <th>Departamentu</th> -->
+        <th>Valor</th>
+        <th>Por Extensu</th>
+      </thead>
+      <tbody>
+        {% for val in valores %}
+        <tr>
+          <td>{{ forloop.counter }}</td>
+          <td class="text-left">{{ val.materia.materia }}</td>
+          <!-- <td>{{ val.materia.departamentu.sigla }}</td> -->
+          <td>{{ val.valor|floatformat:0 }}</td>
+          <td>{{ val.por_extenso }}</td>
+        </tr>
+        {% endfor %}
+        <tr>
+          <td colspan="4"></td>
+        </tr>
+        <tr class="font-weight-bold">
+          <td colspan="2" class="text-right">Total Valor</td>
+          <td>{{ total_valor|floatformat:2 }}</td>
+          <td rowspan="2" class="align-middle">
+
+            {% if apr_valor >= 5.5 %}
+            APROVADO
+            {% elif apr_valor <= 5.5 %}
+            REPROVADO
+            {% else %}
+            ---
+            {% endif %}
+
+          </td>
+        </tr>
+        <tr class="font-weight-bold">
+          <td colspan="2" class="text-right">Media Valor</td>
+          <td>{{ media_valor|floatformat:2 }}</td>
+        </tr>
+        <tr class="font-weight-bold">
+          <td colspan="2" class="text-right">Klassifikasaun Turma</td>
+          <td>
+            {% if ranking %}
+              {% for ran in ranking %}
+                {{ ran.roman_rank }}
+                {% if is_historical %}
+                  <small class="text-muted">(Finalizadu)</small>
+                {% endif %}
+              {% endfor %}
+            {% else %}
+              -
+            {% endif %}
+          </td>
+        </tr>
+        {% if is_historical and ranking %}
+        <tr class="font-weight-bold">
+          <td colspan="3" class="text-right">Klassifikasaun Departamentu</td>
+          <td>
+            {% for ran in ranking %}
+              {{ ran.rank_dept|default:"-" }}
+            {% endfor %}
+          </td>
+          <td></td>
+        </tr>
+        <tr class="font-weight-bold">
+          <td colspan="3" class="text-right">Klassifikasaun Jerál</td>
+          <td>
+            {% for ran in ranking %}
+              {{ ran.rank_general|default:"-" }}
+            {% endfor %}
+          </td>
+          <td></td>
+        </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock contents %}
+
+
+{% block scripts %}
+
+{% endblock scripts %}
