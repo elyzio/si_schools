@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}SI Schools - Visitor{% endblock %}</title>
+  <title>{% block title %}ESGP 1912 - Same Manufahi{% endblock %}</title>
 
   <!-- Google Font -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -12,74 +12,10 @@
   <link rel="stylesheet" href="{% static 'plugins/fontawesome-free/css/all.min.css' %}">
   <!-- Bootstrap 4 -->
   <link rel="stylesheet" href="{% static 'dist/css/adminlte.min.css' %}">
+  <!-- Landing Page Styles -->
+  <link rel="stylesheet" href="{% static 'css/landing.css' %}">
 
   {% block extra_css %}{% endblock %}
-
-  <style>
-    body {
-      background: #f4f6f9;
-    }
-    .visitor-navbar {
-      background: linear-gradient(to right, #6ec1ff, #003366);
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      padding: 0.5rem 0;
-    }
-    .visitor-navbar .navbar-brand {
-      color: white !important;
-      font-weight: 600;
-      font-size: 1.2rem;
-    }
-    .visitor-navbar .navbar-brand img {
-      height: 40px;
-      margin-right: 10px;
-    }
-    .visitor-navbar .nav-link {
-      color: rgba(255,255,255,0.95) !important;
-      padding: 0.5rem 1rem;
-      transition: all 0.3s;
-      font-weight: 500;
-    }
-    .visitor-navbar .nav-link:hover {
-      color: white !important;
-      background: rgba(255,255,255,0.15);
-      border-radius: 4px;
-    }
-    .visitor-navbar .nav-link.active {
-      color: white !important;
-      background: rgba(255,255,255,0.25);
-      border-radius: 4px;
-    }
-    .visitor-content {
-      min-height: calc(100vh - 180px);
-      padding: 30px 0;
-    }
-    .visitor-footer {
-      background: #003366;
-      color: white;
-      padding: 20px 0;
-      margin-top: 50px;
-    }
-    .visitor-footer a {
-      color: #6ec1ff;
-      text-decoration: none;
-    }
-    .visitor-footer a:hover {
-      color: #8dd1ff;
-    }
-    .login-btn {
-      background: #003366;
-      border: 2px solid white;
-      color: white !important;
-      padding: 0.375rem 1.2rem;
-      border-radius: 4px;
-      transition: all 0.3s;
-      font-weight: 500;
-    }
-    .login-btn:hover {
-      background: white;
-      color: #003366 !important;
-    }
-  </style>
 </head>
 
 <body>
@@ -87,10 +23,12 @@
   <nav class="navbar navbar-expand-lg visitor-navbar">
     <div class="container">
       <a class="navbar-brand" href="{% url 'home' %}">
-        <img src="{% static 'img/logo-M_Edu.webp' %}" alt="Logo"> SI Schools
+        <!-- <img src="{% static 'img/logo-M_Edu.webp' %}" alt="Ministerio da Educacao"> -->
+        <img src="{% static 'img/logo_esgp.webp' %}" alt="ESGP">
+        <span class="brand-text">ESGP 1912 Same Manufahi</span>
       </a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#visitorNav" aria-controls="visitorNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon" style="color: white;"><i class="fas fa-bars"></i></span>
+        <span style="color: white;"><i class="fas fa-bars"></i></span>
       </button>
 
       <div class="collapse navbar-collapse" id="visitorNav">
@@ -124,7 +62,7 @@
         <ul class="navbar-nav ml-auto">
           <li class="nav-item">
             <a class="nav-link login-btn" href="{% url 'login' %}">
-              <i class="fas fa-sign-in-alt"></i>
+              <i class="fas fa-sign-in-alt"></i> Login
             </a>
           </li>
         </ul>
@@ -155,24 +93,29 @@
     <div class="container">
       <div class="row">
         <div class="col-md-6">
-          <h5><i class="fas fa-graduation-cap"></i> SI Schools</h5>
-          <p>Sistema Informasaun Academika</p>
+          <div class="footer-brand">
+            <img src="{% static 'img/logo_esgp.webp' %}" alt="ESGP">
+            <!-- <img src="{% static 'img/logo-M_Edu.webp' %}" alt="ME"> -->
+          </div>
+          <h5>Escola Secundaria Geral Publico 1912</h5>
+          <p>Same, Manufahi — Timor Leste</p>
         </div>
         <div class="col-md-3">
-          <h6>Quick Links</h6>
+          <h6>Ligasaun</h6>
           <ul class="list-unstyled">
-            <li><a href="{% url 'about_page' %}">About</a></li>
-            <li><a href="{% url 'information_page' %}">Information</a></li>
-            <li><a href="{% url 'statistics_page' %}">Statistics</a></li>
+            <li><a href="{% url 'about_page' %}">Kona Ba</a></li>
+            <li><a href="{% url 'information_page' %}">Informasaun</a></li>
+            <li><a href="{% url 'statistics_page' %}">Estatistika</a></li>
           </ul>
         </div>
         <div class="col-md-3">
-          <h6>Contact</h6>
-          <p><i class="fas fa-envelope"></i> info@sischools.com</p>
+          <h6>Kontaktu</h6>
+          <p><i class="fas fa-envelope"></i> info@esgp1912.tl</p>
           <p><i class="fas fa-phone"></i> +670 xxxx xxxx</p>
+          <p><i class="fas fa-map-marker-alt"></i> Same, Manufahi</p>
         </div>
       </div>
-      <hr style="border-color: rgba(255,255,255,0.1);">
+      <hr>
       <div class="text-center">
         <small>Developed by DEI &copy; 2025-2026. All rights reserved.</small>
       </div>

@@ -1,18 +1,17 @@
 {% extends 'landing/visitor_base.html' %}
 
-{% block title %}Information & News - SI Schools{% endblock %}
+{% block title %}{{page_title}} — ESGP 1912{% endblock %}
 
 {% block content %}
 <div class="row">
     <div class="col-lg-8">
         <div class="row">
             <div class="col-12">
-                <h2 class="mb-4"><i class="fas fa-{{icn}}"></i> {{page_title}}</h2>
+                <h2 class="mb-4 page-heading"><i class="fas fa-{{icn}}"></i> {{page_title}}</h2>
             </div>
         </div>
 
         <!-- Information Section -->
-            
         <div class="row">
             {% for item in items %}
             <div class="col-md-4 mb-3">
@@ -24,7 +23,7 @@
                         <h5 class="card-title">{{ item.titulo }}</h5>
                         <p class="card-text">{{ item.deskrisaun|truncatewords:30|striptags }}</p>
                         <p class="text-muted"><small><i class="far fa-calendar"></i> {{ item.data_publiku|date:"d M Y" }}</small></p>
-                        <a href="{% url 'information_detail' item.pk %}" class="btn btn-primary btn-sm">
+                        <a href="{% url 'information_detail' item.pk %}" class="btn btn-landing-primary btn-sm">
                             <i class="fas fa-eye"></i> Lee Tan
                         </a>
                     </div>
@@ -44,7 +43,7 @@
         <!-- Recent Informasaun -->
         {% if news %}
         <div class="card mb-3">
-            <div class="card-header bg-primary text-white">
+            <div class="card-header sidebar-header-info">
                 <h5 class="mb-0"><i class="fas fa-bullhorn"></i> Informasaun Foun</h5>
             </div>
             <div class="list-group list-group-flush">
@@ -59,7 +58,7 @@
                 {% endfor %}
             </div>
             <div class="card-footer text-center">
-                <a href="{% url 'information_page' %}" class="btn btn-sm btn-outline-primary">Haree Hotu</a>
+                <a href="{% url 'information_page' %}" class="btn btn-sm btn-outline-landing-info">Haree Hotu</a>
             </div>
         </div>
         {% endif %}
@@ -67,7 +66,7 @@
         <!-- Recent Agenda -->
         {% if events %}
         <div class="card mb-3">
-            <div class="card-header bg-success text-white">
+            <div class="card-header sidebar-header-agenda">
                 <h5 class="mb-0"><i class="fas fa-calendar-alt"></i> Agenda Foun</h5>
             </div>
             <div class="list-group list-group-flush">
@@ -82,7 +81,7 @@
                 {% endfor %}
             </div>
             <div class="card-footer text-center">
-                <a href="{% url 'agenda_page' %}" class="btn btn-sm btn-outline-success">Haree Hotu</a>
+                <a href="{% url 'agenda_page' %}" class="btn btn-sm btn-outline-landing-agenda">Haree Hotu</a>
             </div>
         </div>
         {% endif %}
@@ -90,7 +89,7 @@
         <!-- Recent Atividade -->
         {% if activities %}
         <div class="card mb-3">
-            <div class="card-header bg-warning text-white">
+            <div class="card-header sidebar-header-activity">
                 <h5 class="mb-0"><i class="fas fa-running"></i> Atividade Foun</h5>
             </div>
             <div class="list-group list-group-flush">
@@ -105,7 +104,7 @@
                 {% endfor %}
             </div>
             <div class="card-footer text-center">
-                <a href="{% url 'activity_page' %}" class="btn btn-sm btn-outline-warning">Haree Hotu</a>
+                <a href="{% url 'activity_page' %}" class="btn btn-sm btn-outline-landing-activity">Haree Hotu</a>
             </div>
         </div>
         {% endif %}
