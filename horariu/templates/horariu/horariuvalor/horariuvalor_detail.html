@@ -1,6 +1,13 @@
 {% extends 'main/base.html' %}
 {% load static %}
 
+
+
+{% block breadcrumb_item %}
+<li class="breadcrumb-item"><a href="{% url 'horariu_list' %}">Horariu</a></li>
+<li class="breadcrumb-item"><a href="{% url 'horariuvalor_list' %}">Valor</a></li>
+<li class="breadcrumb-item active">Detallu</li>
+{% endblock breadcrumb_item %}
 {% block title %}Detalle Horariu Valor{% endblock %}
 
 {% block contents %}

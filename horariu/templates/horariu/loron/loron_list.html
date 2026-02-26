@@ -1,6 +1,12 @@
 {% extends 'main/base.html' %}
 {% load static %}
 
+
+
+{% block breadcrumb_item %}
+<li class="breadcrumb-item"><a href="{% url 'horariu_list' %}">Horariu</a></li>
+<li class="breadcrumb-item active">Loron</li>
+{% endblock breadcrumb_item %}
 {% block contents %}
 <div class="card">
     <div class="card-header">

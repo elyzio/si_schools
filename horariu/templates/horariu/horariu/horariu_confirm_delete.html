@@ -1,5 +1,11 @@
 {% extends 'main/base.html' %}
 
+
+
+{% block breadcrumb_item %}
+<li class="breadcrumb-item"><a href="{% url 'horariu_list' %}">Horariu</a></li>
+<li class="breadcrumb-item active">Hamos</li>
+{% endblock breadcrumb_item %}
 {% block title %}Hamoos Horariu{% endblock %}
 
 {% block contents %}

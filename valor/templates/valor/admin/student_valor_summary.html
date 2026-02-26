@@ -2,6 +2,12 @@
 {% load user_tags %}
 
 
+
+
+{% block breadcrumb_item %}
+<li class="breadcrumb-item"><a href="{% url 'valor_list' %}">Valor</a></li>
+<li class="breadcrumb-item active">Rezumu</li>
+{% endblock breadcrumb_item %}
 {% block head_link %}
   <style>
   .custom-table {

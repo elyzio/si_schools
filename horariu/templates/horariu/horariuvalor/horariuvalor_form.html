@@ -1,6 +1,13 @@
 {% extends 'main/base.html' %}
 {% load crispy_forms_tags %}
 
+
+
+{% block breadcrumb_item %}
+<li class="breadcrumb-item"><a href="{% url 'horariu_list' %}">Horariu</a></li>
+<li class="breadcrumb-item"><a href="{% url 'horariuvalor_list' %}">Valor</a></li>
+<li class="breadcrumb-item active">{% if object %}Hadia{% else %}Aumenta{% endif %}</li>
+{% endblock breadcrumb_item %}
 {% block title %}{% if form.instance.pk %}Hadia{% else %}Aumenta{% endif %} Horariu Valor{% endblock %}
 
 {% block contents %}

@@ -1,5 +1,10 @@
 {% extends 'main/base.html' %}
 
+{% block breadcrumb_item %}
+<li class="breadcrumb-item"><a href="{% url 'professor_list' %}">Professor</a></li>
+<li class="breadcrumb-item active">Hamos</li>
+{% endblock breadcrumb_item %}
+
 {% block contents %}
 <div class="row">
     <div class="col-md-6 offset-md-3">

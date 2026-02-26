@@ -1,6 +1,17 @@
 {% extends 'main/base.html' %}
 {% load crispy_forms_tags %}
 
+
+
+
+
+
+{% block breadcrumb_item %}
+<li class="breadcrumb-item"><a href="{% url 'professor_list' %}">Professor</a></li>
+<li class="breadcrumb-item"><a href="{% url 'professoruser_list' %}">Utilizador</a></li>
+<li class="breadcrumb-item active">{% if object %}Hadia{% else %}Aumenta{% endif %}</li>
+{% endblock breadcrumb_item %}
+
 {% block contents %}
 <div class="card">
     <div class="card-header">

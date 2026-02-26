@@ -187,3 +187,73 @@ def is_active_app(context, *app_names):
         return False
 
     return current_app_name in app_names
+
+
+@register.simple_tag(takes_context=True)
+def menu_open(context, *url_names):
+    """
+    Template tag for AdminLTE dropdown menus - adds 'menu-open' class when any child URL is active.
+    Perfect for keeping parent menus expanded when viewing child pages.
+
+    Usage:
+        For Horariu dropdown with children (loron, horas, etc):
+            <li class="nav-item {% menu_open 'horariu_list' 'loron_list' 'loron_detail' 'horas_list' 'horas_detail' %}">
+
+        For Professor dropdown:
+            <li class="nav-item {% menu_open 'professor_list' 'professor_detail' 'professorclasse_list' %}">
+
+    Args:
+        context: Django template context (automatic)
+        *url_names: All URL names belonging to this menu section (parent + children)
+
+    Returns:
+        'menu-open' if current URL matches any url_names, empty string otherwise.
+    """
+    request = context.get('request')
+
+    if not request:
+        return ''
+
+    current_url_name = getattr(
+        getattr(request, 'resolver_match', None),
+        'url_name',
+        None
+    )
+
+    if not current_url_name:
+        return ''
+
+    return 'menu-open' if current_url_name in url_names else ''
+
+
+@register.simple_tag(takes_context=True)
+def active_or_open(context, *url_names):
+    """
+    Combined tag that returns 'active' for direct match, 'menu-open' for parent with active child.
+    Useful for dropdown parent links that should be highlighted when any child is active.
+
+    Usage:
+        <a href="#" class="nav-link {% active_or_open 'horariu_list' 'loron_list' 'horas_list' %}">
+
+    Args:
+        context: Django template context (automatic)
+        *url_names: All URL names for this menu item and its children
+
+    Returns:
+        'active' if current URL matches any url_names, empty string otherwise.
+    """
+    request = context.get('request')
+
+    if not request:
+        return ''
+
+    current_url_name = getattr(
+        getattr(request, 'resolver_match', None),
+        'url_name',
+        None
+    )
+
+    if not current_url_name:
+        return ''
+
+    return 'active' if current_url_name in url_names else ''

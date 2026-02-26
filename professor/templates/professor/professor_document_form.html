@@ -1,6 +1,11 @@
 {% extends 'main/base.html' %}
 {% load crispy_forms_tags %}
 
+{% block breadcrumb_item %}
+<li class="breadcrumb-item"><a href="{% url 'professor_list' %}">Professor</a></li>
+<li class="breadcrumb-item active">Dokumentu</li>
+{% endblock breadcrumb_item %}
+
 {% block contents %}
 <div class="row">
     <div class="col-md-12">
