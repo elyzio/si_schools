@@ -1,64 +1,14 @@
 {% extends 'landing/visitor_base.html' %}
 {% load static %}
 
-{% block title %}Statistics - SI Schools{% endblock %}
-
-{% block extra_css %}
-<style>
-    .stat-card {
-        background: white;
-        border: 1px solid #dee2e6;
-        border-radius: 5px;
-        padding: 15px;
-        margin-bottom: 15px;
-        text-align: center;
-        transition: all 0.3s;
-    }
-    .stat-card:hover {
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        transform: translateY(-2px);
-    }
-    .stat-card .icon {
-        font-size: 1.5rem;
-        color: #6ec1ff;
-        margin-bottom: 5px;
-    }
-    .stat-number {
-        font-size: 1.5em;
-        font-weight: bold;
-        margin: 5px 0;
-        color: #003366;
-    }
-    .stat-label {
-        font-size: 0.85em;
-        color: #6c757d;
-    }
-    .chart-container {
-        background: white;
-        border: 1px solid #dee2e6;
-        border-radius: 5px;
-        padding: 15px;
-        margin-bottom: 15px;
-    }
-    .chart-container h5 {
-        font-size: 1rem;
-        color: #003366;
-        margin-bottom: 10px;
-        font-weight: 600;
-    }
-    .chart-wrapper {
-        height: 180px;
-        position: relative;
-    }
-</style>
-{% endblock %}
+{% block title %}Estatistika — ESGP 1912{% endblock %}
 
 {% block content %}
     <div class="row">
         <div class="col-12">
-            <h2 class="mb-4"><i class="fas fa-chart-bar"></i> Estatistika Eskola
+            <h2 class="mb-4 page-heading"><i class="fas fa-chart-bar"></i> Estatistika Eskola
                 {% if current_year %}
-                <span class="badge badge-primary">{{ current_year.ano }}</span>
+                <span class="badge" style="background: #2563EB; color: white;">{{ current_year.ano }}</span>
                 {% endif %}
             </h2>
         </div>
@@ -124,30 +74,26 @@
 
     <div class="row mt-4">
         <div class="col-md-6 mx-auto">
-            <div class="">
-                <div class="chart-container">
-                    <div class="">
-                        <h5><i class="fas fa-users"></i> Estudante Activu Tuir Departamentu & Classe</h5>
-                    </div>
-                    <table class="table table-bordered table-hover table-sm text-center align-middle">
-                        <thead>
-                            <th>#</th>
-                            {% for cl in classe %}
-                                <th>{{cl.classe}}</th>
-                            {% endfor %}   
-                        </thead>
-                        <tbody>
-                            {% for st in st_dept_data %}
-                                <tr>
-                                    <th>{{st.dep.sigla}}</th>
-                                    {% for cs in st.clas %}
-                                        <td>{{cs.cl_tot}}</td>
-                                    {% endfor %}
-                                </tr>
-                            {% endfor %} 
-                        </tbody>
-                    </table>
-                </div>
+            <div class="chart-container">
+                <h5><i class="fas fa-users"></i> Estudante Activu Tuir Departamentu & Classe</h5>
+                <table class="table table-bordered table-hover table-sm text-center align-middle table-landing">
+                    <thead>
+                        <th>#</th>
+                        {% for cl in classe %}
+                            <th>{{cl.classe}}</th>
+                        {% endfor %}
+                    </thead>
+                    <tbody>
+                        {% for st in st_dept_data %}
+                            <tr>
+                                <th>{{st.dep.sigla}}</th>
+                                {% for cs in st.clas %}
+                                    <td>{{cs.cl_tot}}</td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -163,7 +109,7 @@
             labels: ['Mane', 'Feto'],
             datasets: [{
                 data: [{{ male_students }}, {{ female_students }}],
-                backgroundColor: ['#4facfe', '#f093fb']
+                backgroundColor: ['#2563EB', '#D4952A']
             }]
         },
         options: {
@@ -184,7 +130,7 @@
             labels: ['Mane', 'Feto'],
             datasets: [{
                 data: [{{ male_teachers }}, {{ female_teachers }}],
-                backgroundColor: ['#11998e', '#f5576c']
+                backgroundColor: ['#1B3A5C', '#D4952A']
             }]
         },
         options: {
@@ -206,14 +152,14 @@
             datasets: [{
                 data: [{% for item in alumni_by_dept %}{{ item.total }}{% if not forloop.last %}, {% endif %}{% endfor %}],
                 backgroundColor: [
-                    '#667eea',
-                    '#ffa726',
-                    '#66bb6a',
-                    '#ef5350',
-                    '#42a5f5',
-                    '#ab47bc',
-                    '#26c6da',
-                    '#ffee58'
+                    '#2563EB',
+                    '#D4952A',
+                    '#1B3A5C',
+                    '#F5C842',
+                    '#6B7280',
+                    '#3B82F6',
+                    '#92400E',
+                    '#059669'
                 ]
             }]
         },

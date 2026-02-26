@@ -1,15 +1,30 @@
 {% extends 'auth/base.html' %}
 {% load static %}
-{% load crispy_forms_tags %}
-{% block extra_css %}
-<!-- <link rel="stylesheet" href="{% static 'css/login.css' %}"> -->
-{% endblock extra_css %}
+
+{% block title %}Logout — SI ESGP{% endblock title %}
+
 {% block contents %}
+<div class="logout-content">
+  <div class="logout-icon">
+    <i class="fas fa-check-circle"></i>
+  </div>
+  <h2 class="logout-title">Log Out ho Susesu!</h2>
+  <p class="logout-message">
+    Ita boot sai ona husi sistema ho susesu.<br>
+    Obrigadu barak ba ita nia vizita.
+  </p>
 
-<p class="login-box-msg ext-dark">Susesu ona Log Out husi Sistema</p>
-<p class="login-box-msg ext-dark">Hakarak atu Login fila fali</p>
-<div>
-  <a href="{% url 'login' %}" class="btn btn-primary btn-block">Login</a>
+  <div class="logout-actions">
+    <a href="{% url 'login' %}" class="btn-modern-signin">
+      <span class="btn-text">Login Fila Fali</span>
+      <i class="fas fa-sign-in-alt btn-icon"></i>
+    </a>
+
+    <div class="logout-links">
+      <a href="{% url 'home' %}" class="logout-link">
+        <i class="fas fa-home"></i> Pájina Prinsipál
+      </a>
+    </div>
+  </div>
 </div>
-
 {% endblock contents %}

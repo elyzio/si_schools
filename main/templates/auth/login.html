@@ -1,47 +1,44 @@
 {% extends 'auth/base.html' %}
 {% load static %}
 {% load crispy_forms_tags %}
-{% block extra_css %}
-<!-- <link rel="stylesheet" href="{% static 'css/login.css' %}"> -->
 
-{% endblock extra_css %}
+{% block title %}Login — SI ESGP{% endblock title %}
+
 {% block contents %}
+<div class="login-form-header">
+  <h2 class="welcome-text">Bemvindu!</h2>
+  <p class="login-description">Login hodi asesu ita nia Sistema</p>
+</div>
 
-<p class="login-box-msg text-dark">Login hodi asesu ita nia Sistema</p>
+{% if form.errors %}
+<div class="alert alert-danger" style="border-radius: 10px; font-size: 0.9rem;">
+  <i class="fas fa-exclamation-circle mr-1"></i>
+  Username ka Password la loos. Favór koko fali.
+</div>
+{% endif %}
 
 <form method="post">
   {% csrf_token %}
 
-  {% if form.errors %}
-  <div class="alert alert-danger">
-    {{ form.errors }}
-  </div>
-  {% endif %}
-  <div class="input-group mb-3">
-    <input type="text" name="username" class="form-control" placeholder="Username" required>
-    <div class="input-group-append">
-      <div class="input-group-text">
-        <span class="fas fa-user"></span>
-      </div>
+  <div class="form-group-modern">
+    <div class="input-container">
+      <i class="fas fa-user input-icon"></i>
+      <input type="text" name="username" class="form-control-modern" placeholder="Username" required autofocus>
+      <div class="input-underline"></div>
     </div>
   </div>
-  <div class="input-group mb-3">
-    <!-- <input type="password" class="form-control" placeholder="Password"> -->
-    <input type="password" name="password" class="form-control" placeholder="Password" required>
-    <div class="input-group-append">
-      <div class="input-group-text">
-        <span class="fas fa-lock"></span>
-      </div>
-    </div>
-  </div>
-  <div class="row">
 
-    <!-- /.col -->
-    <div class="col-4">
-      <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+  <div class="form-group-modern">
+    <div class="input-container">
+      <i class="fas fa-lock input-icon"></i>
+      <input type="password" name="password" class="form-control-modern" placeholder="Password" required>
+      <div class="input-underline"></div>
     </div>
-    <!-- /.col -->
   </div>
+
+  <button type="submit" class="btn-modern-signin">
+    <span class="btn-text">Sign In</span>
+    <i class="fas fa-arrow-right btn-icon"></i>
+  </button>
 </form>
-
 {% endblock contents %}

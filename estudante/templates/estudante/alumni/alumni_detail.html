@@ -1,5 +1,13 @@
 {% extends 'main/base.html' %}
 
+
+
+{% block breadcrumb_item %}
+<li class="breadcrumb-item"><a href="{% url 'estudante_list' %}">Estudante</a></li>
+<li class="breadcrumb-item"><a href="{% url 'alumni_list' %}">Alumni</a></li>
+<li class="breadcrumb-item active">Detallu</li>
+{% endblock breadcrumb_item %}
+
 {% block contents %}
 <div class="card">
     <div class="card-header">

@@ -1,5 +1,7 @@
-<li class="nav-item has-treeview">
-    <a href="#" class="nav-link">
+{% load active_menu %}
+
+<li class="nav-item has-treeview {% menu_open 'konaba_list' 'konaba_create' 'konaba_update' 'konaba_delete' 'informasaun_list' 'informasaun_detail' 'informasaun_create' 'informasaun_update' 'informasaun_delete' %}">
+    <a href="#" class="nav-link {% active_or_open 'konaba_list' 'konaba_create' 'konaba_update' 'konaba_delete' 'informasaun_list' 'informasaun_detail' 'informasaun_create' 'informasaun_update' 'informasaun_delete' %}">
         <i class="nav-icon fas fa-info"></i>
         <p>
             Kona Ba
@@ -8,13 +10,13 @@
     </a>
     <ul class="nav nav-treeview">
         <li class="nav-item">
-            <a href="{% url 'konaba_list' %}" class="nav-link">
+            <a href="{% url 'konaba_list' %}" class="nav-link {% active_menu 'konaba_list' 'konaba_create' 'konaba_update' 'konaba_delete' %}">
                 <i class="fas fa-chevron-right nav-icon"></i>
                 <p>Konaba</p>
             </a>
         </li>
         <li class="nav-item">
-            <a href="{% url 'informasaun_list' %}" class="nav-link">
+            <a href="{% url 'informasaun_list' %}" class="nav-link {% active_menu 'informasaun_list' 'informasaun_detail' 'informasaun_create' 'informasaun_update' 'informasaun_delete' %}">
                 <i class="fas fa-chevron-right nav-icon"></i>
                 <p>Informasaun</p>
             </a>
@@ -22,8 +24,8 @@
     </ul>
 </li>
 
-<li class="nav-item has-treeview">
-    <a href="#" class="nav-link">
+<li class="nav-item has-treeview {% menu_open 'professor_list' 'professor_detail' 'professor_create' 'professor_update' 'professor_delete' 'professoruser_list' 'professoruser_detail' 'professoruser_create' 'professoruser_update' 'professoruser_delete' 'professorclasse_list' 'professorclasse_detail' 'professorclasse_create' 'professorclasse_update' 'professorclasse_delete' 'professormateria_list' 'professormateria_detail' 'professormateria_create' 'professormateria_update' 'professormateria_delete' 'professordokumentu_list' 'professordokumentu_detail' 'professordokumentu_create' 'professordokumentu_update' 'professordokumentu_delete' 'professor_document_create' 'professor_document_update' 'professor_document_delete' %}">
+    <a href="#" class="nav-link {% active_or_open 'professor_list' 'professor_detail' 'professor_create' 'professor_update' 'professor_delete' 'professoruser_list' 'professoruser_detail' 'professoruser_create' 'professoruser_update' 'professoruser_delete' 'professorclasse_list' 'professorclasse_detail' 'professorclasse_create' 'professorclasse_update' 'professorclasse_delete' 'professormateria_list' 'professormateria_detail' 'professormateria_create' 'professormateria_update' 'professormateria_delete' 'professordokumentu_list' 'professordokumentu_detail' 'professordokumentu_create' 'professordokumentu_update' 'professordokumentu_delete' 'professor_document_create' 'professor_document_update' 'professor_document_delete' %}">
         <i class="nav-icon fas fa-chalkboard-teacher"></i>
         <p>
             Profesor
@@ -32,31 +34,31 @@
     </a>
     <ul class="nav nav-treeview">
         <li class="nav-item">
-            <a href="{% url 'professor_list' %}" class="nav-link">
+            <a href="{% url 'professor_list' %}" class="nav-link {% active_menu 'professor_list' 'professor_detail' 'professor_create' 'professor_update' 'professor_delete' 'professor_document_create' 'professor_document_update' 'professor_document_delete' %}">
                 <i class="fas fa-chevron-right nav-icon"></i>
                 <p>Lista Profesor</p>
             </a>
         </li>
         <li class="nav-item">
-            <a href="{% url 'professoruser_list' %}" class="nav-link">
+            <a href="{% url 'professoruser_list' %}" class="nav-link {% active_menu 'professoruser_list' 'professoruser_detail' 'professoruser_create' 'professoruser_update' 'professoruser_delete' %}">
                 <i class="fas fa-chevron-right nav-icon"></i>
                 <p>Profesor-Uzuariu</p>
             </a>
         </li>
         <li class="nav-item">
-            <a href="{% url 'professorclasse_list' %}" class="nav-link">
+            <a href="{% url 'professorclasse_list' %}" class="nav-link {% active_menu 'professorclasse_list' 'professorclasse_detail' 'professorclasse_create' 'professorclasse_update' 'professorclasse_delete' %}">
                 <i class="fas fa-chevron-right nav-icon"></i>
                 <p>Profesor-Klase</p>
             </a>
         </li>
         <li class="nav-item">
-            <a href="{% url 'professormateria_list' %}" class="nav-link">
+            <a href="{% url 'professormateria_list' %}" class="nav-link {% active_menu 'professormateria_list' 'professormateria_detail' 'professormateria_create' 'professormateria_update' 'professormateria_delete' %}">
                 <i class="fas fa-chevron-right nav-icon"></i>
                 <p>Profesor-Materia</p>
             </a>
         </li>
         <li class="nav-item">
-            <a href="{% url 'professordokumentu_list' %}" class="nav-link">
+            <a href="{% url 'professordokumentu_list' %}" class="nav-link {% active_menu 'professordokumentu_list' 'professordokumentu_detail' 'professordokumentu_create' 'professordokumentu_update' 'professordokumentu_delete' %}">
                 <i class="fas fa-chevron-right nav-icon"></i>
                 <p>Dokumentu</p>
             </a>
@@ -64,8 +66,8 @@
     </ul>
 </li>
 
-<li class="nav-item has-treeview">
-    <a href="#" class="nav-link">
+<li class="nav-item has-treeview {% menu_open 'estudante_list' 'estudante_detail' 'estudante_create' 'estudante_update' 'estudante_delete' 'estudante_assign_classe' 'encarregadu_create' 'encarregadu_update' 'encarregadu_delete' 'dokumentu_create' 'dokumentu_update' 'dokumentu_delete' 'transfer_create' 'transfer_update' 'transfer_delete' 'transfer_list' 'valor_list' 'valor_create' 'valor_update' 'valor_delete' 'estudante_valor_detail' 'valor_graph' 'valor_report' 'student_valor_summary' 'student_valor_detail_admin' 'assigned_students_list' 'reassign_students_grade' 'reassign_form' 'next_year_assigned_list' %}">
+    <a href="#" class="nav-link {% active_or_open 'estudante_list' 'estudante_detail' 'estudante_create' 'estudante_update' 'estudante_delete' 'estudante_assign_classe' 'encarregadu_create' 'encarregadu_update' 'encarregadu_delete' 'dokumentu_create' 'dokumentu_update' 'dokumentu_delete' 'transfer_create' 'transfer_update' 'transfer_delete' 'transfer_list' 'valor_list' 'valor_create' 'valor_update' 'valor_delete' 'estudante_valor_detail' 'valor_graph' 'valor_report' 'student_valor_summary' 'student_valor_detail_admin' 'assigned_students_list' 'reassign_students_grade' 'reassign_form' 'next_year_assigned_list' %}">
         <i class="nav-icon fas fa-user-graduate"></i>
         <p>
             Estudante
@@ -74,25 +76,25 @@
     </a>
     <ul class="nav nav-treeview">
         <li class="nav-item">
-            <a href="{% url 'estudante_list' %}" class="nav-link">
+            <a href="{% url 'estudante_list' %}" class="nav-link {% active_menu 'estudante_list' 'estudante_detail' 'estudante_create' 'estudante_update' 'estudante_delete' 'estudante_assign_classe' 'encarregadu_create' 'encarregadu_update' 'encarregadu_delete' 'dokumentu_create' 'dokumentu_update' 'dokumentu_delete' 'transfer_create' 'transfer_update' 'transfer_delete' 'transfer_list' %}">
                 <i class="fas fa-chevron-right nav-icon"></i>
                 <p>Lista Estudante</p>
             </a>
         </li>
         <li class="nav-item">
-            <a href="{% url 'valor_list' %}" class="nav-link">
+            <a href="{% url 'valor_list' %}" class="nav-link {% active_menu 'valor_list' 'valor_create' 'valor_update' 'valor_delete' 'estudante_valor_detail' 'valor_graph' 'valor_report' 'student_valor_summary' 'student_valor_detail_admin' %}">
                 <i class="fas fa-chevron-right nav-icon"></i>
                 <p>Valor</p>
             </a>
         </li>
         <li class="nav-item">
-            <a href="{% url 'valor_list' %}" class="nav-link">
+            <a href="{% url 'horariuexame_list' %}" class="nav-link {% active_menu 'horariuexame_list' 'horariuexame_detail' 'horariuexame_create' 'horariuexame_update' 'horariuexame_delete' %}">
                 <i class="fas fa-chevron-right nav-icon"></i>
                 <p>Horariu Exame</p>
             </a>
         </li>
         <li class="nav-item">
-            <a href="{% url 'assigned_students_list' %}" class="nav-link">
+            <a href="{% url 'assigned_students_list' %}" class="nav-link {% active_menu 'assigned_students_list' 'reassign_students_grade' 'reassign_form' 'next_year_assigned_list' %}">
                 <i class="fas fa-chevron-right nav-icon"></i>
                 <p>Reinskrisaun Estudante</p>
             </a>
@@ -101,8 +103,8 @@
     </ul>
 </li>
 
-<li class="nav-item has-treeview">
-    <a href="#" class="nav-link">
+<li class="nav-item has-treeview {% menu_open 'horariu_list' 'horariu_detail' 'horariu_create' 'horariu_update' 'horariu_delete' 'horariuexame_list' 'horariuexame_detail' 'horariuexame_create' 'horariuexame_update' 'horariuexame_delete' 'loron_list' 'loron_detail' 'loron_create' 'loron_update' 'loron_delete' 'horas_list' 'horas_detail' 'horas_create' 'horas_update' 'horas_delete' 'horariuvalor_list' 'horariuvalor_detail' 'horariuvalor_create' 'horariuvalor_update' 'horariuvalor_delete' %}">
+    <a href="#" class="nav-link {% active_or_open 'horariu_list' 'horariu_detail' 'horariu_create' 'horariu_update' 'horariu_delete' 'horariuexame_list' 'horariuexame_detail' 'horariuexame_create' 'horariuexame_update' 'horariuexame_delete' 'loron_list' 'loron_detail' 'loron_create' 'loron_update' 'loron_delete' 'horas_list' 'horas_detail' 'horas_create' 'horas_update' 'horas_delete' 'horariuvalor_list' 'horariuvalor_detail' 'horariuvalor_create' 'horariuvalor_update' 'horariuvalor_delete' %}">
         <i class="nav-icon fas fa-calendar-alt"></i>
         <p>
             Horariu
@@ -111,31 +113,31 @@
     </a>
     <ul class="nav nav-treeview">
         <li class="nav-item">
-            <a href="{% url 'horariu_list' %}" class="nav-link">
+            <a href="{% url 'horariu_list' %}" class="nav-link {% active_menu 'horariu_list' 'horariu_detail' 'horariu_create' 'horariu_update' 'horariu_delete' %}">
                 <i class="fas fa-chevron-right nav-icon"></i>
                 <p>Lista Horariu</p>
             </a>
         </li>
         <li class="nav-item">
-            <a href="{% url 'horariuexame_list' %}" class="nav-link">
+            <a href="{% url 'horariuexame_list' %}" class="nav-link {% active_menu 'horariuexame_list' 'horariuexame_detail' 'horariuexame_create' 'horariuexame_update' 'horariuexame_delete' %}">
                 <i class="fas fa-chevron-right nav-icon"></i>
                 <p>Horariu Exame</p>
             </a>
         </li>
         <li class="nav-item">
-            <a href="{% url 'loron_list' %}" class="nav-link">
+            <a href="{% url 'loron_list' %}" class="nav-link {% active_menu 'loron_list' 'loron_detail' 'loron_create' 'loron_update' 'loron_delete' %}">
                 <i class="fas fa-chevron-right nav-icon"></i>
                 <p>Loron</p>
             </a>
         </li>
         <li class="nav-item">
-            <a href="{% url 'horas_list' %}" class="nav-link">
+            <a href="{% url 'horas_list' %}" class="nav-link {% active_menu 'horas_list' 'horas_detail' 'horas_create' 'horas_update' 'horas_delete' %}">
                 <i class="fas fa-chevron-right nav-icon"></i>
                 <p>Oras</p>
             </a>
         </li>
         <li class="nav-item">
-            <a href="{% url 'horariuvalor_list' %}" class="nav-link">
+            <a href="{% url 'horariuvalor_list' %}" class="nav-link {% active_menu 'horariuvalor_list' 'horariuvalor_detail' 'horariuvalor_create' 'horariuvalor_update' 'horariuvalor_delete' %}">
                 <i class="fas fa-chevron-right nav-icon"></i>
                 <p>Valor Horariu</p>
             </a>
@@ -143,8 +145,8 @@
     </ul>
 </li>
 
-<li class="nav-item has-treeview">
-    <a href="#" class="nav-link">
+<li class="nav-item has-treeview {% menu_open 'distrito_list' 'distrito_create' 'distrito_update' 'distrito_delete' 'subdistrito_list' 'subdistrito_create' 'subdistrito_update' 'subdistrito_delete' 'suco_list' 'suco_create' 'suco_update' 'suco_delete' 'aldeia_list' 'aldeia_create' 'aldeia_update' 'aldeia_delete' 'ano_list' 'ano_create' 'ano_update' 'ano_delete' 'departamentu_list' 'departamentu_create' 'departamentu_update' 'departamentu_delete' 'classe_list' 'classe_create' 'classe_update' 'classe_delete' 'turma_list' 'turma_create' 'turma_update' 'turma_delete' 'periodo_list' 'periodo_create' 'periodo_update' 'periodo_delete' 'materia_list' 'materia_create' 'materia_update' 'materia_delete' %}">
+    <a href="#" class="nav-link {% active_or_open 'distrito_list' 'distrito_create' 'distrito_update' 'distrito_delete' 'subdistrito_list' 'subdistrito_create' 'subdistrito_update' 'subdistrito_delete' 'suco_list' 'suco_create' 'suco_update' 'suco_delete' 'aldeia_list' 'aldeia_create' 'aldeia_update' 'aldeia_delete' 'ano_list' 'ano_create' 'ano_update' 'ano_delete' 'departamentu_list' 'departamentu_create' 'departamentu_update' 'departamentu_delete' 'classe_list' 'classe_create' 'classe_update' 'classe_delete' 'turma_list' 'turma_create' 'turma_update' 'turma_delete' 'periodo_list' 'periodo_create' 'periodo_update' 'periodo_delete' 'materia_list' 'materia_create' 'materia_update' 'materia_delete' %}">
         <i class="nav-icon fas fa-cogs"></i>
         <p>
             Konfigurasaun
@@ -155,25 +157,25 @@
         <!-- Geographic Models -->
         <li class="nav-header">GEOGRAFIA</li>
         <li class="nav-item">
-            <a href="{% url 'distrito_list' %}" class="nav-link">
+            <a href="{% url 'distrito_list' %}" class="nav-link {% active_menu 'distrito_list' 'distrito_create' 'distrito_update' 'distrito_delete' %}">
                 <i class="fa fa-chevron-right nav-icon"></i>
                 <p>Distrito</p>
             </a>
         </li>
         <li class="nav-item">
-            <a href="{% url 'subdistrito_list' %}" class="nav-link">
+            <a href="{% url 'subdistrito_list' %}" class="nav-link {% active_menu 'subdistrito_list' 'subdistrito_create' 'subdistrito_update' 'subdistrito_delete' %}">
                 <i class="fa fa-chevron-right nav-icon"></i>
                 <p>Subdistrito</p>
             </a>
         </li>
         <li class="nav-item">
-            <a href="{% url 'suco_list' %}" class="nav-link">
+            <a href="{% url 'suco_list' %}" class="nav-link {% active_menu 'suco_list' 'suco_create' 'suco_update' 'suco_delete' %}">
                 <i class="fa fa-chevron-right nav-icon"></i>
                 <p>Suco</p>
             </a>
         </li>
         <li class="nav-item">
-            <a href="{% url 'aldeia_list' %}" class="nav-link">
+            <a href="{% url 'aldeia_list' %}" class="nav-link {% active_menu 'aldeia_list' 'aldeia_create' 'aldeia_update' 'aldeia_delete' %}">
                 <i class="fa fa-chevron-right nav-icon"></i>
                 <p>Aldeia</p>
             </a>
@@ -182,37 +184,37 @@
         <!-- Academic Models -->
         <li class="nav-header">AKADEMIKU</li>
         <li class="nav-item">
-            <a href="{% url 'ano_list' %}" class="nav-link">
+            <a href="{% url 'ano_list' %}" class="nav-link {% active_menu 'ano_list' 'ano_create' 'ano_update' 'ano_delete' %}">
                 <i class="fa fa-chevron-right nav-icon"></i>
                 <p>Ano Akademiku</p>
             </a>
         </li>
         <li class="nav-item">
-            <a href="{% url 'departamentu_list' %}" class="nav-link">
+            <a href="{% url 'departamentu_list' %}" class="nav-link {% active_menu 'departamentu_list' 'departamentu_create' 'departamentu_update' 'departamentu_delete' %}">
                 <i class="fa fa-chevron-right nav-icon"></i>
                 <p>Departmento</p>
             </a>
         </li>
         <li class="nav-item">
-            <a href="{% url 'classe_list' %}" class="nav-link">
+            <a href="{% url 'classe_list' %}" class="nav-link {% active_menu 'classe_list' 'classe_create' 'classe_update' 'classe_delete' %}">
                 <i class="fa fa-chevron-right nav-icon"></i>
                 <p>Klase</p>
             </a>
         </li>
         <li class="nav-item">
-            <a href="{% url 'turma_list' %}" class="nav-link">
+            <a href="{% url 'turma_list' %}" class="nav-link {% active_menu 'turma_list' 'turma_create' 'turma_update' 'turma_delete' %}">
                 <i class="fa fa-chevron-right nav-icon"></i>
                 <p>Turma</p>
             </a>
         </li>
         <li class="nav-item">
-            <a href="{% url 'periodo_list' %}" class="nav-link">
+            <a href="{% url 'periodo_list' %}" class="nav-link {% active_menu 'periodo_list' 'periodo_create' 'periodo_update' 'periodo_delete' %}">
                 <i class="fa fa-chevron-right nav-icon"></i>
                 <p>Periodo</p>
             </a>
         </li>
         <li class="nav-item">
-            <a href="{% url 'materia_list' %}" class="nav-link">
+            <a href="{% url 'materia_list' %}" class="nav-link {% active_menu 'materia_list' 'materia_create' 'materia_update' 'materia_delete' %}">
                 <i class="fa fa-chevron-right nav-icon"></i>
                 <p>Disciplina</p>
             </a>
@@ -220,8 +222,8 @@
     </ul>
 </li>
 
-<li class="nav-item has-treeview">
-    <a href="#" class="nav-link">
+<li class="nav-item has-treeview {% menu_open 'graphics_dashboard' 'tables_dashboard' 'student_dept_class_detail' 'student_district_detail' 'alumni_year_dept_detail' 'teacher_district_detail' 'teacher_level_detail' 'teacher_subject_detail' %}">
+    <a href="#" class="nav-link {% active_or_open 'graphics_dashboard' 'tables_dashboard' 'student_dept_class_detail' 'student_district_detail' 'alumni_year_dept_detail' 'teacher_district_detail' 'teacher_level_detail' 'teacher_subject_detail' %}">
         <i class="nav-icon fas fa-list"></i>
         <p>
             Report
@@ -230,13 +232,13 @@
     </a>
     <ul class="nav nav-treeview">
         <li class="nav-item">
-            <a href="{% url 'graphics_dashboard' %}" class="nav-link">
+            <a href="{% url 'graphics_dashboard' %}" class="nav-link {% active_menu 'graphics_dashboard' 'student_dept_class_detail' 'student_district_detail' 'alumni_year_dept_detail' 'teacher_district_detail' 'teacher_level_detail' 'teacher_subject_detail' %}">
                 <i class="fas fa-chevron-right nav-icon"></i>
                 <p>Grafiku</p>
             </a>
         </li>
         <li class="nav-item">
-            <a href="{% url 'tables_dashboard' %}" class="nav-link">
+            <a href="{% url 'tables_dashboard' %}" class="nav-link {% active_menu 'tables_dashboard' %}">
                 <i class="fas fa-chevron-right nav-icon"></i>
                 <p>Table</p>
             </a>

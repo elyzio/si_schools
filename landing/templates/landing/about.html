@@ -1,11 +1,11 @@
 {% extends 'landing/visitor_base.html' %}
 
-{% block title %}About Us - SI Schools{% endblock %}
+{% block title %}Kona Ba — ESGP 1912{% endblock %}
 
 {% block content %}
 <div class="row">
     <div class="col-12">
-        <h2 class="mb-4"><i class="fas fa-info-circle"></i> Kona Ba Ami</h2>
+        <h2 class="mb-4 page-heading"><i class="fas fa-info-circle"></i> Kona Ba Ami</h2>
     </div>
 </div>
 
@@ -14,8 +14,8 @@
 {% if item.orden >= 1 %}
 <div class="row mb-4">
     <div class="col-12">
-        <div class="card">
-            <div class="card-header bg-primary text-white">
+        <div class="card card-accent-gold">
+            <div class="card-header card-header-blue">
                 <h4 class="mb-0">{{ item.titulu }}</h4>
             </div>
             <div class="card-body">
@@ -36,7 +36,6 @@
 <div class="row mb-4">
     <div class="col-12">
         <div class="alert alert-default-primary">
-            <!-- {{ item.titulu }} -->
             <div class="content text-center font-weight-bold h4">
                 {{ item.deskrisaun|safe }}
             </div>
@@ -49,7 +48,7 @@
 <div class="row">
     <div class="col-12">
         <div class="alert alert-info">
-            <i class="fas fa-info-circle"></i> No information available at this time.
+            <i class="fas fa-info-circle"></i> Seidauk iha informasaun iha momentu ida ne'e.
         </div>
     </div>
 </div>

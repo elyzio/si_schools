@@ -1,35 +1,40 @@
 {% extends 'main/base.html' %}
 {% load static %}
 
+
+
+{% block breadcrumb_item %}
+<li class="breadcrumb-item active">Relatoriu</li>
+{% endblock breadcrumb_item %}
 {% block head_link %}
 <style>
     .stats-card {
-        background: #f8f9fa;
-        border-left: 3px solid #007bff;
+        background: var(--bg-light);
+        border-left: 3px solid var(--blue-primary);
         padding: 8px 12px;
         margin-bottom: 10px;
     }
     .stats-number {
         font-size: 1.5em;
         font-weight: 600;
-        color: #343a40;
+        color: var(--text-primary);
         margin: 0;
     }
     .stats-label {
         font-size: 0.85em;
-        color: #6c757d;
+        color: var(--text-secondary);
         margin: 0;
     }
     .chart-box {
         background: white;
-        border: 1px solid #dee2e6;
+        border: 1px solid var(--border-light);
         padding: 12px;
         margin-bottom: 15px;
     }
     .chart-box h6 {
         font-size: 0.95em;
         margin: 0 0 8px 0;
-        color: #495057;
+        color: var(--text-primary);
         font-weight: 600;
     }
     .chart-wrapper {
@@ -40,8 +45,8 @@
         font-size: 1.1em;
         font-weight: 600;
         margin: 10px 0 8px 0;
-        color: #495057;
-        border-bottom: 2px solid #e9ecef;
+        color: var(--text-primary);
+        border-bottom: 2px solid var(--border-light);
         padding-bottom: 3px;
     }
     .table-light-custom {
@@ -49,31 +54,31 @@
         background: white;
     }
     .table-light-custom thead th {
-        background: #f8f9fa;
-        border-bottom: 2px solid #dee2e6;
+        background: var(--bg-light);
+        border-bottom: 2px solid var(--border-light);
         font-weight: 600;
-        color: #495057;
+        color: var(--text-primary);
         padding: 8px;
     }
     .table-light-custom tbody tr {
-        border-bottom: 1px solid #dee2e6;
+        border-bottom: 1px solid var(--border-light);
     }
     .table-light-custom tbody tr:hover {
-        background: #f1f3f5;
+        background: var(--bg-light);
     }
     .table-light-custom td {
         padding: 6px 8px;
     }
     .table-box {
         background: white;
-        border: 1px solid #dee2e6;
+        border: 1px solid var(--border-light);
         padding: 12px;
         margin-bottom: 15px;
     }
     .table-box h6 {
         font-size: 0.95em;
         margin: 0 0 10px 0;
-        color: #495057;
+        color: var(--text-primary);
         font-weight: 600;
     }
 </style>
@@ -98,19 +103,19 @@
         </div>
     </div>
     <div class="col-lg-3 col-6">
-        <div class="stats-card" style="border-left-color: #28a745;">
+        <div class="stats-card" style="border-left-color: #27ae60;">
             <div class="stats-number">{{ active_enrollments }}</div>
             <div class="stats-label">Active</div>
         </div>
     </div>
     <div class="col-lg-3 col-6">
-        <div class="stats-card" style="border-left-color: #ffc107;">
+        <div class="stats-card" style="border-left-color: #D4952A;">
             <div class="stats-number">{{ transferred_students }}</div>
             <div class="stats-label">Transferred</div>
         </div>
     </div>
     <div class="col-lg-3 col-6">
-        <div class="stats-card" style="border-left-color: #17a2b8;">
+        <div class="stats-card" style="border-left-color: #2563EB;">
             <div class="stats-number">{{ alumni_students }}</div>
             <div class="stats-label">Alumni</div>
         </div>
@@ -154,13 +159,13 @@
 
 <div class="row">
     <div class="col-lg-3 col-6">
-        <div class="stats-card" style="border-left-color: #28a745;">
+        <div class="stats-card" style="border-left-color: #27ae60;">
             <div class="stats-number">{{ total_teachers }}</div>
             <div class="stats-label">Total</div>
         </div>
     </div>
     <div class="col-lg-3 col-6">
-        <div class="stats-card" style="border-left-color: #007bff;">
+        <div class="stats-card" style="border-left-color: #2563EB;">
             <div class="stats-number">{{ teachers_assigned }}</div>
             <div class="stats-label">Assigned</div>
         </div>
@@ -220,7 +225,7 @@
             labels: ['Male', 'Female'],
             datasets: [{
                 data: [{{ male_students }}, {{ female_students }}],
-                backgroundColor: ['#007bff', '#dc3545']
+                backgroundColor: ['#2563EB', '#e74c3c']
             }]
         },
         options: chartOptions
@@ -233,7 +238,7 @@
             labels: [{% for item in students_by_dept %}'{{ item.departamentu__sigla }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
             datasets: [{
                 data: [{% for item in students_by_dept %}{{ item.total }}{% if not forloop.last %}, {% endif %}{% endfor %}],
-                backgroundColor: ['#28a745', '#ffc107', '#17a2b8', '#6f42c1', '#fd7e14']
+                backgroundColor: ['#1B3A5C', '#2563EB', '#D4952A', '#27ae60', '#6B7280']
             }]
         },
         options: chartOptions
@@ -247,7 +252,7 @@
             datasets: [{
                 label: 'Students',
                 data: [{% for item in students_by_class %}{{ item.total }}{% if not forloop.last %}, {% endif %}{% endfor %}],
-                backgroundColor: '#007bff'
+                backgroundColor: '#2563EB'
             }]
         },
         options: {
@@ -271,7 +276,7 @@
             labels: ['Male', 'Female'],
             datasets: [{
                 data: [{{ male_teachers }}, {{ female_teachers }}],
-                backgroundColor: ['#28a745', '#e83e8c']
+                backgroundColor: ['#2563EB', '#D4952A']
             }]
         },
         options: chartOptions
@@ -284,7 +289,7 @@
             labels: [{% for item in teachers_by_status %}'{{ item.estadu }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
             datasets: [{
                 data: [{% for item in teachers_by_status %}{{ item.total }}{% if not forloop.last %}, {% endif %}{% endfor %}],
-                backgroundColor: ['#28a745', '#ffc107', '#17a2b8']
+                backgroundColor: ['#27ae60', '#D4952A', '#2563EB']
             }]
         },
         options: chartOptions
@@ -298,7 +303,7 @@
             datasets: [{
                 label: 'Teachers',
                 data: [{% for item in teachers_by_level %}{{ item.total }}{% if not forloop.last %}, {% endif %}{% endfor %}],
-                backgroundColor: '#28a745'
+                backgroundColor: '#1B3A5C'
             }]
         },
         options: {

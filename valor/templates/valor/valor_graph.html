@@ -1,5 +1,11 @@
 {% extends 'main/base.html' %}
 {% load static %}
+
+
+{% block breadcrumb_item %}
+<li class="breadcrumb-item"><a href="{% url 'valor_list' %}">Valor</a></li>
+<li class="breadcrumb-item active">Grafiku</li>
+{% endblock breadcrumb_item %}
 {% block contents %}
 <div class="row">
     <!-- Student Information Card -->

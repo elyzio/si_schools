@@ -1,105 +1,20 @@
 {% extends 'landing/visitor_base.html' %}
+{% load static %}
 
-{% block title %}Home - SI Schools{% endblock %}
-
-{% block extra_css %}
-<style>
-    .hero-section {
-        background: linear-gradient(135deg, #6ec1ff 0%, #003366 100%);
-        color: white;
-        padding: 80px 0;
-        margin: -30px 0 50px 0;
-        border-radius: 0;
-    }
-    .hero-section h1 {
-        font-size: 3rem;
-        font-weight: 700;
-        margin-bottom: 20px;
-    }
-    .hero-section p {
-        font-size: 1.3rem;
-        margin-bottom: 30px;
-        opacity: 0.95;
-    }
-    .hero-btn {
-        background: white;
-        color: #003366;
-        padding: 12px 35px;
-        font-size: 1.1rem;
-        font-weight: 600;
-        border: none;
-        border-radius: 5px;
-        transition: all 0.3s;
-    }
-    .hero-btn:hover {
-        background: #003366;
-        color: white;
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-    }
-    .feature-card {
-        border: none;
-        border-radius: 10px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        transition: all 0.3s;
-        height: 100%;
-    }
-    .feature-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 5px 20px rgba(0,0,0,0.15);
-    }
-    .feature-icon {
-        font-size: 3rem;
-        color: #6ec1ff;
-        margin-bottom: 20px;
-    }
-    .feature-card h4 {
-        color: #003366;
-        font-weight: 600;
-        margin-bottom: 15px;
-    }
-    .stats-section {
-        background: #f8f9fa;
-        padding: 50px 0;
-        margin: 50px 0;
-        border-radius: 10px;
-    }
-    .stat-item {
-        text-align: center;
-        padding: 20px;
-    }
-    .stat-number {
-        font-size: 2.5rem;
-        font-weight: 700;
-        color: #003366;
-    }
-    .stat-label {
-        font-size: 1.1rem;
-        color: #666;
-        margin-top: 10px;
-    }
-</style>
-{% endblock %}
+{% block title %}ESCOLA SECUNDARIA GERAL PUBLICO 1912 SAME MANUFAHI{% endblock %}
 
 {% block content %}
 <!-- Hero Section -->
 <div class="hero-section text-center">
     <div class="container">
-        <h1><i class="fas fa-graduation-cap"></i> Benvindo mai SI Schools</h1>
-        <p>Sistema Informasaun Academika</p>
-        <!-- <a href="{% url 'login' %}" class="btn hero-btn">
-            <i class="fas fa-sign-in-alt"></i> Get Started
-        </a> -->
+        <h1><i class="fas fa-graduation-cap"></i> Benvindo mai</h1>
+        <p>ESCOLA SECUNDARIA GERAL PUBLICO 1912 SAME MANUFAHI</p>
+        <span class="hero-subtitle">Sistema Informasaun Academika</span>
     </div>
 </div>
 
 <!-- Features Section -->
 <div class="container">
-    <!-- <div class="text-center mb-5">
-        <h2 class="font-weight-bold" style="color: #003366;">Our Features</h2>
-        <p class="text-muted">Comprehensive tools for managing academic information</p>
-    </div> -->
-
     <div class="row mb-5">
         <div class="col-md-4 mb-4">
             <div class="card feature-card">
@@ -141,7 +56,7 @@
         <div class="row">
             <div class="col-md-3">
                 <div class="stat-item">
-                    <div class="stat-number"><i class="fas fa-user"></i>{{est_count}}</div>
+                    <div class="stat-number"><i class="fas fa-user"></i> {{est_count}}</div>
                     <div class="stat-label">Estudante</div>
                 </div>
             </div>
@@ -151,12 +66,6 @@
                     <div class="stat-label">Profesor</div>
                 </div>
             </div>
-            <!-- <div class="col-md-3">
-                <div class="stat-item">
-                    <div class="stat-number"><i class="fas fa-book"></i> 100+</div>
-                    <div class="stat-label">Kursu</div>
-                </div>
-            </div> -->
             <div class="col-md-3">
                 <div class="stat-item">
                     <div class="stat-number"><i class="fas fa-building"></i> {{dep_count}}</div>
@@ -171,14 +80,5 @@
             </div>
         </div>
     </div>
-
-    <!-- Call to Action -->
-    <!-- <div class="text-center mb-5">
-        <h3 class="font-weight-bold mb-3" style="color: #003366;">Ready to Get Started?</h3>
-        <p class="text-muted mb-4">Join our academic community and experience efficient school management</p>
-        <a href="{% url 'login' %}" class="btn btn-lg" style="background: #003366; color: white; padding: 12px 40px;">
-            <i class="fas fa-arrow-right"></i> Login Now
-        </a>
-    </div> -->
 </div>
 {% endblock content %}

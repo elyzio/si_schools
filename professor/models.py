@@ -16,6 +16,7 @@ class Professor(PersonInfo):
         ('KONTRATADU', 'Kontratadu'),
         ('PERMANENTE', 'Permanente'),
         ('VOLUNTARIU', 'Voluntariu'),
+        ('PARCIAL', 'Parcial'),
     ]
 
     CIVIL_STATUS_CHOICES = [
@@ -33,16 +34,31 @@ class Professor(PersonInfo):
         ('S3', 'Doutoramentu/S3'),
         ('Outru', 'Outru'),
     ]
-    
+
+    POSISAUN = [
+        ('DIRETOR', 'Diretor/a'),
+        ('DIRETOR_ADJUNTO', 'Diretor Adjunto'),
+        ('GAT', 'Gabinete Apoio Tecnico (GAT)'),
+        ('PROFESSOR', 'Professor/a'),
+        ('TECNICO_ADMINISTRAÇÃO', 'Tecnico Administraçãon'),
+        ('APOIA_ADMINISTRAÇÃO', 'Apoia Administraçãaun'),
+        ('GURDA_ESCOLA', 'Guarda Escola'),
+        ('TECNICO_AGUA_SANEAMENTO', 'Tecnico Agua Saneamento'),
+        ('JARDINHEIRA', 'Jardinheira'),
+    ]
+    eleitoral_prof = models.CharField(max_length=50, blank=True, null=True)
+    emis_prof = models.CharField(max_length=20, blank=True, null=True)
     estadu = models.CharField(max_length=20, choices=STATUS_CHOICES)
     nivel_akademiku = models.CharField(max_length=100, choices=NIVEL_AKADEMIK)
     grau_akademiku = models.CharField(max_length=100, null=True, blank=True)
     numero_funcionario = models.CharField(max_length=50, unique=True, null=True, blank=True)
+    posisaun_prof = models.CharField(max_length=40, null=True, blank=True, choices=POSISAUN)
     data_contratacao = models.DateField(null=True, blank=True)
     is_active = models.BooleanField(default=True)
     estadu_civil = models.CharField(max_length=20, choices=CIVIL_STATUS_CHOICES, blank=True)
     email = models.EmailField(null=True, blank=True)
     imagem = models.ImageField(upload_to=img_prof, null=True, blank=True)
+    
     
     def __str__(self):
         return f"{self.nome} ({self.numero_funcionario})"

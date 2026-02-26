@@ -1,14 +1,19 @@
 {% extends 'main/base.html' %}
 {% load static %}
 
+
+
+{% block breadcrumb_item %}
+<li class="breadcrumb-item active">Relatoriu</li>
+{% endblock breadcrumb_item %}
 {% block head_link %}
 <style>
     .section-header {
         font-size: 1.1em;
         font-weight: 600;
         margin: 10px 0 8px 0;
-        color: #495057;
-        border-bottom: 2px solid #e9ecef;
+        color: var(--text-primary);
+        border-bottom: 2px solid var(--border-light);
         padding-bottom: 3px;
     }
     .table-light-custom {
@@ -16,31 +21,31 @@
         background: white;
     }
     .table-light-custom thead th {
-        background: #f8f9fa;
-        border-bottom: 2px solid #dee2e6;
+        background: var(--bg-light);
+        border-bottom: 2px solid var(--border-light);
         font-weight: 600;
-        color: #495057;
+        color: var(--text-primary);
         padding: 8px;
     }
     .table-light-custom tbody tr {
-        border-bottom: 1px solid #dee2e6;
+        border-bottom: 1px solid var(--border-light);
     }
     .table-light-custom tbody tr:hover {
-        background: #f1f3f5;
+        background: var(--bg-light);
     }
     .table-light-custom td {
         padding: 6px 8px;
     }
     .table-box {
         background: white;
-        border: 1px solid #dee2e6;
+        border: 1px solid var(--border-light);
         padding: 12px;
         margin-bottom: 15px;
     }
     .table-box h6 {
         font-size: 0.95em;
         margin: 0 0 10px 0;
-        color: #495057;
+        color: var(--text-primary);
         font-weight: 600;
     }
 </style>

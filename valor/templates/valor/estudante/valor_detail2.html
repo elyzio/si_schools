@@ -1,5 +1,11 @@
 {% extends 'main/base.html' %}
 {% load user_tags %}
+
+
+{% block breadcrumb_item %}
+<li class="breadcrumb-item"><a href="{% url 'valor_est_list2' %}">Ha'u-nia Valor</a></li>
+<li class="breadcrumb-item active">Detallu</li>
+{% endblock breadcrumb_item %}
 {% block contents %}
 
 <div class="card">
