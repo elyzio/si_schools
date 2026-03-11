@@ -1,0 +1,66 @@
+{% extends 'main/base.html' %}
+
+{% block head_link %}{% endblock head_link %}
+
+{% block breadcrumb_item %}
+<li class="breadcrumb-item"><a href="{% url 'horariu_list' %}">Horariu</a></li>
+<li class="breadcrumb-item active">Tabela</li>
+{% endblock breadcrumb_item %}
+
+{% block contents %}
+{% for table in schedule_tables %}
+<div class="card mb-3">
+    <div class="card-header">
+        <strong>{{ table.materia.codigo }}</strong> - {{ table.materia.materia }} |
+        Classe: {{ table.classe.classe }} |
+        Tinan: {{ table.ano.ano }}
+        <div class="card-tools">
+            <a href="{% url 'horariu_table_prof_pdf' %}" target="_blank" class="btn btn-primary btn-sm">
+                <i class="fas fa-print"></i>
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered table-sm mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Oras</th>
+                        {% for day in table.days %}
+                            <th>{{ day.get_loron_display }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in table.rows %}
+                        <tr>
+                            <th scope="row">
+                                    {{ row.hour.horas_hahu|time:"H:i" }} - {{ row.hour.horas_termina|time:"H:i" }}
+                            </th>
+                            {% for cell in row.cells %}
+                                <td>
+                                    {% if cell.value %}
+                                        <span title="{{ cell.title }}">{{ cell.value }}</span>
+                                    {% endif %}
+                                </td>
+                            {% endfor %}
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="{{ table.days|length|add:'1' }}">Laiha horas ba tabela ida-ne'e</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% empty %}
+<div class="alert alert-info mb-0">
+    Laiha dadus horariu ba professor ida-ne'e.
+</div>
+{% endfor %}
+    
+{% endblock contents %}
+
+{% block extra_scripts %}{% endblock extra_scripts %}

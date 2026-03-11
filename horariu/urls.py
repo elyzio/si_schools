@@ -22,6 +22,9 @@ urlpatterns = [
     path('<int:pk>/', horariu_detail, name='horariu_detail'),
     path('<int:pk>/update/', horariu_update, name='horariu_update'),
     path('<int:pk>/delete/', horariu_delete, name='horariu_delete'),
+    path('table/',horariu_table, name='horariu-table'),
+    path('table/pdf/', horariu_table_pdf, name='horariu_table_pdf'),
+    path('table/pdf/<str:period>/', horariu_table_pdf, name='horariu_table_pdf_period'),
 
     # HorariuExame URLs
     path('exame/', horariuexame_list, name='horariuexame_list'),
@@ -38,7 +41,11 @@ urlpatterns = [
     path('valor/<int:pk>/delete/', horariuvalor_delete, name='horariuvalor_delete'),
 
     # Horariu for Professors URLs
-    path('professor/horariu/', HorariuListProf, name='horariu_list_prof'),
+    path('prf/horariu/', HorariuListProf, name='horariu_list_prof'),
+    path('prf/table/', HorariuTableProf, name='horariu_table_prof'),
+    path('prf/table/pdf/', HorariuTableProfPDF, name='horariu_table_prof_pdf'),
 
-    path('estudante/horariu/', HorariuListEst, name='horariu_list_est'),
+    path('est/horariu/', HorariuListEst, name='horariu_list_est'),
+    path('est/table/', HorariuTableEst, name='horariu_table_est'),
+    path('est/table/pdf/', HorariuTableEstPDF, name='horariu_table_est_pdf'),
 ]
