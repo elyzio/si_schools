@@ -1,14 +1,14 @@
 {% load active_menu %}
 
 <li class="nav-item">
-    <a href="{% url 'horariu_list_prof' %}" class="nav-link {% active_menu 'horariu_list_prof' %}">
+    <a href="{% url 'horariu_list_prof' %}" class="nav-link {% active_group 'nav.prof.horariu' %}">
         <i class="nav-icon fas fa-calendar-alt"></i>
         <p>Horariu</p>
     </a>
 </li>
 
-<li class="nav-item has-treeview {% menu_open 'est_prof_turma_list' 'est_prof_hanorin_list' %}">
-    <a href="#" class="nav-link {% active_or_open 'est_prof_turma_list' 'est_prof_hanorin_list' %}">
+<li class="nav-item has-treeview {% menu_open_group 'nav.prof.estudante.section' %}">
+    <a href="#" class="nav-link {% active_or_open_group 'nav.prof.estudante.section' %}">
         <i class="nav-icon fas fa-users"></i>
         <p>
             Estudante
@@ -17,13 +17,13 @@
     </a>
     <ul class="nav nav-treeview">
         <li class="nav-item">
-            <a href="{% url 'est_prof_turma_list' %}" class="nav-link {% active_menu 'est_prof_turma_list' %}">
+            <a href="{% url 'est_prof_turma_list' %}" class="nav-link {% active_group 'nav.prof.estudante.turma' %}">
                 <i class="fas fa-door-open nav-icon"></i>
                 <p>Turma</p>
             </a>
         </li>
         <li class="nav-item">
-            <a href="{% url 'est_prof_hanorin_list' %}" class="nav-link {% active_menu 'est_prof_hanorin_list' %}">
+            <a href="{% url 'est_prof_hanorin_list' %}" class="nav-link {% active_group 'nav.prof.estudante.hanorin' %}">
                 <i class="fas fa-chalkboard-teacher nav-icon"></i>
                 <p>Hanorin</p>
             </a>

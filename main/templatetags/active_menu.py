@@ -1,6 +1,31 @@
 from django import template
+from .menu_groups import MENU_GROUPS
 
 register = template.Library()
+
+
+def _get_current_url_name(context):
+    request = context.get('request')
+
+    if not request:
+        return None
+
+    return getattr(
+        getattr(request, 'resolver_match', None),
+        'url_name',
+        None
+    )
+
+
+def _matches_route_pattern(current_url_name, pattern):
+    if pattern.endswith('*'):
+        return current_url_name.startswith(pattern[:-1])
+    return current_url_name == pattern
+
+
+def _is_group_active(current_url_name, group_key):
+    patterns = MENU_GROUPS.get(group_key, ())
+    return any(_matches_route_pattern(current_url_name, pattern) for pattern in patterns)
 
 
 @register.simple_tag(takes_context=True)
@@ -25,17 +50,7 @@ def active_menu(context, *url_names, css_class='active'):
     Returns:
         The css_class if current URL matches any of the url_names, empty string otherwise.
     """
-    request = context.get('request')
-
-    if not request:
-        return ''
-
-    # Get current URL name from resolver_match
-    current_url_name = getattr(
-        getattr(request, 'resolver_match', None),
-        'url_name',
-        None
-    )
+    current_url_name = _get_current_url_name(context)
 
     if not current_url_name:
         return ''
@@ -80,16 +95,7 @@ def is_active(context, *url_names):
     Returns:
         True if current URL matches any url_names, False otherwise.
     """
-    request = context.get('request')
-
-    if not request:
-        return False
-
-    current_url_name = getattr(
-        getattr(request, 'resolver_match', None),
-        'url_name',
-        None
-    )
+    current_url_name = _get_current_url_name(context)
 
     if not current_url_name:
         return False
@@ -209,16 +215,7 @@ def menu_open(context, *url_names):
     Returns:
         'menu-open' if current URL matches any url_names, empty string otherwise.
     """
-    request = context.get('request')
-
-    if not request:
-        return ''
-
-    current_url_name = getattr(
-        getattr(request, 'resolver_match', None),
-        'url_name',
-        None
-    )
+    current_url_name = _get_current_url_name(context)
 
     if not current_url_name:
         return ''
@@ -242,18 +239,52 @@ def active_or_open(context, *url_names):
     Returns:
         'active' if current URL matches any url_names, empty string otherwise.
     """
-    request = context.get('request')
-
-    if not request:
-        return ''
-
-    current_url_name = getattr(
-        getattr(request, 'resolver_match', None),
-        'url_name',
-        None
-    )
+    current_url_name = _get_current_url_name(context)
 
     if not current_url_name:
         return ''
 
     return 'active' if current_url_name in url_names else ''
+
+
+@register.simple_tag(takes_context=True)
+def active_group(context, group_key, css_class='active'):
+    """
+    Template tag to mark a menu item as active based on a named route group.
+
+    Usage:
+        {% active_group 'nav.estudante.valor' %}
+        {% active_group 'nav.estudante.valor' 'custom-active' %}
+    """
+    current_url_name = _get_current_url_name(context)
+
+    if not current_url_name:
+        return ''
+
+    return css_class if _is_group_active(current_url_name, group_key) else ''
+
+
+@register.simple_tag(takes_context=True)
+def menu_open_group(context, group_key):
+    """
+    Template tag for AdminLTE parent menu expansion based on a named route group.
+    """
+    current_url_name = _get_current_url_name(context)
+
+    if not current_url_name:
+        return ''
+
+    return 'menu-open' if _is_group_active(current_url_name, group_key) else ''
+
+
+@register.simple_tag(takes_context=True)
+def active_or_open_group(context, group_key):
+    """
+    Template tag for parent nav-link highlighting based on a named route group.
+    """
+    current_url_name = _get_current_url_name(context)
+
+    if not current_url_name:
+        return ''
+
+    return 'active' if _is_group_active(current_url_name, group_key) else ''
