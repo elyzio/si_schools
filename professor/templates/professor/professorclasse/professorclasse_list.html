@@ -2,11 +2,6 @@
 {% load static %}
 {% load user_tags %}
 
-
-
-
-
-
 {% block breadcrumb_item %}
 <li class="breadcrumb-item"><a href="{% url 'professor_list' %}">Professor</a></li>
 <li class="breadcrumb-item active">Klase</li>
@@ -33,6 +28,7 @@
                     <th>Tinan</th>
                     <th>Departamentu</th>
                     <th>Klase</th>
+                    <th>Turma</th>
                     <th>Profesor Prinsipal</th>
                     <th>Aksaun</th>
                 </tr>
@@ -49,6 +45,7 @@
                     <td>{{ pc.ano.ano }}</td>
                     <td>{{ pc.departamentu.sigla }}</td>
                     <td>{{ pc.classe.classe }}</td>
+                    <td>{{ pc.turma }}</td>
                     <td>
                         {% if pc.is_class_teacher %}
                             <span class="badge badge-success">Loos</span>

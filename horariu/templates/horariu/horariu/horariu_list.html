@@ -20,8 +20,22 @@
                         {% if request.user|has_group:"admin" %}
                             <a href="{% url 'horariu_create' %}" class="btn btn-primary btn-sm">
                                 <i class="fas fa-plus"></i> Aumenta Horariu
-                            </a> 
+                            </a>
+                            <a href="{% url 'horariu-table' %}" class="btn btn-success btn-sm">
+                                <i class="fas fa-table"></i> Tabela
+                            </a>
                         {% endif %}
+                        {% if request.user|has_group:"estudante"  %}
+                            <a href="{% url 'horariu_table_est' %}" class="btn btn-success btn-sm">
+                                <i class="fas fa-table"></i> Tabela
+                            </a>
+                        {% endif %}
+                        {% if request.user|has_group:"professor"  %}
+                            <a href="{% url 'horariu_table_prof' %}" class="btn btn-success btn-sm">
+                                <i class="fas fa-table"></i> Tabela
+                            </a>
+                        {% endif %}
+                            
                     </div>
                 </div>
                 <div class="card-body">

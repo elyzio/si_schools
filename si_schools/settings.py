@@ -177,6 +177,3 @@ SUMMERNOTE_CONFIG = {
     'disable_attachment': False,  # or True if you don't want file uploads
     'lazy': True,
 }
-
-
-

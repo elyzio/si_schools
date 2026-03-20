@@ -2,11 +2,6 @@
 {% load static %}
 {% load user_tags %}
 
-
-
-
-
-
 {% block breadcrumb_item %}
 <li class="breadcrumb-item"><a href="{% url 'professor_list' %}">Professor</a></li>
 <li class="breadcrumb-item"><a href="{% url 'professorclasse_list' %}">Klase</a></li>
@@ -43,11 +38,15 @@
             </tr>
             <tr>
                 <th>Departamentu</th>
-                <td>{{ professorclasse.departamentu.departamentu }}</td>
+                <td>{{ professorclasse.departamentu.departamento }}</td>
             </tr>
             <tr>
                 <th>Klase</th>
                 <td>{{ professorclasse.classe.classe }}</td>
+            </tr>
+            <tr>
+                <th>Turma</th>
+                <td>{{ professorclasse.turma }}</td>
             </tr>
             <tr>
                 <th>Profesor Prinsipal Klase Nian</th>
