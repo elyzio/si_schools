@@ -11,19 +11,23 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+load_dotenv(BASE_DIR / ".env")
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-#57$*_v69l7-pk%iv_+t_c+w6dy9z@j%+hbe79yg&&kpw=ywq&"
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv("DEBUG", True)
 
 ALLOWED_HOSTS = []
 
@@ -95,11 +99,11 @@ DATABASES = {
 # DATABASES = {
 #     "default": {
 #         "ENGINE": "django.db.backends.mysql",
-#         "NAME": "si_schools",
-#         "HOST": "localhost",
-#         "USERNAME": "root",
-#         "PASSWORD": "",
-#         "PORT": "3306",
+#         "NAME": os.getenv("DB_NAME"),
+#         "HOST": os.getenv("DB_HOST", "localhost"),
+#         "USERNAME": os.getenv("DB_USER", "root"),
+#         "PASSWORD": os.getenv("DB_PASS"),
+#         "PORT": os.getenv("DB_PORT", "3306"),
 #     }
 # }
 
