@@ -1,5 +1,5 @@
 {% extends 'main/base.html' %}
-
+{% load static %}
 
 
 {% block breadcrumb_item %}
@@ -52,7 +52,8 @@
 
 
 {% block scripts %}
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
+<script src="{% static 'js/Chart-4.5.1.js' %}"></script>
 <script>
   const valoresData = JSON.parse('{{ valores|safe }}');
 //   const estudanteNome = Object.keys(valoresData)[0];
@@ -108,6 +109,7 @@
       scales: {
         y: {
           beginAtZero: true,
+          min: 0,
           max: 10,
           title: {
             display: true,
