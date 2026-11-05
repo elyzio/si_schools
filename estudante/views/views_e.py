@@ -179,7 +179,7 @@ def estudante_create(request):
 
                     # Auto-create user with EMIS as username and default password
                     username = estudante.emis
-                    default_password = 'Password_123'
+                    default_password = os.environ["DEFAULT_PASSWORD"]
 
                     # Check if user already exists
                     if not User.objects.filter(username=username).exists():
@@ -328,7 +328,7 @@ def estudante_assign_classe(request, pk):
                     estudante_classe.save()
 
                     if existing_assignment:
-                        messages.success(request, f'Estudante {estudante.nome} nia inskrisaun ba klase update tiha ona!')
+                        messages.success(request, "Estudante %s nia inskrisaun ba klase update tiha ona!", (estudante.nome,))
                     else:
                         messages.success(request, f'Estudante {estudante.nome} registu ona ba klase {estudante_classe.classe.classe}{estudante_classe.turma.turma}!')
 
