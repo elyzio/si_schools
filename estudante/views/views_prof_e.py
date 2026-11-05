@@ -38,7 +38,7 @@ def EstudanteTurmaProfList(request):
         profTurma = profTurmas.first()
         # prof = profTurma
         estudanteTurma = EstudanteClasse.objects.filter(
-            ano=profTurma.ano, 
+            ano=profTurma.ano, if profTurma else None
             classe=profTurma.classe, 
             turma=profTurma.turma, 
             departamentu=profTurma.departamentu,
@@ -95,7 +95,7 @@ def EstudanteHanorinProfList(request):
     if profMaterias.exists():
         profMateria = profMaterias.first()
         # print(profMateria.materia)
-        materia = profMateria.materia
+        materia = profMateria.materia if profMateria else None
         if materia.departamentu is None:
             estudantes = EstudanteClasse.objects.filter(ano=active_ano, classe=profMateria.classe).order_by('-departamentu', 'turma', 'estudante__nome')
         else:
@@ -162,7 +162,7 @@ def EstdanteValorProfadd(request, pk, period_id):
         if form.is_valid():
             form_valor = form.save(commit=False)
             form_valor.estudante_classe = estudante
-            form_valor.materia = profMateria.materia
+            form_valor.materia = profMateria.materia if profMateria else None
             form_valor.save()
             messages.success(request, "Valor Added successfully.")
             return redirect('est_prof_hanorin_list')
